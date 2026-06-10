@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mirr — Try it on before you buy it</title>
+<meta name="description" content="Mirr is the AI virtual try-on marketplace. Customers see exactly how clothing fits their body before they buy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--obs:#0A0A0F;--obs2:#0F0F18;--obs3:#16162A;--chrome:#C8CDD6;--chrome2:#8A8F9A;--chrome3:#4A4F5A;--mint:#A8D8C8;--mint2:rgba(168,216,200,0.12);--mint3:rgba(168,216,200,0.06);--mintb:rgba(168,216,200,0.3);--lilac:#C4B5D4;--b1:rgba(255,255,255,0.06);--b2:rgba(255,255,255,0.1);--b3:rgba(255,255,255,0.16)}
+html{scroll-behavior:smooth}
+body{background:var(--obs);color:var(--chrome);font-family:'DM Mono',monospace;font-weight:300;overflow-x:hidden;cursor:none}
+.cursor{position:fixed;width:8px;height:8px;background:var(--mint);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s;mix-blend-mode:difference}
+.cursor-ring{position:fixed;width:36px;height:36px;border:.5px solid var(--mint);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s;opacity:.4}
+.cursor.h{width:4px;height:4px}.cursor-ring.h{width:56px;height:56px;opacity:.7}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.016;pointer-events:none;z-index:999}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:28px 52px;display:flex;align-items:center;justify-content:space-between;transition:all .5s cubic-bezier(.16,1,.3,1)}
+nav.s{padding:14px 52px;background:rgba(10,10,15,.88);backdrop-filter:blur(20px);border-bottom:.5px solid var(--b1)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--chrome);text-decoration:none;display:flex;align-items:baseline}
+.logo .f{display:inline-block;transform:scaleX(-1);color:var(--mint)}
+.nav-r{display:flex;align-items:center;gap:36px}
+.nl{font-size:10px;letter-spacing:.16em;color:var(--chrome2);text-decoration:none;position:relative;transition:color .2s}
+.nl::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:.5px;background:var(--mint);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.nl:hover{color:var(--chrome)}.nl:hover::after{transform:scaleX(1)}
+.nb{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.16em;font-weight:500;color:var(--obs);background:var(--mint);border:none;padding:11px 24px;border-radius:2px;cursor:none;text-decoration:none;transition:opacity .2s,transform .2s;display:inline-block}
+.nb:hover{opacity:.85;transform:translateY(-1px)}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:0 52px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:10%;right:5%;width:500px;height:500px;background:radial-gradient(ellipse,rgba(168,216,200,.04) 0%,transparent 65%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:5%;left:10%;width:300px;height:300px;background:radial-gradient(ellipse,rgba(196,181,212,.04) 0%,transparent 65%);pointer-events:none}
+.hl{padding-top:100px;padding-bottom:80px;z-index:2}
+.hpill{display:inline-flex;align-items:center;gap:10px;font-size:9px;letter-spacing:.22em;color:var(--mint);border:.5px solid var(--mintb);padding:8px 14px;border-radius:999px;margin-bottom:44px;background:var(--mint3);animation:sr .8s cubic-bezier(.16,1,.3,1) both}
+.hpill-d{width:5px;height:5px;background:var(--mint);border-radius:50%;animation:blk 2s ease infinite}
+@keyframes blk{0%,100%{opacity:1}50%{opacity:.2}}
+.hh1{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,10vw,130px);letter-spacing:.04em;line-height:.92;color:var(--chrome);margin-bottom:28px;animation:sr .8s cubic-bezier(.16,1,.3,1) .1s both}
+.hh1 .f{display:inline-block;transform:scaleX(-1);color:var(--mint)}
+.hh1 .l2{display:block;font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(24px,3.5vw,48px);letter-spacing:.08em;color:var(--chrome2);margin-top:8px}
+.hbody{font-size:13px;color:var(--chrome2);line-height:1.9;max-width:400px;margin-bottom:48px;animation:sr .8s cubic-bezier(.16,1,.3,1) .2s both}
+.hact{display:flex;align-items:center;gap:20px;animation:sr .8s cubic-bezier(.16,1,.3,1) .3s both}
+@keyframes sr{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:none}}
+.bm{position:relative;display:inline-block;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;font-weight:500;cursor:none;text-decoration:none;transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.bmp{color:var(--obs);background:var(--mint);padding:15px 36px;border-radius:2px;border:none}
+.bmg{color:var(--chrome);background:transparent;padding:14px 36px;border-radius:2px;border:.5px solid var(--b3)}
+.bmg:hover{border-color:var(--mintb)}
+.bm:hover{transform:translateY(-2px)}
+
+/* Mirror animation */
+.hr{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;z-index:2}
+.mf{position:relative;width:300px;height:420px;animation:flt 6s ease-in-out infinite}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.mo{position:absolute;inset:0;border-radius:50% 50% 48% 48%/40% 40% 60% 60%;border:.5px solid var(--b3);overflow:hidden;background:linear-gradient(135deg,var(--obs2) 0%,var(--obs3) 100%)}
+.mg{position:absolute;inset:0;background:linear-gradient(135deg,rgba(168,216,200,.05) 0%,transparent 40%,rgba(168,216,200,.02) 60%,transparent 100%);border-radius:inherit}
+.mr{position:absolute;top:8%;left:15%;width:70%;height:84%;border-radius:48% 48% 44% 44%/36% 36% 56% 56%;background:linear-gradient(160deg,rgba(200,205,214,.08) 0%,rgba(168,216,200,.05) 30%,transparent 60%);animation:shm 4s ease-in-out infinite}
+@keyframes shm{0%,100%{opacity:.6;transform:translateX(0)}50%{opacity:1;transform:translateX(6px)}}
+.mhi{position:absolute;top:12%;left:18%;width:2px;height:40%;background:linear-gradient(to bottom,rgba(168,216,200,.4),transparent);border-radius:2px;animation:shm 4s ease-in-out infinite}
+.mlabel{position:absolute;bottom:-48px;left:50%;transform:translateX(-50%);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--chrome3);white-space:nowrap;letter-spacing:.1em}
+.orb{position:absolute;top:50%;left:50%;border-radius:50%;border:.5px dashed rgba(168,216,200,.1);transform:translate(-50%,-50%)}
+.orb1{width:420px;height:420px;animation:spn 22s linear infinite}
+.orb2{width:540px;height:540px;animation:spn 32s linear infinite reverse}
+.od{position:absolute;width:5px;height:5px;background:var(--mint);border-radius:50%;top:-2.5px;left:50%;transform:translateX(-50%)}
+@keyframes spn{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* MARQUEE */
+.mq{border-top:.5px solid var(--b1);border-bottom:.5px solid var(--b1);padding:16px 0;overflow:hidden}
+.mq-t{display:flex;animation:mqa 24s linear infinite;width:max-content}
+.mq-i{display:flex;align-items:center;gap:28px;padding:0 28px;font-size:10px;letter-spacing:.2em;color:var(--chrome3);white-space:nowrap}
+.mq-s{color:var(--mint)}
+@keyframes mqa{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b1);border-top:.5px solid var(--b1);border-bottom:.5px solid var(--b1)}
+.sb{background:var(--obs);padding:60px 44px;position:relative;overflow:hidden;transition:background .4s;cursor:none}
+.sb:hover{background:var(--obs2)}
+.sb::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--mint),transparent);opacity:0;transition:opacity .4s}
+.sb:hover::after{opacity:1}
+.sn{font-family:'Bebas Neue',sans-serif;font-size:80px;letter-spacing:.02em;color:var(--mint);line-height:1;margin-bottom:10px}
+.sl{font-size:10px;letter-spacing:.2em;color:var(--chrome3);line-height:1.7;max-width:220px}
+.ss{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--chrome2);margin-top:8px}
+
+/* SECTION UTILS */
+.stag{font-size:9px;letter-spacing:.3em;color:var(--mint);display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.stag::before{content:'';width:24px;height:.5px;background:var(--mint)}
+.bigtitle{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6vw,80px);letter-spacing:.06em;color:var(--chrome);line-height:.95;margin-bottom:20px}
+.bodytxt{font-size:13px;color:var(--chrome2);line-height:1.9}
+
+/* HOW IT WORKS */
+.how{padding:120px 0;position:relative}
+.how-in{display:grid;grid-template-columns:1fr 1fr}
+.how-stick{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;padding:0 80px}
+.hdisplay{width:280px;height:360px;position:relative}
+.hcv{position:absolute;inset:0;border-radius:14px;background:var(--obs2);border:.5px solid var(--b2);padding:28px;opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.hcv.ac{opacity:1;transform:none}
+.hci{width:40px;height:40px;border:.5px solid var(--mintb);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;background:var(--mint3)}
+.hct{font-size:15px;color:var(--chrome);margin-bottom:10px;font-weight:400;line-height:1.3}
+.hcb{font-size:12px;color:var(--chrome2);line-height:1.85}
+.hcn{position:absolute;bottom:20px;right:20px;font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--b2);line-height:1}
+.how-steps{padding:120px 80px 120px 60px}
+.how-hdr{margin-bottom:72px;padding-left:40px}
+.hstep{display:grid;grid-template-columns:40px 1fr;gap:0;cursor:none;border-radius:8px;transition:background .3s;margin-bottom:2px}
+.hstep:hover,.hstep.ac{background:var(--obs2)}
+.hsl{display:flex;flex-direction:column;align-items:center;padding-top:5px}
+.hsd{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--chrome3);transition:all .3s;flex:none}
+.hstep.ac .hsd,.hstep:hover .hsd{background:var(--mint);border-color:var(--mint);box-shadow:0 0 12px rgba(168,216,200,.4)}
+.hsc{flex:1;width:1px;background:var(--b2);margin:6px 0;min-height:36px}
+.hscont{padding:20px 0 20px 24px}
+.hsaud{font-size:9px;letter-spacing:.2em;color:var(--chrome3);margin-bottom:7px;transition:color .3s}
+.hstep.ac .hsaud,.hstep:hover .hsaud{color:var(--mint)}
+.hstitl{font-size:14px;color:var(--chrome);margin-bottom:8px;font-weight:400}
+.hsdesc{font-size:12px;color:var(--chrome2);line-height:1.85}
+
+/* MODEL */
+.model{padding:120px 52px;position:relative;overflow:hidden}
+.model::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;background:radial-gradient(ellipse,rgba(196,181,212,.04) 0%,transparent 65%);pointer-events:none}
+.mgrid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:start;margin-top:60px}
+.gc{background:rgba(255,255,255,.02);backdrop-filter:blur(20px);border:.5px solid var(--b2);border-radius:16px;padding:40px;position:relative;overflow:hidden;transition:border-color .4s,transform .4s}
+.gc:hover{border-color:rgba(168,216,200,.2);transform:translateY(-4px)}
+.gc::before{content:'';position:absolute;top:0;left:0;right:0;height:.5px;background:linear-gradient(90deg,transparent 0%,var(--mint) 50%,transparent 100%);opacity:0;transition:opacity .4s}
+.gc:hover::before{opacity:1}
+.gct{font-size:9px;letter-spacing:.2em;color:var(--mint);margin-bottom:32px}
+.mr2{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:.5px solid var(--b1);font-size:12px;gap:16px}
+.mr2:last-child{border-bottom:none}
+.mrk{color:var(--chrome2)}.mrv{color:var(--chrome);text-align:right}
+.mrv.a{color:var(--mint);font-weight:500}
+.mnote{margin-top:28px;padding:16px 20px;background:var(--mint3);border:.5px solid var(--mintb);border-radius:8px;font-size:12px;color:var(--mint);line-height:1.8;font-style:italic}
+.mside{display:flex;flex-direction:column;gap:16px}
+.gm{background:rgba(255,255,255,.02);backdrop-filter:blur(20px);border:.5px solid var(--b2);border-radius:12px;padding:28px;transition:border-color .3s,transform .3s}
+.gm:hover{border-color:rgba(168,216,200,.15);transform:translateX(4px)}
+.gmn{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--mint);line-height:1;margin-bottom:6px}
+.gml{font-size:10px;letter-spacing:.14em;color:var(--chrome2);line-height:1.6}
+
+/* BENTO */
+.fts{padding:120px 52px;background:var(--obs2);border-top:.5px solid var(--b1);border-bottom:.5px solid var(--b1)}
+.bento{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:180px;gap:12px;margin-top:60px}
+.bc{background:var(--obs);border:.5px solid var(--b2);border-radius:12px;padding:28px;position:relative;overflow:hidden;transition:border-color .4s,background .4s;cursor:none}
+.bc:hover{border-color:rgba(168,216,200,.2);background:var(--obs3)}
+.c5{grid-column:span 5}.c7{grid-column:span 7}.c4{grid-column:span 4}.c8{grid-column:span 8}.c6{grid-column:span 6}.r2{grid-row:span 2}
+.bi{width:36px;height:36px;border:.5px solid var(--mintb);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;background:var(--mint3);transition:background .3s}
+.bc:hover .bi{background:var(--mint2)}
+.bt{font-size:13px;color:var(--chrome);margin-bottom:8px;font-weight:400}
+.bd{font-size:11px;color:var(--chrome2);line-height:1.8}
+.bln{position:absolute;bottom:-10px;right:16px;font-family:'Bebas Neue',sans-serif;font-size:96px;color:rgba(255,255,255,.025);line-height:1;pointer-events:none}
+.bac{position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,var(--mint),var(--lilac));opacity:0;transition:opacity .3s}
+.bc:hover .bac{opacity:1}
+
+/* BRANDS */
+.brands{padding:120px 52px}
+.blay{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:start;margin-top:80px}
+.plist{display:flex;flex-direction:column}
+.ps{display:grid;grid-template-columns:60px 1fr;cursor:none}
+.pline{display:flex;flex-direction:column;align-items:center;padding-top:6px}
+.pdot{width:12px;height:12px;border-radius:50%;border:1px solid var(--chrome3);transition:all .4s;flex:none;position:relative}
+.pdot::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:.5px solid transparent;transition:border-color .4s}
+.ps:hover .pdot{background:var(--mint);border-color:var(--mint);box-shadow:0 0 16px rgba(168,216,200,.3)}
+.ps:hover .pdot::after{border-color:var(--mintb)}
+.pcon{flex:1;width:1px;background:var(--b2);margin:8px 0;min-height:48px}
+.pcont{padding:0 0 52px 28px}
+.pnum{font-size:9px;letter-spacing:.2em;color:var(--chrome3);margin-bottom:8px;transition:color .3s}
+.ps:hover .pnum{color:var(--mint)}
+.ptit{font-size:16px;color:var(--chrome);margin-bottom:10px;font-weight:400}
+.pdesc{font-size:12px;color:var(--chrome2);line-height:1.9}
+.bperks{position:sticky;top:100px}
+.pc{background:var(--obs2);border:.5px solid var(--b2);border-radius:16px;overflow:hidden}
+.pch{padding:28px 32px 20px;border-bottom:.5px solid var(--b1);font-size:10px;letter-spacing:.2em;color:var(--mint)}
+.pr{display:flex;align-items:flex-start;gap:14px;padding:16px 32px;border-bottom:.5px solid var(--b1);font-size:12px;color:var(--chrome2);line-height:1.7;transition:background .2s}
+.pr:last-child{border-bottom:none}.pr:hover{background:rgba(255,255,255,.02)}
+.pa{color:var(--mint);flex:none;font-size:11px;margin-top:2px}
+.pcta{padding:24px 32px;border-top:.5px solid var(--b1)}
+.pctab{width:100%;background:var(--mint);color:var(--obs);border:none;padding:14px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;font-weight:500;cursor:none;border-radius:4px;transition:opacity .2s,transform .2s}
+.pctab:hover{opacity:.85;transform:translateY(-1px)}
+
+/* FITTING */
+.fit{padding:120px 52px;background:var(--obs2);border-top:.5px solid var(--b1);border-bottom:.5px solid var(--b1);position:relative;overflow:hidden}
+.fit::before{content:'';position:absolute;bottom:-100px;left:-100px;width:500px;height:500px;background:radial-gradient(ellipse,rgba(168,216,200,.04) 0%,transparent 65%);pointer-events:none}
+.fitlay{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.fittit{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6vw,80px);letter-spacing:.06em;color:var(--chrome);line-height:.95;margin-bottom:24px}
+.fittit .m{color:var(--mint)}
+.fitpts{display:flex;flex-direction:column;gap:12px;margin-top:32px}
+.fitp{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--chrome2)}
+.fitpd{width:4px;height:4px;background:var(--mint);border-radius:50%;flex:none}
+.fitcard{background:var(--obs);border:.5px solid var(--b2);border-radius:16px;overflow:hidden}
+.fitchdr{padding:20px 24px;border-bottom:.5px solid var(--b1);font-size:9px;letter-spacing:.2em;color:var(--mint);display:flex;align-items:center;justify-content:space-between}
+.fitst{display:flex;align-items:center;gap:6px;font-size:9px;color:var(--mint)}
+.fitsdt{width:5px;height:5px;background:var(--mint);border-radius:50%;animation:blk 2s infinite}
+.mrow{display:flex;align-items:center;justify-content:space-between;padding:13px 24px;border-bottom:.5px solid var(--b1);font-size:12px;transition:background .2s}
+.mrow:last-child{border-bottom:none}.mrow:hover{background:rgba(255,255,255,.02)}
+.mk{color:var(--chrome2)}
+.mv{background:var(--obs2);border:.5px solid var(--b2);border-radius:4px;padding:5px 12px;color:var(--chrome);font-size:12px;font-family:'DM Mono',monospace;width:100px;text-align:right}
+.frp{margin:16px 24px;background:var(--mint3);border:.5px solid var(--mintb);border-radius:8px;padding:16px 18px}
+.frl{font-size:9px;letter-spacing:.18em;color:var(--mint);margin-bottom:14px}
+.fbi{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:10px}
+.fbl{color:var(--chrome2);width:70px}
+.fbt{flex:1;height:2px;background:var(--b2);border-radius:2px;overflow:hidden}
+.fbf{height:100%;background:var(--mint);border-radius:2px;animation:bfill 1.5s cubic-bezier(.16,1,.3,1) both}
+@keyframes bfill{from{width:0}}
+.fbp{color:var(--mint);width:28px;text-align:right}
+.fverd{margin-top:12px;font-size:11px;color:var(--mint);font-style:italic;line-height:1.6}
+
+/* FAQ */
+.faq{padding:120px 52px;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:start}
+.faqlt{position:sticky;top:120px}
+.faqtit{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,7vw,100px);letter-spacing:.06em;color:var(--chrome);line-height:.92;margin-bottom:24px}
+.faqsub{font-size:13px;color:var(--chrome2);line-height:1.8}
+.faqlist{display:flex;flex-direction:column}
+.faqitem{border-bottom:.5px solid var(--b1);overflow:hidden}
+.faqq{width:100%;background:none;border:none;display:flex;justify-content:space-between;align-items:center;padding:22px 0;font-family:'DM Mono',monospace;font-size:13px;color:var(--chrome);cursor:none;text-align:left;gap:20px;transition:color .2s}
+.faqq:hover{color:var(--mint)}
+.faqic{width:20px;height:20px;border:.5px solid var(--chrome3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--chrome3);flex:none;transition:all .3s}
+.faqitem.op .faqic{border-color:var(--mint);color:var(--mint);transform:rotate(45deg)}
+.faqa{font-size:12px;color:var(--chrome2);line-height:1.9;max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.16,1,.3,1),padding .3s}
+.faqitem.op .faqa{max-height:300px;padding-bottom:22px}
+
+/* CTA */
+.cta{padding:160px 52px;text-align:center;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(ellipse,rgba(168,216,200,.05) 0%,transparent 60%);pointer-events:none}
+.ctaey{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;color:var(--chrome2);margin-bottom:24px}
+.ctah2{font-family:'Bebas Neue',sans-serif;font-size:clamp(64px,11vw,140px);letter-spacing:.05em;line-height:.9;color:var(--chrome);margin-bottom:40px}
+.ctah2 .m{color:var(--mint)}
+.ctasub{font-size:13px;color:var(--chrome2);max-width:380px;margin:0 auto 52px;line-height:1.9}
+.ctaform{display:flex;gap:10px;justify-content:center;max-width:420px;margin:0 auto 14px;flex-wrap:wrap}
+.ctain{flex:1;min-width:180px;background:var(--obs2);border:.5px solid var(--b2);border-radius:4px;padding:14px 18px;font-family:'DM Mono',monospace;font-size:12px;color:var(--chrome);outline:none;transition:border-color .2s}
+.ctain:focus{border-color:var(--mintb)}
+.ctain::placeholder{color:var(--chrome3)}
+.ctanote{font-size:11px;color:var(--chrome3)}
+
+/* FOOTER */
+footer{border-top:.5px solid var(--b1);padding:48px 52px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;color:var(--chrome);text-decoration:none}
+.flogo .f{display:inline-block;transform:scaleX(-1);color:var(--mint)}
+.fcp{font-size:10px;color:var(--chrome3);letter-spacing:.1em;text-align:center}
+.flinks{display:flex;gap:28px;justify-content:flex-end}
+.flinks a{font-size:10px;letter-spacing:.12em;color:var(--chrome3);text-decoration:none;transition:color .2s}
+.flinks a:hover{color:var(--mint)}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.rvl{opacity:0;transform:translateX(-28px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.rv.vi,.rvl.vi{opacity:1;transform:none}
+
+@media(max-width:900px){
+  body{cursor:auto}
+  .cursor,.cursor-ring{display:none}
+  nav{padding:16px 24px}nav.s{padding:12px 24px}
+  .nl{display:none}
+  .hero{grid-template-columns:1fr;padding:100px 24px 60px;min-height:auto}
+  .hr{display:none}
+  .hl{padding:0}
+  .stats,.bento{grid-template-columns:1fr;gap:0}
+  .bento{display:flex;flex-direction:column;margin-top:40px}
+  .bc{border-radius:0;border-left:none;border-right:none}
+  .how-in{grid-template-columns:1fr}
+  .how-stick{display:none}
+  .how-steps{padding:60px 24px}
+  .model{padding:80px 24px}.mgrid{grid-template-columns:1fr}
+  .mside{grid-template-columns:1fr 1fr;display:grid}
+  .brands,.fit,.faq,.cta{padding:80px 24px}
+  .blay,.fitlay,.faq{grid-template-columns:1fr;gap:40px}
+  .faqlt{position:static}
+  .bperks{position:static}
+  .ctaform{flex-direction:column}
+  footer{grid-template-columns:1fr;text-align:center;padding:32px 24px}
+  .flinks{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="curR"></div>
+
+<nav id="nav">
+  <a href="#" class="logo">MIR<span class="f">R</span></a>
+  <div class="nav-r">
+    <a href="#how" class="nl">HOW IT WORKS</a>
+    <a href="#brands" class="nl">FOR BRANDS</a>
+    <a href="#fitting" class="nl">FITTING ROOM</a>
+    <a href="#faq" class="nl">FAQ</a>
+    <a href="#waitlist" class="nb">LIST YOUR BRAND</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hl">
+    <div class="hpill"><div class="hpill-d"></div>AI VIRTUAL TRY-ON MARKETPLACE</div>
+    <h1 class="hh1">MIR<span class="f">R</span><span class="l2">your mirror, evolved.</span></h1>
+    <p class="hbody">The marketplace where customers see exactly how clothing fits their body before they commit. No more returns. No more guessing. Just confident purchases.</p>
+    <div class="hact">
+      <a href="#waitlist" class="bm bmp">LIST YOUR BRAND →</a>
+      <a href="#how" class="bm bmg">HOW IT WORKS</a>
+    </div>
+  </div>
+  <div class="hr">
+    <div class="orb orb1"><div class="od"></div></div>
+    <div class="orb orb2"><div class="od"></div></div>
+    <div class="mf">
+      <div class="mo"><div class="mg"></div><div class="mr"></div><div class="mhi"></div></div>
+      <div class="mlabel">mirror view — AI powered</div>
+    </div>
+  </div>
+</section>
+
+<div class="mq">
+  <div class="mq-t">
+    <div class="mq-i">ACTIVEWEAR <span class="mq-s">✦</span> STREETWEAR <span class="mq-s">✦</span> FASHION <span class="mq-s">✦</span> BOUTIQUE <span class="mq-s">✦</span> ATHLEISURE <span class="mq-s">✦</span> DENIM <span class="mq-s">✦</span> OUTERWEAR <span class="mq-s">✦</span> FORMALWEAR <span class="mq-s">✦</span> RESORT <span class="mq-s">✦</span> SPORTSWEAR <span class="mq-s">✦</span> LUXURY <span class="mq-s">✦</span> BASICS <span class="mq-s">✦</span></div>
+    <div class="mq-i">ACTIVEWEAR <span class="mq-s">✦</span> STREETWEAR <span class="mq-s">✦</span> FASHION <span class="mq-s">✦</span> BOUTIQUE <span class="mq-s">✦</span> ATHLEISURE <span class="mq-s">✦</span> DENIM <span class="mq-s">✦</span> OUTERWEAR <span class="mq-s">✦</span> FORMALWEAR <span class="mq-s">✦</span> RESORT <span class="mq-s">✦</span> SPORTSWEAR <span class="mq-s">✦</span> LUXURY <span class="mq-s">✦</span> BASICS <span class="mq-s">✦</span></div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="sb rv"><div class="sn" data-count="30" data-suffix="%">0%</div><div class="sl">AVERAGE RETURN RATE FOR ONLINE CLOTHING</div><div class="ss">Mirr cuts this dramatically.</div></div>
+  <div class="sb rv"><div class="sn" data-count="65" data-prefix="$">$0</div><div class="sl">AVERAGE COST TO PROCESS A SINGLE RETURN</div><div class="ss">One prevented return pays for many sales.</div></div>
+  <div class="sb rv"><div class="sn" data-count="5" data-suffix="%">0%</div><div class="sl">OUR COMMISSION — ONLY ON SALES WE DRIVE</div><div class="ss">Zero cost if we don't deliver.</div></div>
+</div>
+
+<section class="how" id="how">
+  <div class="how-in">
+    <div class="how-stick">
+      <div class="hdisplay">
+        <div class="hcv ac" id="hc0">
+          <div class="hci"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8D8C8" stroke-width="1.2"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+          <div class="hct">Create your brand account</div>
+          <div class="hcb">Sign up free. No credit card. Your brand reviewed and live on Mirr within 24 hours.</div>
+          <div class="hcn">01</div>
+        </div>
+        <div class="hcv" id="hc1">
+          <div class="hci"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8D8C8" stroke-width="1.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+          <div class="hct">Upload products and dimensions</div>
+          <div class="hcb">Flat-lay photos plus garment measurements. Simple form guides you through every field.</div>
+          <div class="hcn">02</div>
+        </div>
+        <div class="hcv" id="hc2">
+          <div class="hci"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8D8C8" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+          <div class="hct">Customers try and buy</div>
+          <div class="hcb">Shoppers upload their photo, enter measurements, see your items on their body before purchasing.</div>
+          <div class="hcn">03</div>
+        </div>
+        <div class="hcv" id="hc3">
+          <div class="hci"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8D8C8" stroke-width="1.2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+          <div class="hct">Ship and collect payouts</div>
+          <div class="hcb">95% of each sale transfers to you within 2 business days via Stripe. Automatic, every time.</div>
+          <div class="hcn">04</div>
+        </div>
+      </div>
+    </div>
+    <div class="how-steps">
+      <div class="how-hdr rvl">
+        <div class="stag">HOW IT WORKS</div>
+        <div class="bigtitle">TWO SIDES.<br>ONE PLATFORM.</div>
+        <p class="bodytxt" style="max-width:400px">Mirr connects brands and shoppers around one outcome — confident purchases that don't come back.</p>
+      </div>
+      <div id="hsteps">
+        <div class="hstep ac" data-c="0">
+          <div class="hsl"><div class="hsd"></div><div class="hsc"></div></div>
+          <div class="hscont"><div class="hsaud">FOR BRANDS</div><div class="hstitl">Create your free brand account</div><div class="hsdesc">Sign up in under 2 minutes. No credit card. Account verified within 24 hours.</div></div>
+        </div>
+        <div class="hstep" data-c="1">
+          <div class="hsl"><div class="hsd"></div><div class="hsc"></div></div>
+          <div class="hscont"><div class="hsaud">FOR BRANDS</div><div class="hstitl">Upload products and dimensions</div><div class="hsdesc">Flat-lay photos plus garment measurements. Live on Mirr within 24 hours of approval.</div></div>
+        </div>
+        <div class="hstep" data-c="2">
+          <div class="hsl"><div class="hsd"></div><div class="hsc"></div></div>
+          <div class="hscont"><div class="hsaud">FOR SHOPPERS</div><div class="hstitl">Browse, try on, and buy with certainty</div><div class="hsdesc">Upload your photo, enter measurements once. See exactly how every item fits before you commit.</div></div>
+        </div>
+        <div class="hstep" data-c="3">
+          <div class="hsl"><div class="hsd"></div></div>
+          <div class="hscont"><div class="hsaud">FOR BRANDS</div><div class="hstitl">Ship orders and receive payouts</div><div class="hsdesc">Fulfil directly to customers. 95% of every sale transferred to you within 2 business days.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="model">
+  <div class="rv">
+    <div class="stag">OUR MODEL</div>
+    <div class="bigtitle">WE ONLY EARN<br>WHEN YOU EARN.</div>
+    <p class="bodytxt" style="max-width:500px;margin-top:0">No monthly fees. No setup costs. No lock-in contracts. Commission only on sales we generate — if we don't deliver, you've paid nothing.</p>
+  </div>
+  <div class="mgrid">
+    <div class="gc rv">
+      <div class="gct">COMMISSION BREAKDOWN</div>
+      <div class="mr2"><span class="mrk">Monthly fee</span><span class="mrv">$0.00</span></div>
+      <div class="mr2"><span class="mrk">Setup cost</span><span class="mrv">$0.00</span></div>
+      <div class="mr2"><span class="mrk">Contract required</span><span class="mrv">None</span></div>
+      <div class="mr2"><span class="mrk">Try-on assisted sale</span><span class="mrv a">5% commission</span></div>
+      <div class="mr2"><span class="mrk">Fitting room assisted sale</span><span class="mrv a">7% commission</span></div>
+      <div class="mr2"><span class="mrk">You receive per sale</span><span class="mrv a">95%</span></div>
+      <div class="mr2"><span class="mrk">Payout timeline</span><span class="mrv">2 business days</span></div>
+      <div class="mnote">A store doing $20,000/month through Mirr pays $1,000 in commission. A single prevented return saves $10–$65. The maths heavily favour you.</div>
+    </div>
+    <div class="mside rv">
+      <div class="gm"><div class="gmn">$0</div><div class="gml">TO LIST YOUR BRAND AND GO LIVE</div></div>
+      <div class="gm"><div class="gmn">95%</div><div class="gml">OF EVERY SALE GOES DIRECTLY TO YOU</div></div>
+      <div class="gm"><div class="gmn">24h</div><div class="gml">FROM SUBMISSION TO LIVE ON MIRR</div></div>
+      <div class="gm"><div class="gmn" style="color:var(--lilac)">2bd</div><div class="gml">STRIPE PAYOUT AFTER EACH SALE</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="fts" id="features">
+  <div class="rv">
+    <div class="stag">PLATFORM FEATURES</div>
+    <div class="bigtitle">EVERYTHING<br>IN ONE PLACE.</div>
+  </div>
+  <div class="bento rv">
+    <div class="bc c5 r2">
+      <div class="bac"></div>
+      <div class="bi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8D8C8" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+      <div class="bt">AI Virtual Try-On</div>
+      <div class="bd">Customers upload their photo. Our AI generates a photorealistic image of them wearing your exact garment. Production-grade — not a filter.</div>
+      <div class="bln">01</div>
+    </div>
+    <div class="bc c7">
+      <div class="bac"></div>
+      <div class="bi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8D8C8" stroke-width="1.2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+      <div class="bt">Dimension-Based Fitting Room</div>
+      <div class="bd">Customers input exact measurements once. Mirr compares them to your garment specs and shows precise fit accuracy per dimension.</div>
+      <div class="bln">02</div>
+    </div>
+    <div class="bc c4">
+      <div class="bac"></div>
+      <div class="bi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8D8C8" stroke-width="1.2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+      <div class="bt">Brand Dashboard</div>
+      <div class="bd">Sales, try-on activity, and earnings in one clean interface.</div>
+    </div>
+    <div class="bc c8">
+      <div class="bac"></div>
+      <div class="bi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8D8C8" stroke-width="1.2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+      <div class="bt">Automatic Stripe Payouts</div>
+      <div class="bd">Every transaction splits automatically. 95% to you, 5% to Mirr. Paid within 2 business days. Zero manual invoicing.</div>
+      <div class="bln">04</div>
+    </div>
+    <div class="bc c6">
+      <div class="bac"></div>
+      <div class="bi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8D8C8" stroke-width="1.2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg></div>
+      <div class="bt">Return Rate Analytics</div>
+      <div class="bd">See your return rate before and after listing on Mirr. Know exactly which products benefit most from virtual try-on.</div>
+    </div>
+    <div class="bc c6">
+      <div class="bac"></div>
+      <div class="bi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8D8C8" stroke-width="1.2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 6v6l4 2"/></svg></div>
+      <div class="bt">24-Hour Onboarding</div>
+      <div class="bd">Submit products. We review and publish within 24 hours. No technical work on your end — ever.</div>
+    </div>
+  </div>
+</section>
+
+<section class="brands" id="brands">
+  <div class="rv">
+    <div class="stag">FOR BRANDS</div>
+    <div class="bigtitle">LIST YOUR BRAND.<br>SHIP THE ORDERS.<br>WE HANDLE THE REST.</div>
+  </div>
+  <div class="blay">
+    <div class="plist rvl">
+      <div class="ps"><div class="pline"><div class="pdot"></div><div class="pcon"></div></div><div class="pcont"><div class="pnum">STEP 01</div><div class="ptit">Create your free brand account</div><div class="pdesc">Sign up in under 2 minutes. No credit card. Your account is verified and ready within 24 hours of submission.</div></div></div>
+      <div class="ps"><div class="pline"><div class="pdot"></div><div class="pcon"></div></div><div class="pcont"><div class="pnum">STEP 02</div><div class="ptit">Upload products and dimensions</div><div class="pdesc">Flat-lay product photos and garment dimensions — chest, waist, length, inseam. Our form guides you through every field in minutes.</div></div></div>
+      <div class="ps"><div class="pline"><div class="pdot"></div><div class="pcon"></div></div><div class="pcont"><div class="pnum">STEP 03</div><div class="ptit">Go live on the Mirr marketplace</div><div class="pdesc">Your products appear on Mirr for customers to browse, try on, and purchase. You get notified for every sale.</div></div></div>
+      <div class="ps"><div class="pline"><div class="pdot"></div></div><div class="pcont"><div class="pnum">STEP 04</div><div class="ptit">Ship orders and receive payouts</div><div class="pdesc">Receive order details and ship directly to customers. 95% of every sale transferred to your Stripe account within 2 business days.</div></div></div>
+    </div>
+    <div class="bperks rv">
+      <div class="pc">
+        <div class="pch">WHAT FOUNDING BRANDS GET</div>
+        <div>
+          <div class="pr"><span class="pa">→</span><span>Listed on Mirr — visible to every shopper on the platform</span></div>
+          <div class="pr"><span class="pa">→</span><span>AI virtual try-on applied to all your products automatically</span></div>
+          <div class="pr"><span class="pa">→</span><span>Dimension-based fitting room — exact fit accuracy per garment</span></div>
+          <div class="pr"><span class="pa">→</span><span>Brand dashboard with sales, try-on activity, and earnings</span></div>
+          <div class="pr"><span class="pa">→</span><span>Automatic Stripe payouts within 2 business days</span></div>
+          <div class="pr"><span class="pa">→</span><span>Zero monthly fee — 5% only on sales we generate</span></div>
+          <div class="pr"><span class="pa">→</span><span>Founding brand status — first access to every new feature</span></div>
+        </div>
+        <div class="pcta"><button class="pctab" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">LIST YOUR BRAND FOR FREE →</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="fit" id="fitting">
+  <div class="fitlay">
+    <div class="rvl">
+      <div class="stag">THE FITTING ROOM</div>
+      <div class="fittit">ACCURATE<br>FIT. EVERY<br><span class="m">TIME.</span></div>
+      <p class="bodytxt" style="margin-bottom:0">Virtual try-on shows how something looks. The Mirr Fitting Room shows how it actually fits. Customers input exact measurements once — saved to their profile, used across every brand on Mirr.</p>
+      <div class="fitpts">
+        <div class="fitp"><div class="fitpd"></div><span>Chest, waist, hips, inseam, height — all compared</span></div>
+        <div class="fitp"><div class="fitpd"></div><span>Fit score shown per garment dimension</span></div>
+        <div class="fitp"><div class="fitpd"></div><span>"Fits perfectly" vs "runs 2cm short for your height"</span></div>
+        <div class="fitp"><div class="fitpd"></div><span>Measurements work across every brand on Mirr</span></div>
+        <div class="fitp"><div class="fitpd"></div><span>Customers order the right size, first time, every time</span></div>
+      </div>
+    </div>
+    <div class="rv">
+      <div class="fitcard">
+        <div class="fitchdr"><span>MIRR FITTING ROOM</span><div class="fitst"><div class="fitsdt"></div>ACTIVE</div></div>
+        <div>
+          <div class="mrow"><span class="mk">Height</span><input class="mv" value="178 cm" readonly></div>
+          <div class="mrow"><span class="mk">Chest</span><input class="mv" value="96 cm" readonly></div>
+          <div class="mrow"><span class="mk">Waist</span><input class="mv" value="82 cm" readonly></div>
+          <div class="mrow"><span class="mk">Inseam</span><input class="mv" value="81 cm" readonly></div>
+          <div class="mrow"><span class="mk">Hips</span><input class="mv" value="100 cm" readonly></div>
+        </div>
+        <div class="frp">
+          <div class="frl">FIT ACCURACY — COBALT BLUE JACKET (SIZE M)</div>
+          <div class="fbi"><span class="fbl">Chest</span><div class="fbt"><div class="fbf" style="width:92%"></div></div><span class="fbp">92%</span></div>
+          <div class="fbi"><span class="fbl">Length</span><div class="fbt"><div class="fbf" style="width:88%"></div></div><span class="fbp">88%</span></div>
+          <div class="fbi"><span class="fbl">Shoulders</span><div class="fbt"><div class="fbf" style="width:96%"></div></div><span class="fbp">96%</span></div>
+          <div class="fverd">✓ This jacket fits your body well. Chest and shoulders are accurate. Length runs slightly short for your height.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="faqlt rvl">
+    <div class="stag">FAQ</div>
+    <div class="faqtit">QUESTIONS<br>ANSWERED.</div>
+    <p class="faqsub">Everything you need to know before listing your brand on Mirr.</p>
+  </div>
+  <div class="faqlist rv">
+    <div class="faqitem"><button class="faqq" onclick="tfaq(this)">How does the 5% commission work?<span class="faqic">+</span></button><div class="faqa">When a customer purchases through Mirr, Stripe processes the full payment. 95% transfers to your brand account within 2 business days. We receive 5%. Automatic on every transaction — no invoicing, no chasing payments.</div></div>
+    <div class="faqitem"><button class="faqq" onclick="tfaq(this)">What product photos do I need?<span class="faqic">+</span></button><div class="faqa">Flat-lay images work best — the garment laid flat on a plain surface, or hung on a hanger against a clean background. No models wearing the item. You'll also submit garment dimensions for the fitting room feature.</div></div>
+    <div class="faqitem"><button class="faqq" onclick="tfaq(this)">Does listing on Mirr replace my own website?<span class="faqic">+</span></button><div class="faqa">No. Mirr is an additional sales channel — like listing on a marketplace. Your own store stays exactly as it is. Mirr brings you customers who specifically want to try before they buy.</div></div>
+    <div class="faqitem"><button class="faqq" onclick="tfaq(this)">How does shipping work?<span class="faqic">+</span></button><div class="faqa">You ship directly to the customer. When a sale is made, you receive the order details and shipping address. You fulfil exactly as you would from your own store. Mirr handles payment and commission — you handle fulfilment.</div></div>
+    <div class="faqitem"><button class="faqq" onclick="tfaq(this)">What about returns?<span class="faqic">+</span></button><div class="faqa">Returns are handled between you and the customer per your policy. If a return results in a refund, the commission on that transaction is reversed automatically via Stripe. The goal of Mirr is to significantly reduce returns — customers who use try-on before buying are far more confident in their purchase.</div></div>
+    <div class="faqitem"><button class="faqq" onclick="tfaq(this)">How quickly can my brand go live?<span class="faqic">+</span></button><div class="faqa">Within 24 hours of submitting your product photos and dimensions. Our team reviews each submission to ensure garment images meet our quality standards. Once approved, your products are visible to all Mirr shoppers immediately.</div></div>
+    <div class="faqitem"><button class="faqq" onclick="tfaq(this)">Is there a minimum number of products?<span class="faqic">+</span></button><div class="faqa">No minimum. Start with one product. Most founding brands start with 3–5 best-sellers to test performance before uploading their full catalogue.</div></div>
+  </div>
+</section>
+
+<section class="cta" id="waitlist">
+  <p class="ctaey">ready to list your brand?</p>
+  <h2 class="ctah2">MIRROR IT.<br><span class="m">SELL MORE.</span></h2>
+  <p class="ctasub">Join the founding brands on Mirr. No monthly fee. No setup cost. We only earn when you earn.</p>
+  <div class="ctaform">
+    <input type="email" class="ctain" placeholder="your brand email" id="ei">
+    <button class="bm bmp" onclick="sub()">GET EARLY ACCESS →</button>
+  </div>
+  <p class="ctanote" id="sn">We'll reach out within 24 hours to get your brand listed.</p>
+</section>
+
+<footer>
+  <a href="#" class="flogo">MIR<span class="f">R</span></a>
+  <div class="fcp">© 2026 Mirr — trymirr.com</div>
+  <div class="flinks">
+    <a href="#brands">For brands</a>
+    <a href="#fitting">Fitting room</a>
+    <a href="#faq">FAQ</a>
+    <a href="mailto:hello@trymirr.com">Contact</a>
+  </div>
+</footer>
+
+<script>
+// Cursor
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function anim(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.bc,.hstep,.ps,.gc,.gm,.sb').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.classList.add('h');curR.classList.add('h')});
+  el.addEventListener('mouseleave',()=>{cur.classList.remove('h');curR.classList.remove('h')});
+});
+
+// Nav
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('s',scrollY>40));
+
+// Reveal
+const ro=new IntersectionObserver((es)=>{es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('vi'),i*60);ro.unobserve(e.target)}})},{threshold:.08});
+document.querySelectorAll('.rv,.rvl').forEach(el=>ro.observe(el));
+
+// Count up
+const co=new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,t=+el.dataset.count,p=el.dataset.prefix||'',s=el.dataset.suffix||'%';let c=0,step=t/50;const ti=setInterval(()=>{c=Math.min(c+step,t);el.textContent=p+Math.round(c)+s;if(c>=t)clearInterval(ti)},28);co.unobserve(el)})},{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>co.observe(el));
+
+// How it works hover
+document.querySelectorAll('.hstep').forEach((s,i)=>{
+  s.addEventListener('mouseenter',()=>{
+    document.querySelectorAll('.hstep').forEach(x=>x.classList.remove('ac'));
+    document.querySelectorAll('.hcv').forEach(x=>x.classList.remove('ac'));
+    s.classList.add('ac');
+    const c=document.getElementById('hc'+i);
+    if(c)c.classList.add('ac');
+  });
+});
+
+// FAQ
+function tfaq(btn){const item=btn.parentElement,open=item.classList.contains('op');document.querySelectorAll('.faqitem').forEach(i=>i.classList.remove('op'));if(!open)item.classList.add('op')}
+
+// Submit
+function sub(){const e=document.getElementById('ei').value,n=document.getElementById('sn');if(!e||!e.includes('@')){n.textContent='Please enter a valid email address.';n.style.color='var(--lilac)';return}n.textContent='✓ You\'re on the list. We\'ll be in touch within 24 hours.';n.style.color='var(--mint)';document.getElementById('ei').value=''}
+</script>
+</body>
+</html>
