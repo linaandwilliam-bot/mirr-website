@@ -749,14 +749,14 @@ function goStep(n) {
 }
 
 function runTryOn() {
-  // Reset processing state
+  // Reset UI
   document.getElementById('proc-state').style.display = 'block';
   document.getElementById('result-state').style.display = 'none';
 
   var procTitle = document.querySelector('.proc-title');
   var procSub = document.querySelector('.proc-sub');
   if (procTitle) procTitle.textContent = 'Fitting garment to your photo...';
-  if (procSub) procSub.textContent = 'This takes about 15-30 seconds. Please wait.';
+  if (procSub) procSub.textContent = 'This takes 15-30 seconds. Please wait.';
 
   ['ps1','ps2','ps3','ps4'].forEach(function(id) {
     document.getElementById(id).classList.remove('done','active');
@@ -767,62 +767,95 @@ function runTryOn() {
   var hasPhoto = prevSrc && prevSrc.length > 200 && prevSrc.startsWith('data:image');
 
   if (!hasPhoto) {
-    // No photo — skip to fallback after animation
     animateSteps(function() { showFallbackResult(false); });
     return;
   }
 
   var garmentUrl = REAL_IMGS[curProd];
-  var category = PRODS[curProd].tryon_cat || 'upper_body';
+  var category = PRODS[curProd].tryon_cat || 'upperbody';
+  var workerBase = 'https://mirr-tryon-worker.linaandwilliam.workers.dev';
 
-  // Start step animation (loops until API responds)
-  var stepInterval = startStepLoop();
+  // Start looping step animation while we wait
+  var stepLoop = startStepLoop();
 
-  // Call Worker — no timeout so we wait as long as needed
-  fetch('https://mirr-tryon-worker.linaandwilliam.workers.dev', {
+  // STEP 1: Submit job to Worker — returns job_id in ~5 seconds
+  fetch(workerBase, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      person_image_b64: prevSrc,  // data:image/...;base64,... - Worker strips prefix
-      garment_url: garmentUrl,    // Worker fetches and converts to base64
-      category: category,         // upperbody | lowerbody | dress
+      person_image_b64: prevSrc,
+      garment_url: garmentUrl,
+      category: category,
     }),
   })
   .then(function(res) {
-    if (!res.ok) throw new Error('Worker returned ' + res.status);
+    if (!res.ok) throw new Error('Submit failed: ' + res.status);
     return res.json();
   })
   .then(function(data) {
-    clearInterval(stepInterval);
-    completeSteps();
-
-    if (data.success) {
-      // PixelAPI returns output_url (direct image URL) or result_image_b64
-      var resultSrc = data.result_url
-        || (data.result_b64 && data.result_b64.length > 0
-            ? 'data:image/jpeg;base64,' + data.result_b64
-            : null);
-      console.log('Result src:', resultSrc ? resultSrc.slice(0,80) : 'NONE');
-      if (resultSrc) {
-        showRealResult(resultSrc);
-      } else {
-        console.warn('No result image in response. Keys:', Object.keys(data).join(', '));
-        showFallbackResult(true);
-      }
-    } else {
-      console.warn('Worker error:', data.error, data.detail);
-      showFallbackResult(true);
+    if (!data.success || !data.job_id) {
+      throw new Error(data.error || 'No job_id returned');
     }
+
+    console.log('Job submitted:', data.job_id, 'credits:', data.credits_used);
+
+    // STEP 2: Poll /status every 3 seconds until completed
+    var jobId = data.job_id;
+    var pollCount = 0;
+    var maxPolls = 30; // 30 × 3s = 90 seconds max
+
+    var pollInterval = setInterval(function() {
+      pollCount++;
+      if (pollCount > maxPolls) {
+        clearInterval(pollInterval);
+        clearInterval(stepLoop);
+        completeSteps();
+        showFallbackResult(true);
+        return;
+      }
+
+      fetch(workerBase + '/status?job=' + jobId)
+      .then(function(r) { return r.json(); })
+      .then(function(statusData) {
+        console.log('Poll ' + pollCount + ': ' + statusData.status);
+
+        if (statusData.status === 'completed') {
+          clearInterval(pollInterval);
+          clearInterval(stepLoop);
+          completeSteps();
+
+          var resultSrc = statusData.result_url
+            || (statusData.result_b64 && statusData.result_b64.length > 0
+                ? 'data:image/jpeg;base64,' + statusData.result_b64
+                : null);
+
+          console.log('Result URL:', resultSrc ? resultSrc.slice(0, 80) : 'NONE');
+          console.log('All keys:', statusData.all_keys);
+
+          if (resultSrc) {
+            showRealResult(resultSrc);
+          } else {
+            console.warn('Completed but no image. Keys:', statusData.all_keys);
+            showFallbackResult(true);
+          }
+        }
+        // else: queued/processing — keep polling
+      })
+      .catch(function(e) {
+        console.warn('Poll error:', e.message);
+        // keep polling on network errors
+      });
+
+    }, 3000);
   })
   .catch(function(err) {
-    clearInterval(stepInterval);
+    clearInterval(stepLoop);
     completeSteps();
-    console.warn('Fetch error:', err.message);
+    console.warn('Submit error:', err.message);
     showFallbackResult(true);
   });
 }
 
-// Animate steps continuously while waiting for API
 function startStepLoop() {
   var step = 0;
   var ids = ['ps1','ps2','ps3','ps4'];
