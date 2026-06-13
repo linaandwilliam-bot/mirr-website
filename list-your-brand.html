@@ -333,10 +333,10 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
       <p class="success-body">We've received your brand details and will be in touch within 24 hours.</p>
       <span class="success-ref" id="success-ref"></span>
 
-      <div class="reply-box" id="reply-box" style="display:none">
-        <div class="reply-box-label">YOUR AUTO-REPLY IS READY</div>
-        <p class="reply-box-body">A personalised reply addressed to <strong id="reply-to-email"></strong> is pre-written and ready to send from hello@trymirr.com in one click.</p>
-        <a id="reply-link" href="#" class="reply-btn">OPEN REPLY IN EMAIL →</a>
+      <!-- Auto-reply box hidden from brand — internal use only -->
+      <div id="reply-box" style="display:none">
+        <div id="reply-to-email" style="display:none"></div>
+        <a id="reply-link" href="#" style="display:none"></a>
       </div>
 
       <a href="/" class="back-link">← Back to trymirr.com</a>
