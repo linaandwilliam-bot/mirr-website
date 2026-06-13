@@ -47,7 +47,7 @@ nav{border-bottom:1px solid var(--line);padding:0 48px;background:var(--page)}
 .logo-flip{display:inline-block;transform:scaleX(-1);color:var(--sky)}
 .nav-back{font-size:12px;color:var(--ink3);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s}
 .nav-back:hover{color:var(--ink)}
-.nav-back::before{content:'←'}
+.nav-back::before{content:''}
 
 /* LAYOUT */
 .page-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 62px)}
@@ -186,7 +186,7 @@ input.error,select.error,textarea.error{border-color:var(--rose)}
 <nav>
   <div class="nav-inner">
     <a href="/" class="logo"><span class="logo-word">MIR<span class="logo-flip">R</span></span></a>
-    <a href="/" class="nav-back">Back to trymirr.com</a>
+    <a href="/" class="nav-back">← Go back</a>
   </div>
 </nav>
 
@@ -383,19 +383,20 @@ input.error,select.error,textarea.error{border-color:var(--rose)}
           <div style="background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:8px;padding:14px 16px;margin-bottom:12px;font-size:12px;color:var(--ink2);line-height:1.8">
             <strong style="color:var(--ink);font-size:12px">Premium Placement (15% commission)</strong> gives your brand homepage featuring on Mirr — the first products every customer sees when they visit. Includes a Featured Brand badge, priority search ranking, and a Mirr Pick editorial spotlight updated weekly.
           </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <label class="pill-option" style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:.5px solid var(--line);border-radius:6px;cursor:pointer;transition:all .2s;margin-bottom:0;font-size:13px;color:var(--ink2);letter-spacing:0;font-weight:300">
-              <input type="radio" name="premium_interest" value="yes" style="margin-top:2px;accent-color:var(--sky);width:16px;height:16px;flex:none">
-              <span><strong style="color:var(--ink);font-weight:500">Yes</strong> — I am interested in Premium Placement at 15%</span>
-            </label>
-            <label class="pill-option" style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:.5px solid var(--line);border-radius:6px;cursor:pointer;transition:all .2s;margin-bottom:0;font-size:13px;color:var(--ink2);letter-spacing:0;font-weight:300">
-              <input type="radio" name="premium_interest" value="tell-me-more" style="margin-top:2px;accent-color:var(--sky);width:16px;height:16px;flex:none">
-              <span><strong style="color:var(--ink);font-weight:500">Tell me more</strong> — I would like to discuss it before deciding</span>
-            </label>
-            <label class="pill-option" style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:.5px solid var(--line);border-radius:6px;cursor:pointer;transition:all .2s;margin-bottom:0;font-size:13px;color:var(--ink2);letter-spacing:0;font-weight:300">
-              <input type="radio" name="premium_interest" value="no" style="margin-top:2px;accent-color:var(--sky);width:16px;height:16px;flex:none">
-              <span><strong style="color:var(--ink);font-weight:500">Not right now</strong> — standard listing at 8% founding rate is fine</span>
-            </label>
+          <div style="display:flex;flex-direction:column;gap:8px" id="premium-options">
+            <div class="prem-opt" data-value="yes" onclick="selectPremium(this)" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--line);border-radius:6px;cursor:pointer;transition:all .25s;background:var(--white)">
+              <div class="prem-radio" style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--ink4);flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .25s"></div>
+              <div style="font-size:13px;color:var(--ink2);line-height:1.55"><strong style="color:var(--ink);font-weight:500;display:block;margin-bottom:2px">Yes — I am interested</strong>Premium Placement at 15% commission</div>
+            </div>
+            <div class="prem-opt" data-value="tell-me-more" onclick="selectPremium(this)" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--line);border-radius:6px;cursor:pointer;transition:all .25s;background:var(--white)">
+              <div class="prem-radio" style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--ink4);flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .25s"></div>
+              <div style="font-size:13px;color:var(--ink2);line-height:1.55"><strong style="color:var(--ink);font-weight:500;display:block;margin-bottom:2px">Tell me more first</strong>I would like to discuss it before deciding</div>
+            </div>
+            <div class="prem-opt" data-value="no" onclick="selectPremium(this)" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--line);border-radius:6px;cursor:pointer;transition:all .25s;background:var(--white)">
+              <div class="prem-radio" style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--ink4);flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .25s"></div>
+              <div style="font-size:13px;color:var(--ink2);line-height:1.55"><strong style="color:var(--ink);font-weight:500;display:block;margin-bottom:2px">Not right now</strong>Standard listing at 8% founding rate is fine</div>
+            </div>
+            <input type="hidden" id="premium-val" name="premium_interest" value="">
           </div>
         </div>
 
@@ -415,7 +416,7 @@ input.error,select.error,textarea.error{border-color:var(--rose)}
       <h2 class="success-h2">You're on the list.</h2>
       <p class="success-body">We've received your brand details and will be in touch within 24 hours to discuss getting your products live on Mirr.</p>
       <div class="success-ref" id="success-ref"></div>
-      <a href="/" class="back-link">← Back to trymirr.com</a>
+      <a href="/" class="back-link">← ← Go back</a>
     </div>
 
   </div>
@@ -505,9 +506,13 @@ document.getElementById('brand-form').addEventListener('submit', async function(
     monthly_sales: document.getElementById('monthly-sales').value,
     message: document.getElementById('message').value,
     how_heard: document.getElementById('how-heard').value,
-    premium_placement: premiumEl ? premiumEl.value : 'not answered',
+    premium_placement: document.getElementById('premium-val').value || 'not answered',
     submitted_at: new Date().toLocaleString('en-AU', {timeZone:'Australia/Melbourne'})
   };
+
+  // Generate reference number before submission — it gets sent in the email to hello@trymirr.com
+  const ref = 'MIRR-' + new Date().getFullYear() + '-' + Date.now().toString(36).toUpperCase().slice(-6);
+  formData.reference_number = ref;
 
   try {
     // Submit to Formspree — replace xvznvrdo with your actual Formspree ID
@@ -522,8 +527,7 @@ document.getElementById('brand-form').addEventListener('submit', async function(
       document.getElementById('form-state').style.display = 'none';
       const success = document.getElementById('success-state');
       success.style.display = 'block';
-      const ref = 'MIRR-' + Date.now().toString(36).toUpperCase().slice(-6);
-      document.getElementById('success-ref').textContent = 'Reference: ' + ref;
+      document.getElementById('success-ref').textContent = 'Your reference: ' + ref;
     } else {
       throw new Error('Submission failed');
     }
@@ -533,7 +537,7 @@ document.getElementById('brand-form').addEventListener('submit', async function(
     document.getElementById('form-state').style.display = 'none';
     document.getElementById('success-state').style.display = 'block';
     const ref = 'MIRR-' + Date.now().toString(36).toUpperCase().slice(-6);
-    document.getElementById('success-ref').textContent = 'Reference: ' + ref;
+    document.getElementById('success-ref').textContent = 'Your reference: ' + ref;
   }
 });
 
@@ -545,6 +549,29 @@ fields.forEach(f => {
     if(errEl) errEl.style.display = 'none';
   });
 });
+
+// Premium placement selector
+function selectPremium(el) {
+  // Deselect all
+  document.querySelectorAll('.prem-opt').forEach(opt => {
+    opt.style.borderColor = 'var(--line)';
+    opt.style.background = 'var(--white)';
+    const radio = opt.querySelector('.prem-radio');
+    radio.style.borderColor = 'var(--ink4)';
+    radio.style.background = 'transparent';
+    radio.innerHTML = '';
+  });
+  // Select clicked
+  el.style.borderColor = 'var(--sky)';
+  el.style.background = 'var(--sky3)';
+  const radio = el.querySelector('.prem-radio');
+  radio.style.borderColor = 'var(--sky)';
+  radio.style.background = 'var(--sky)';
+  radio.innerHTML = '<div style="width:8px;height:8px;border-radius:50%;background:#fff"></div>';
+  // Set hidden input value
+  document.getElementById('premium-val').value = el.dataset.value;
+}
+
 </script>
 
 </body>
