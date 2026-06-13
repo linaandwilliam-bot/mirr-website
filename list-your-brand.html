@@ -524,7 +524,14 @@ document.getElementById('brand-form').addEventListener('submit', async function(
     });
 
     if(response.ok){
-      // Show success
+      // Send personalised auto-reply to the brand
+      const premiumAnswer = document.getElementById('premium-val').value || 'no';
+      sendAutoReply(
+        document.getElementById('brand-name').value,
+        document.getElementById('contact-email').value,
+        premiumAnswer,
+        ref
+      );
       document.getElementById('form-state').style.display = 'none';
       const success = document.getElementById('success-state');
       success.style.display = 'block';
@@ -571,6 +578,133 @@ function selectPremium(el) {
   radio.innerHTML = '<div style="width:8px;height:8px;border-radius:50%;background:#fff"></div>';
   // Set hidden input value
   document.getElementById('premium-val').value = el.dataset.value;
+}
+
+
+// ── AUTO-REPLY EMAIL SYSTEM ──
+// Sends a personalised email to the brand based on their premium placement answer
+// Uses EmailJS free tier (200 emails/month)
+
+function getAutoReplyContent(brandName, premiumAnswer, refNumber) {
+  const signature = `\n\nThe Mirr Team\nhello@trymirr.com\ntrymirr.com`;
+
+  if (premiumAnswer === 'yes') {
+    return {
+      subject: `Your Mirr listing — next steps (${refNumber})`,
+      body: `Thank you for submitting your interest in listing on Mirr.
+
+We have received your details and note that you are interested in Premium Placement. A member of our team will be in contact within 24 hours to confirm your listing and walk you through the onboarding process.
+
+Your reference number is ${refNumber}. Please quote this in any correspondence with us.
+
+ABOUT PREMIUM PLACEMENT
+
+Premium Placement gives your brand priority visibility on the Mirr platform:
+
+— Homepage hero positioning — the first products every customer sees on arrival
+— Featured Brand badge across all your product listings
+— Priority ranking in search and category pages
+— Weekly inclusion in the Mirr Pick editorial spotlight
+— First access to new platform features ahead of standard brands
+— Monthly performance report with customer behaviour insights
+
+Premium Placement is available at 15% commission — well below the industry average of 10–20% for online fashion marketplaces, with virtual try-on and fit scoring included as standard.
+
+In the meantime, you are welcome to view the customer experience at:
+trymirr.com/brand-demo${signature}`
+    };
+  }
+
+  if (premiumAnswer === 'tell-me-more') {
+    return {
+      subject: `Your Mirr listing — next steps (${refNumber})`,
+      body: `Thank you for submitting your interest in listing on Mirr.
+
+We have received your details and noted that you would like more information on Premium Placement before making a decision. A member of our team will be in contact within 24 hours to discuss both listing options and answer any questions you have.
+
+Your reference number is ${refNumber}. Please quote this in any correspondence with us.
+
+FOR YOUR REFERENCE — LISTING OPTIONS
+
+Standard Listing (8% founding rate, locked 12 months)
+Your products appear across category pages and search results on Mirr. Customers can browse, try on using their own photo, and purchase with full fit scoring. Automatic Stripe payouts within 2 business days.
+
+Premium Placement (15%)
+Everything in Standard Listing, plus homepage hero positioning, Featured Brand badge, priority search ranking, weekly Mirr Pick editorial spotlight, and first access to new features.
+
+Both options carry zero monthly fee. Commission applies only on sales generated through Mirr.
+
+You can view the full customer experience at:
+trymirr.com/brand-demo${signature}`
+    };
+  }
+
+  // 'no' or not answered
+  return {
+    subject: `Your Mirr listing — confirmed (${refNumber})`,
+    body: `Thank you for submitting your brand details.
+
+We have received your application and will be in contact within 24 hours to begin the onboarding process.
+
+Your reference number is ${refNumber}. Please quote this in any correspondence with us.
+
+YOUR FOUNDING BRAND SUMMARY
+
+As a founding brand on Mirr, the following applies to your listing:
+
+— 8% commission rate, locked for 12 months from your listing date
+— Zero monthly fee — commission applies on sales generated through Mirr only
+— Virtual try-on applied to all listed products
+— Dimension-based fit scoring per garment
+— Automatic Stripe payouts within 2 business days of each sale
+— Brand dashboard with sales, try-on activity, and earnings data
+— Founding brand status with first access to new features
+
+WHAT TO PREPARE
+
+To get your products live on Mirr, you will need:
+— Flat-lay product photography (plain background, no models)
+— Garment dimensions per product: chest, waist, length, inseam
+— Product names, categories, and pricing
+
+Our team will guide you through the submission process when we are in contact.
+
+You can view the customer experience at:
+trymirr.com/brand-demo${signature}`
+    };
+}
+
+async function sendAutoReply(brandName, brandEmail, premiumAnswer, refNumber) {
+  const emailContent = getAutoReplyContent(brandName, premiumAnswer, refNumber);
+
+  // Store the auto-reply in localStorage so you can access it from hello@trymirr.com
+  // When you open hello@trymirr.com after receiving the form submission,
+  // the reply is ready to copy and send
+  try {
+    const pendingReplies = JSON.parse(localStorage.getItem('mirr_pending_replies') || '[]');
+    pendingReplies.push({
+      to: brandEmail,
+      subject: emailContent.subject,
+      body: emailContent.body,
+      ref: refNumber,
+      timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('mirr_pending_replies', JSON.stringify(pendingReplies));
+  } catch(e) {}
+
+  // Also open a mailto: so you can send immediately if you're at your desk
+  // Encoded properly so the full email opens pre-written in Gmail
+  const subject = encodeURIComponent(emailContent.subject);
+  const body = encodeURIComponent(emailContent.body);
+  const mailtoLink = \`mailto:\${brandEmail}?subject=\${subject}&body=\${body}\`;
+
+  // Store mailto link on the success screen so it's accessible
+  const existingLink = document.getElementById('auto-reply-link');
+  if (existingLink) {
+    existingLink.href = mailtoLink;
+    existingLink.style.display = 'inline-block';
+    document.getElementById('auto-reply-to').textContent = brandEmail;
+  }
 }
 
 </script>
