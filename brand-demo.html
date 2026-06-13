@@ -71,8 +71,10 @@ body{background:var(--page);color:var(--ink);font-family:'Inter',sans-serif;font
 .pprice-old{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink4);text-decoration:line-through;margin-left:6px}
 
 /* OVERLAY */
-.overlay{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;background:#FDFCFA;z-index:999;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;transform:translateX(100%);transition:transform .35s cubic-bezier(.16,1,.3,1);-webkit-transform:translateX(100%)}
-.overlay.open{transform:translateX(0);-webkit-transform:translateX(0)}
+.overlay{display:none;width:100%;min-height:100vh;background:#FDFCFA}
+.overlay.open{display:block}
+.main-page{display:block}
+.main-page.hidden{display:none}
 .ov-nav{position:sticky;top:0;z-index:10;background:#FDFCFA;border-bottom:1px solid #E8E4DF;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;width:100%}
 .back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2);cursor:pointer;border:none;background:none;padding:4px 0;-webkit-tap-highlight-color:transparent}
 .back-btn::before{content:"←";font-size:16px}
@@ -190,7 +192,8 @@ body{background:var(--page);color:var(--ink);font-family:'Inter',sans-serif;font
 .buy-mirr span{color:var(--sky)}
 
 /* BOTTOM NAV */
-.bnav{position:sticky;bottom:0;left:0;right:0;background:#FDFCFA;border-top:1px solid #E8E4DF;padding:10px 18px 20px;margin-top:auto}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#FDFCFA;border-top:1px solid #E8E4DF;padding:10px 18px 20px;z-index:10;display:none}
+.overlay.open .bnav{display:block}
 .bnav-inner{display:flex;gap:10px}
 .bnav-mirror{flex:1;background:var(--sky);color:#fff;border:none;padding:13px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px;-webkit-tap-highlight-color:transparent}
 .bnav-buy{flex:1;background:var(--brand);color:#fff;border:none;padding:13px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px;-webkit-tap-highlight-color:transparent}
@@ -229,7 +232,7 @@ html,body{overflow-x:hidden;max-width:100vw}
 </head>
 <body>
 
-<div class="mirr-bar">
+<div id="main-page"><div class="mirr-bar">
   <a href="/" class="mirr-logo">MIR<span class="f">R</span></a>
   <div class="mirr-bar-right">
     <a href="/" class="mirr-bar-link">All brands</a>
@@ -295,6 +298,8 @@ html,body{overflow-x:hidden;max-width:100vw}
 </div>
 
 <div class="powered">Powered by <a href="/">Mirr</a> — try it on before you buy</div>
+
+</div><!-- end main-page -->
 
 <!-- PRODUCT OVERLAY -->
 <div class="overlay" id="overlay">
@@ -446,7 +451,7 @@ html,body{overflow-x:hidden;max-width:100vw}
     <div class="buy-note">You will be taken to Apex Active to complete your purchase.</div>
     <div class="buy-mirr">Processed through <span>Mirr</span> — 95% goes directly to the brand.</div>
   </div>
-  <div style="height:80px"></div>
+  <div style="height:100px"></div>
 
   <div class="bnav">
     <div class="bnav-inner">
@@ -502,27 +507,22 @@ function open_product(idx){
   document.getElementById("dimg").src=IMGS[idx];
   document.getElementById("dcat").textContent=p.cat;
   document.getElementById("dname").textContent=p.name;
-  document.getElementById("dprice").innerHTML=p.price+(p.old?` <span class="dprice-old">${p.old}</span>`:"");
+  document.getElementById("dprice").innerHTML=p.price+(p.old?`<span class="dprice-old" style="font-size:13px;color:#ABABAB;text-decoration:line-through;margin-left:8px">${p.old}</span>`:"");
   document.getElementById("ddesc").textContent=p.desc;
   document.getElementById("r-prod-img").src=IMGS[idx];
   go(1);
-  const ov = document.getElementById("overlay");
-  ov.classList.add("open");
-  document.body.style.overflow="hidden";
-  document.body.style.position="fixed";
-  document.body.style.width="100%";
-  document.documentElement.style.overflow="hidden";
-  ov.scrollTop=0;
+  // Hide main, show detail
+  document.getElementById("main-page").classList.add("hidden");
+  document.getElementById("overlay").classList.add("open");
+  window.scrollTo(0,0);
 }
 
 function close_product(){
-  const ov = document.getElementById("overlay");
-  ov.classList.remove("open");
-  document.body.style.overflow="";
-  document.body.style.position="";
-  document.documentElement.style.overflow="";
+  document.getElementById("overlay").classList.remove("open");
+  document.getElementById("main-page").classList.remove("hidden");
   document.getElementById("uzone").style.display="block";
   document.getElementById("uprev").style.display="none";
+  window.scrollTo(0,0);
 }
 
 function go(n){
