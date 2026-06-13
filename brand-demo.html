@@ -124,8 +124,9 @@ body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight
 .mpnl.ac{display:block}
 
 /* ── STEP 1 UPLOAD ── */
-.upzone{border:1.5px dashed var(--line);border-radius:8px;padding:24px 16px;text-align:center;background:#fff;position:relative;width:100%;margin-bottom:12px;cursor:pointer}
-.upzone input[type=file]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.upzone{border:1.5px dashed var(--sky);border-radius:8px;padding:24px 16px;text-align:center;background:#fff;position:relative;width:100%;margin-bottom:12px;cursor:pointer;transition:background .2s,border-color .2s;-webkit-tap-highlight-color:rgba(123,174,200,.15)}
+.upzone:hover{background:rgba(123,174,200,.06);border-color:#7BAEC8}
+.upzone:active{background:rgba(123,174,200,.12)}
 .upico{font-size:26px;margin-bottom:8px}
 .uptit{font-size:14px;color:var(--ink);font-weight:500;margin-bottom:4px}
 .upsub{font-size:12px;color:var(--ink3);line-height:1.6}
@@ -508,15 +509,19 @@ body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight
 
       <!-- STEP 1 -->
       <div class="mpnl ac" id="pnl1">
-        <div class="upzone" id="upzone">
-          <input type="file" accept="image/*" onchange="handlePhoto(this)">
+        <!-- Hidden file input - triggered by button click for reliability -->
+        <input type="file" id="file-input" accept="image/*" style="display:none;position:absolute;left:-9999px" onchange="handlePhoto(this)">
+
+        <div class="upzone" id="upzone" onclick="document.getElementById('file-input').click()">
           <div class="upico">📸</div>
-          <div class="uptit">Upload your photo</div>
+          <div class="uptit">Tap to upload your photo</div>
           <div class="upsub">Full-length, standing straight, head to toe.</div>
         </div>
-        <div class="upprev" id="upprev">
-          <img id="prev-img" src="" alt="Your photo">
-          <p>✓ Photo ready</p>
+
+        <div class="upprev" id="upprev" style="display:none">
+          <img id="prev-img" src="" alt="Your photo" style="width:90px;height:120px;object-fit:cover;border-radius:6px;border:2px solid #7BAEC8;margin-bottom:6px;display:block;margin-left:auto;margin-right:auto">
+          <p style="font-size:12px;color:#7BAEC8;text-align:center;margin-bottom:8px">✓ Photo ready</p>
+          <button onclick="document.getElementById('file-input').click()" style="display:block;margin:0 auto;background:none;border:.5px solid #7BAEC8;color:#7BAEC8;font-size:11px;padding:5px 12px;border-radius:4px;cursor:pointer">Change photo</button>
         </div>
         <div class="utips">
           <div class="utip"><div class="udot"></div>Stand facing forward, arms slightly out</div>
@@ -637,6 +642,24 @@ let curUnit = 'cm';
 const MCM = {height:178, chest:96, waist:82, hips:100, inseam:81};
 
 const isDesktop = () => window.innerWidth >= 900;
+
+function handlePhoto(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const src = e.target.result;
+    document.getElementById('prev-img').src = src;
+    document.getElementById('upzone').style.display = 'none';
+    document.getElementById('upprev').style.display = 'block';
+  };
+  reader.onerror = function() {
+    alert('Could not read photo. Please try a different image.');
+  };
+  reader.readAsDataURL(file);
+  // Reset input so same file can be re-selected if needed
+  input.value = '';
+}
 
 function showDetail(idx) {
   curProd = idx;
