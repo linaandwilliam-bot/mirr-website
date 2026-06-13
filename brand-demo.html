@@ -141,12 +141,12 @@ html,body{width:100%;overflow-x:hidden;background:#FDFCFA;color:#1C1C1C;font-fam
 .mlft{flex:1}
 .mnm{font-size:13px;color:#1C1C1C;margin-bottom:1px}
 .mht{font-size:10px;color:#ABABAB}
-.mrgt{display:flex;flex-direction:column;align-items:center;gap:3px;width:90px;flex:none}
+.mrgt{display:flex;flex-direction:column;align-items:center;gap:4px;flex:none}
 .mvd{font-family:'DM Mono',monospace;font-size:16px;color:#7BAEC8;font-weight:500;line-height:1}
 .mvu{font-size:9px;letter-spacing:.1em;color:#ABABAB}
-.mslider{width:90px;height:32px;accent-color:#7BAEC8;cursor:pointer}
-.mslider::-webkit-slider-runnable-track{height:4px;background:rgba(123,174,200,.2);border-radius:4px}
-.mslider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#7BAEC8;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2);margin-top:-7px}
+.minput{width:72px;height:40px;border:1.5px solid #E8E4DF;border-radius:6px;font-family:'DM Mono',monospace;font-size:15px;font-weight:500;color:#1C1C1C;text-align:center;background:#fff;outline:none;padding:0 6px;-webkit-appearance:none;appearance:none}
+.minput:focus{border-color:#7BAEC8;box-shadow:0 0 0 3px rgba(123,174,200,.12)}
+.minput::-webkit-inner-spin-button,.minput::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 
 /* RESULTS */
 .rsp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;width:100%}
@@ -197,6 +197,31 @@ html,body{width:100%;overflow-x:hidden;background:#FDFCFA;color:#1C1C1C;font-fam
 /* TOAST */
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(8px);background:#1C1C1C;color:#fff;font-size:12px;padding:10px 18px;border-radius:4px;opacity:0;transition:all .3s;z-index:200;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* TRY-ON SIMULATION */
+.tryon-processing{display:none;text-align:center;padding:24px 16px;background:#fff;border-radius:12px;margin-bottom:16px;border:1px solid #E8E4DF}
+.tryon-processing.show{display:block}
+.tryon-spinner{width:44px;height:44px;border:3px solid #F0EDE8;border-top:3px solid #7BAEC8;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tryon-proc-title{font-size:14px;font-weight:500;color:#1C1C1C;margin-bottom:6px}
+.tryon-proc-sub{font-size:12px;color:#7A7A7A;line-height:1.6}
+.tryon-steps-list{display:flex;flex-direction:column;gap:6px;margin-top:12px;text-align:left}
+.tryon-step-item{display:flex;align-items:center;gap:8px;font-size:12px;color:#7A7A7A}
+.tryon-step-dot{width:6px;height:6px;border-radius:50%;flex:none;background:#E8E4DF}
+.tryon-step-item.done .tryon-step-dot{background:#2D5A3D}
+.tryon-step-item.active .tryon-step-dot{background:#7BAEC8;animation:blk 1s infinite}
+
+.tryon-result{display:none;margin-bottom:16px}
+.tryon-result.show{display:block}
+.tryon-result-head{font-size:10px;letter-spacing:.18em;color:#ABABAB;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.tryon-result-head::before{content:"";width:14px;height:.5px;background:#7BAEC8;display:inline-block}
+.tryon-photos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.tryon-photo-wrap{position:relative;aspect-ratio:3/4;border-radius:8px;overflow:hidden;background:#F0EBE3}
+.tryon-photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.tryon-photo-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.35);color:#fff;font-size:9px;letter-spacing:.1em;padding:5px;text-align:center}
+.tryon-badge{position:absolute;top:8px;right:8px;background:#7BAEC8;color:#fff;font-size:9px;letter-spacing:.08em;padding:3px 8px;border-radius:999px}
+.tryon-note{background:rgba(45,90,61,.07);border:.5px solid rgba(45,90,61,.18);border-radius:8px;padding:12px 14px;font-size:12px;color:#2D5A3D;line-height:1.7;margin-bottom:14px;font-style:italic}
+
 </style>
 </head>
 <body>
@@ -341,17 +366,48 @@ html,body{width:100%;overflow-x:hidden;background:#FDFCFA;color:#1C1C1C;font-fam
         <div class="unote" id="unote">Centimetres — AU, EU, UK, Asia</div>
         <div class="svdnote">💾 Saved to your Mirr profile — used across every brand.</div>
         <div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Height</div><div class="mht">Floor to top of head</div></div><div class="mrgt"><div class="mvd" id="vv-height">178</div><div class="mvu" id="vu-height">cm</div><input type="range" class="mslider" id="sl-height" min="140" max="220" value="178" oninput="updM('height',this.value)"></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Chest</div><div class="mht">Fullest part of chest</div></div><div class="mrgt"><div class="mvd" id="vv-chest">96</div><div class="mvu" id="vu-chest">cm</div><input type="range" class="mslider" id="sl-chest" min="60" max="140" value="96" oninput="updM('chest',this.value)"></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Waist</div><div class="mht">Natural waistline</div></div><div class="mrgt"><div class="mvd" id="vv-waist">82</div><div class="mvu" id="vu-waist">cm</div><input type="range" class="mslider" id="sl-waist" min="50" max="130" value="82" oninput="updM('waist',this.value)"></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Hips</div><div class="mht">Widest part of hips</div></div><div class="mrgt"><div class="mvd" id="vv-hips">100</div><div class="mvu" id="vu-hips">cm</div><input type="range" class="mslider" id="sl-hips" min="60" max="150" value="100" oninput="updM('hips',this.value)"></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Inseam</div><div class="mht">Crotch to ankle</div></div><div class="mrgt"><div class="mvd" id="vv-inseam">81</div><div class="mvu" id="vu-inseam">cm</div><input type="range" class="mslider" id="sl-inseam" min="50" max="100" value="81" oninput="updM('inseam',this.value)"></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Height</div><div class="mht">Floor to top of head</div></div><div class="mrgt"><input type="number" class="minput" id="vv-height" value="178" min="100" max="250" oninput="updMv('height',this.value)"><div class="mvu" id="vu-height">cm</div></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Chest</div><div class="mht">Fullest part of chest</div></div><div class="mrgt"><input type="number" class="minput" id="vv-chest" value="96" min="40" max="200" oninput="updMv('chest',this.value)"><div class="mvu" id="vu-chest">cm</div></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Waist</div><div class="mht">Natural waistline</div></div><div class="mrgt"><input type="number" class="minput" id="vv-waist" value="82" min="40" max="200" oninput="updMv('waist',this.value)"><div class="mvu" id="vu-waist">cm</div></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Hips</div><div class="mht">Widest part of hips</div></div><div class="mrgt"><input type="number" class="minput" id="vv-hips" value="100" min="40" max="200" oninput="updMv('hips',this.value)"><div class="mvu" id="vu-hips">cm</div></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Inseam</div><div class="mht">Crotch to ankle</div></div><div class="mrgt"><input type="number" class="minput" id="vv-inseam" value="81" min="30" max="150" oninput="updMv('inseam',this.value)"><div class="mvu" id="vu-inseam">cm</div></div></div>
         </div>
         <div class="snv"><button class="sbk2" onclick="goStep(1)">← Back</button><button class="snxt" onclick="goStep(3)">GET MY FIT RESULT →</button></div>
       </div>
 
       <!-- STEP 3 -->
       <div class="mpnl" id="pnl3">
+
+        <!-- TRY-ON PROCESSING STATE -->
+        <div class="tryon-processing" id="tryon-proc">
+          <div class="tryon-spinner"></div>
+          <div class="tryon-proc-title">Placing garment on your photo...</div>
+          <div class="tryon-proc-sub">Our technology is fitting the item to your exact body shape and measurements.</div>
+          <div class="tryon-steps-list">
+            <div class="tryon-step-item active" id="proc-s1"><div class="tryon-step-dot"></div>Analysing your photo</div>
+            <div class="tryon-step-item" id="proc-s2"><div class="tryon-step-dot"></div>Mapping body dimensions</div>
+            <div class="tryon-step-item" id="proc-s3"><div class="tryon-step-dot"></div>Fitting garment to your shape</div>
+            <div class="tryon-step-item" id="proc-s4"><div class="tryon-step-dot"></div>Calculating fit scores</div>
+          </div>
+        </div>
+
+        <!-- TRY-ON RESULT -->
+        <div class="tryon-result" id="tryon-res">
+          <div class="tryon-result-head">YOUR TRY-ON RESULT</div>
+          <div class="tryon-photos">
+            <div class="tryon-photo-wrap">
+              <img id="tryon-user-img" src="" alt="You">
+              <div class="tryon-photo-label">YOUR PHOTO</div>
+            </div>
+            <div class="tryon-photo-wrap" style="position:relative">
+              <img id="tryon-prod-img" src="" alt="Product on you">
+              <div class="tryon-photo-label">WITH GARMENT</div>
+              <div class="tryon-badge">MIRR IT</div>
+            </div>
+          </div>
+          <div class="tryon-note" id="tryon-note">✓ Garment fitted to your photo. Scroll down for your detailed fit score breakdown.</div>
+        </div>
+
         <div class="rsp">
           <div class="rimg"><img id="r-img" src="" alt=""><div class="riml">GARMENT</div></div>
           <div class="rsc">
@@ -454,8 +510,53 @@ function goStep(n){
     else if(i===n){si.classList.add("ac"); sn.textContent=i;}
     else{sn.textContent=i;}
   }
-  if(n===3) calcFit();
+  if(n===3) runTryOn();
   window.scrollTo(0,0);
+}
+
+function runTryOn(){
+  // Show processing state
+  document.getElementById("tryon-proc").classList.add("show");
+  document.getElementById("tryon-res").classList.remove("show");
+
+  // Get user photo if uploaded
+  const prevImg = document.getElementById("prev-img").src;
+  const prodImg = IMGS[curProd];
+
+  // Animate processing steps
+  const steps = ["proc-s1","proc-s2","proc-s3","proc-s4"];
+  steps.forEach((s,i)=>{
+    setTimeout(()=>{
+      document.getElementById(s).classList.add("done");
+      document.getElementById(s).classList.remove("active");
+      if(i+1 < steps.length){
+        document.getElementById(steps[i+1]).classList.add("active");
+      }
+    }, (i+1)*600);
+  });
+
+  // After processing completes, show result
+  setTimeout(()=>{
+    document.getElementById("tryon-proc").classList.remove("show");
+
+    // Set the try-on result images
+    const userHasPhoto = prevImg && prevImg.length > 100;
+    document.getElementById("tryon-user-img").src = userHasPhoto ? prevImg : prodImg;
+    document.getElementById("tryon-prod-img").src = prodImg;
+
+    // Show result
+    document.getElementById("tryon-res").classList.add("show");
+
+    // Update note based on whether user uploaded photo
+    const note = userHasPhoto
+      ? "✓ Garment has been fitted to your photo using your measurements. Scroll down for your detailed fit score."
+      : "✓ Upload your own photo in Step 1 to see the garment on your body. Scroll down for your fit score breakdown.";
+    document.getElementById("tryon-note").textContent = note;
+
+    // Now run fit calculation
+    calcFit();
+
+  }, steps.length*600 + 400);
 }
 
 function handlePhoto(input){
@@ -475,18 +576,45 @@ function setUnit(u){
   document.getElementById("btn-cm").classList.toggle("on",u==="cm");
   document.getElementById("btn-in").classList.toggle("on",u==="in");
   document.getElementById("unote").textContent = u==="cm" ? "Centimetres — AU, EU, UK, Asia" : "Inches — US, Canada";
-  ["height","chest","waist","hips","inseam"].forEach(k=>dispM(k));
+  setUnitInputs(u);
 }
 
 function updM(k,v){
-  MCM[k]=parseInt(v);
+  MCM[k]=parseInt(v)||0;
   dispM(k);
 }
 
+function updMv(k,v){
+  // Direct input - value is already in current unit
+  const raw = parseFloat(v)||0;
+  if(curUnit==="in"){
+    MCM[k] = Math.round(raw * 2.54);
+  } else {
+    MCM[k] = Math.round(raw);
+  }
+}
+
 function dispM(k){
+  const el = document.getElementById("vv-"+k);
   const v = curUnit==="in" ? Math.round(MCM[k]/2.54*10)/10 : MCM[k];
-  document.getElementById("vv-"+k).textContent = v;
+  el.value = v;
   document.getElementById("vu-"+k).textContent = curUnit;
+}
+
+function setUnitInputs(u){
+  // Convert all displayed values when unit changes
+  ["height","chest","waist","hips","inseam"].forEach(k=>{
+    const el = document.getElementById("vv-"+k);
+    const v = u==="in" ? Math.round(MCM[k]/2.54*10)/10 : MCM[k];
+    el.value = v;
+    document.getElementById("vu-"+k).textContent = u;
+    // Update step size and placeholder for imperial
+    if(u==="in"){
+      el.step="0.1"; el.min="16"; el.max="90";
+    } else {
+      el.step="1"; el.min="40"; el.max="250";
+    }
+  });
 }
 
 function calcFit(){
