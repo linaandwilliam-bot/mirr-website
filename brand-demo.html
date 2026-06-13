@@ -955,14 +955,20 @@ function showFallbackResult(hadError) {
 
 function calcFit() {
   const sc = PRODS[curProd].scores;
+  // Standard measurements this garment is designed around (size S/M baseline)
+  const baseline = {chest: 92, waist: 78, hips: 96, inseam: 80};
   let tot = 0, cnt = 0;
-  ['chest','waist','hips','inseam'].forEach(d => {
+  ['chest','waist','hips','inseam'].forEach(function(d) {
     const pe = document.getElementById('rp-' + d);
     const be = document.getElementById('rb-' + d);
     if (sc[d] != null) {
-      const adj = Math.max(72, Math.min(99, sc[d] + Math.floor((MCM[d] - 82) * 0.08)));
+      // How far is the user's measurement from the garment's ideal?
+      const diff = Math.abs(MCM[d] - baseline[d]);
+      // Each cm off reduces the score — more penalty for larger deviations
+      const penalty = diff <= 2 ? 0 : diff <= 5 ? 3 : diff <= 10 ? 8 : diff <= 15 ? 15 : 25;
+      const adj = Math.max(60, Math.min(99, sc[d] - penalty));
       tot += adj; cnt++;
-      setTimeout(() => {
+      setTimeout(function() {
         pe.textContent = adj + '%';
         be.style.width = adj + '%';
         be.classList.toggle('g', adj >= 90);
