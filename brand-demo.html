@@ -656,6 +656,30 @@ let curProd = 0;
 let curUnit = 'cm';
 const MCM = {height:178, chest:96, waist:82, hips:100, inseam:81};
 
+function updM(key, val) {
+  const raw = parseFloat(val) || 0;
+  // Store in cm internally
+  MCM[key] = curUnit === 'in' ? Math.round(raw * 2.54) : Math.round(raw);
+}
+
+function setUnit(u) {
+  curUnit = u;
+  document.getElementById('btn-cm').classList.toggle('on', u === 'cm');
+  document.getElementById('btn-in').classList.toggle('on', u === 'in');
+  document.getElementById('unote').textContent = u === 'cm'
+    ? 'Centimetres — AU, EU, UK, Asia'
+    : 'Inches — US, Canada';
+  ['height','chest','waist','hips','inseam'].forEach(function(k) {
+    const el = document.getElementById('m-' + k);
+    const uEl = document.getElementById('u-' + k);
+    if (el) {
+      el.value = u === 'in' ? Math.round(MCM[k] / 2.54 * 10) / 10 : MCM[k];
+      el.step = u === 'in' ? '0.1' : '1';
+    }
+    if (uEl) uEl.textContent = u;
+  });
+}
+
 const isDesktop = () => window.innerWidth >= 900;
 
 function handlePhoto(input) {
