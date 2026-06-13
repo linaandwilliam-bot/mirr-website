@@ -310,6 +310,33 @@ body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight
     .bhdr{padding:28px 28px 0}
   }
 }
+
+/* ── PROCESSING ANIMATION ── */
+.proc-wrap{text-align:center;padding:24px 0}
+.proc-spinner{width:40px;height:40px;border:3px solid #F0EDE8;border-top:3px solid var(--sky);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:6px}
+.proc-sub{font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px;max-width:260px;margin-left:auto;margin-right:auto}
+.proc-steps{display:flex;flex-direction:column;gap:8px;text-align:left;max-width:220px;margin:0 auto}
+.proc-step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink4);transition:color .3s}
+.proc-step.done{color:var(--brand)}
+.proc-step.active{color:var(--sky)}
+.ps-dot{width:6px;height:6px;border-radius:50%;background:var(--line);flex:none;transition:background .3s}
+.proc-step.done .ps-dot{background:var(--brand)}
+.proc-step.active .ps-dot{background:var(--sky);animation:blk 1s infinite}
+
+/* ── TRY-ON RESULT ── */
+.tryon-label{font-size:9px;letter-spacing:.18em;color:var(--sky);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.tryon-label::before{content:"";width:14px;height:.5px;background:var(--sky);display:inline-block}
+.tryon-photos{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.tryon-wrap{position:relative;aspect-ratio:3/4;border-radius:8px;overflow:hidden;background:var(--cream)}
+.tryon-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.tryon-tag{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.35);color:#fff;font-size:9px;letter-spacing:.12em;padding:5px;text-align:center}
+.tryon-tag-right{background:rgba(123,174,200,.7)}
+.tryon-badge-live{position:absolute;top:8px;right:8px;background:var(--sky);color:#fff;font-size:8px;letter-spacing:.1em;padding:3px 8px;border-radius:999px;font-weight:500}
+.tryon-note{font-size:11px;color:var(--ink3);line-height:1.7;background:var(--sky2);border:.5px solid var(--skyb);border-radius:6px;padding:10px 12px;margin-bottom:14px;font-style:italic}
+.fit-scores-head{font-size:9px;letter-spacing:.18em;color:var(--ink4);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+
 </style>
 </head>
 <body>
@@ -522,25 +549,60 @@ body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight
 
       <!-- STEP 3 -->
       <div class="mpnl" id="pnl3">
-        <div class="rsp">
-          <div class="rimg"><img id="r-img" src="" alt="Product"><div class="riml">GARMENT</div></div>
-          <div>
-            <div class="rsch">FIT SCORES</div>
-            <div class="rsi"><div class="rsit"><span class="rsin">Chest</span><span class="rsip" id="rp-chest">—</span></div><div class="rsb"><div class="rsbf" id="rb-chest"></div></div></div>
-            <div class="rsi"><div class="rsit"><span class="rsin">Waist</span><span class="rsip" id="rp-waist">—</span></div><div class="rsb"><div class="rsbf" id="rb-waist"></div></div></div>
-            <div class="rsi"><div class="rsit"><span class="rsin">Hips</span><span class="rsip" id="rp-hips">—</span></div><div class="rsb"><div class="rsbf" id="rb-hips"></div></div></div>
-            <div class="rsi"><div class="rsit"><span class="rsin">Length</span><span class="rsip" id="rp-inseam">—</span></div><div class="rsb"><div class="rsbf" id="rb-inseam"></div></div></div>
+
+        <!-- PROCESSING STATE -->
+        <div id="proc-state">
+          <div class="proc-wrap">
+            <div class="proc-spinner"></div>
+            <div class="proc-title">Fitting garment to your photo...</div>
+            <div class="proc-sub">Our technology is placing the item on your body using your measurements.</div>
+            <div class="proc-steps">
+              <div class="proc-step" id="ps1"><div class="ps-dot"></div>Analysing your photo</div>
+              <div class="proc-step" id="ps2"><div class="ps-dot"></div>Mapping body dimensions</div>
+              <div class="proc-step" id="ps3"><div class="ps-dot"></div>Fitting garment to your shape</div>
+              <div class="proc-step" id="ps4"><div class="ps-dot"></div>Calculating fit scores</div>
+            </div>
           </div>
         </div>
-        <div class="rovr">
-          <div><div class="rovl">OVERALL FIT</div><div class="rovs" id="rov-sub">Based on your measurements</div></div>
-          <div class="rovn" id="rov-score">—</div>
+
+        <!-- RESULT STATE (hidden until processing completes) -->
+        <div id="result-state" style="display:none">
+
+          <!-- SIDE BY SIDE PHOTOS -->
+          <div class="tryon-label">YOUR TRY-ON RESULT</div>
+          <div class="tryon-photos">
+            <div class="tryon-wrap">
+              <img id="user-photo" src="" alt="Your photo">
+              <div class="tryon-tag">YOU</div>
+            </div>
+            <div class="tryon-wrap tryon-wrap-right">
+              <img id="r-img" src="" alt="Garment">
+              <div class="tryon-tag tryon-tag-right">GARMENT</div>
+              <div class="tryon-badge-live">MIRR IT</div>
+            </div>
+          </div>
+          <div class="tryon-note" id="tryon-note">
+            ✓ When live, these two images merge into one — you wearing the garment, fitted to your exact measurements using computer vision.
+          </div>
+
+          <!-- FIT SCORES -->
+          <div class="fit-scores-head">FIT SCORES</div>
+          <div class="rsi"><div class="rsit"><span class="rsin">Chest</span><span class="rsip" id="rp-chest">—</span></div><div class="rsb"><div class="rsbf" id="rb-chest"></div></div></div>
+          <div class="rsi"><div class="rsit"><span class="rsin">Waist</span><span class="rsip" id="rp-waist">—</span></div><div class="rsb"><div class="rsbf" id="rb-waist"></div></div></div>
+          <div class="rsi"><div class="rsit"><span class="rsin">Hips</span><span class="rsip" id="rp-hips">—</span></div><div class="rsb"><div class="rsbf" id="rb-hips"></div></div></div>
+          <div class="rsi" style="border-bottom:none"><div class="rsit"><span class="rsin">Length</span><span class="rsip" id="rp-inseam">—</span></div><div class="rsb"><div class="rsbf" id="rb-inseam"></div></div></div>
+
+          <div class="rovr">
+            <div><div class="rovl">OVERALL FIT</div><div class="rovs" id="rov-sub">Based on your measurements</div></div>
+            <div class="rovn" id="rov-score">—</div>
+          </div>
+          <div class="rverd"><div class="rvico">✓</div><div class="rvt" id="rv-t">Good fit</div><div class="rvb" id="rv-b">This item matches your measurements well.</div></div>
+          <div class="snv">
+            <button class="sbk2" onclick="goStep(2)">← Adjust</button>
+            <button class="snxt" onclick="scrollToBuy()">BUY NOW →</button>
+          </div>
         </div>
-        <div class="rverd"><div class="rvico">✓</div><div class="rvt" id="rv-t">Good fit</div><div class="rvb" id="rv-b">This item matches your measurements well.</div></div>
-        <div class="snv">
-          <button class="sbk2" onclick="goStep(2)">← Adjust</button>
-          <button class="snxt" onclick="scrollToBuy()">BUY NOW →</button>
-        </div>
+
       </div>
     </div>
 
@@ -633,14 +695,80 @@ function goStep(n) {
     else if (i === n) { si.classList.add('ac'); sn.textContent = i; }
     else { sn.textContent = i; }
   }
-  if (n === 3) calcFit();
-  // On mobile scroll to top; on desktop scroll det-right to top
+  if (n === 3) {
+    runTryOn();
+  }
+  // Scroll
   if (isDesktop()) {
     const dr = document.querySelector('.det-right');
     if (dr) dr.scrollTop = 0;
   } else {
     window.scrollTo(0, 0);
   }
+}
+
+function runTryOn() {
+  // Reset states
+  document.getElementById('proc-state').style.display = 'block';
+  document.getElementById('result-state').style.display = 'none';
+
+  // Reset step dots
+  ['ps1','ps2','ps3','ps4'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('done','active');
+  });
+  document.getElementById('ps1').classList.add('active');
+
+  // Animate processing steps
+  const steps = ['ps1','ps2','ps3','ps4'];
+  steps.forEach((id, i) => {
+    setTimeout(() => {
+      document.getElementById(id).classList.remove('active');
+      document.getElementById(id).classList.add('done');
+      if (i + 1 < steps.length) {
+        document.getElementById(steps[i+1]).classList.add('active');
+      }
+    }, (i + 1) * 700);
+  });
+
+  // After processing — show result
+  setTimeout(() => {
+    document.getElementById('proc-state').style.display = 'none';
+
+    // Set user photo
+    const prevSrc = document.getElementById('prev-img').src;
+    const userPhotoEl = document.getElementById('user-photo');
+    if (prevSrc && prevSrc.length > 100 && !prevSrc.includes('localhost')) {
+      userPhotoEl.src = prevSrc;
+      userPhotoEl.style.display = 'block';
+      document.getElementById('tryon-note').textContent =
+        '✓ When live, these two images are merged into one — you wearing the garment, fitted to your exact measurements.';
+    } else {
+      // No photo uploaded — show placeholder message
+      userPhotoEl.style.display = 'none';
+      const wrap = userPhotoEl.parentElement;
+      wrap.style.background = 'var(--paper)';
+      wrap.style.display = 'flex';
+      wrap.style.alignItems = 'center';
+      wrap.style.justifyContent = 'center';
+      const msg = wrap.querySelector('.no-photo-msg') || document.createElement('div');
+      msg.className = 'no-photo-msg';
+      msg.style.cssText = 'font-size:11px;color:var(--ink4);text-align:center;padding:12px;line-height:1.6';
+      msg.textContent = 'Upload your photo in Step 1 to see yourself here';
+      if (!wrap.querySelector('.no-photo-msg')) wrap.appendChild(msg);
+      document.getElementById('tryon-note').textContent =
+        'Go back to Step 1 and upload a photo to see the full try-on result.';
+    }
+
+    // Set garment photo
+    document.getElementById('r-img').src = IMGS[curProd];
+
+    document.getElementById('result-state').style.display = 'block';
+
+    // Run fit calculation
+    calcFit();
+
+  }, steps.length * 700 + 400);
 }
 
 function handlePhoto(input) {
