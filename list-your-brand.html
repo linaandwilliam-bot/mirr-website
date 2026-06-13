@@ -202,8 +202,8 @@ input.error,select.error,textarea.error{border-color:var(--rose)}
         <div class="left-point"><div class="left-point-dash"></div>Your products live on Mirr within 24 hours of approval</div>
         <div class="left-point"><div class="left-point-dash"></div>Customers see themselves in your clothing before they buy</div>
         <div class="left-point"><div class="left-point-dash"></div>Fewer returns — customers know it fits before ordering</div>
-        <div class="left-point"><div class="left-point-dash"></div>95% of every sale transferred to you within 2 business days</div>
-        <div class="left-point"><div class="left-point-dash"></div>Zero monthly fee — 5% commission only on sales we generate</div>
+        <div class="left-point"><div class="left-point-dash"></div>92% of every sale transferred to you within 2 business days (founding rate)</div>
+        <div class="left-point"><div class="left-point-dash"></div>Zero monthly fee — 8% founding rate locked for 12 months</div>
       </div>
     </div>
     <div class="left-bottom">
@@ -217,8 +217,8 @@ input.error,select.error,textarea.error{border-color:var(--rose)}
           <div class="left-stat-label">TO GO<br>LIVE</div>
         </div>
         <div>
-          <div class="left-stat-num">5%</div>
-          <div class="left-stat-label">OUR ONLY<br>COMMISSION</div>
+          <div class="left-stat-num">8%</div>
+          <div class="left-stat-label">FOUNDING<br>RATE</div>
         </div>
       </div>
     </div>
@@ -232,6 +232,36 @@ input.error,select.error,textarea.error{border-color:var(--rose)}
       <div class="form-eyebrow">YOUR BRAND DETAILS</div>
       <h2 class="form-title">Let's get you listed.</h2>
       <p class="form-sub">Fill in the details below and we'll reach out within 24 hours.</p>
+
+      <div style="background:rgba(123,174,200,0.08);border:.5px solid rgba(123,174,200,0.25);border-radius:8px;padding:16px 18px;margin-bottom:28px">
+        <div style="font-size:9px;letter-spacing:.2em;color:#7BAEC8;margin-bottom:12px">COMMISSION TIERS</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+            <div>
+              <span style="color:#1C1C1C;font-weight:500">Founding brand</span>
+              <span style="font-size:10px;color:#7A7A7A;margin-left:6px">First 20 brands only</span>
+            </div>
+            <span style="font-family:'DM Mono',monospace;color:#7BAEC8;font-weight:500">8% — locked 12 months</span>
+          </div>
+          <div style="height:.5px;background:#E8E4DF"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+            <div>
+              <span style="color:#1C1C1C;font-weight:500">Standard</span>
+              <span style="font-size:10px;color:#7A7A7A;margin-left:6px">After founding period</span>
+            </div>
+            <span style="font-family:'DM Mono',monospace;color:#7A7A7A">12%</span>
+          </div>
+          <div style="height:.5px;background:#E8E4DF"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+            <div>
+              <span style="color:#1C1C1C;font-weight:500">Premium placement</span>
+              <span style="font-size:10px;color:#7A7A7A;margin-left:6px">Homepage featured</span>
+            </div>
+            <span style="font-family:'DM Mono',monospace;color:#7A7A7A">15%</span>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:#7A7A7A;font-style:italic">No monthly fee on any tier. Zero cost if we don't drive sales.</div>
+      </div>
 
       <div class="form-progress" id="progress">
         <div class="progress-step done" id="p1"></div>
@@ -345,6 +375,30 @@ input.error,select.error,textarea.error{border-color:var(--rose)}
           </select>
         </div>
 
+        <div class="form-divider"></div>
+        <div class="form-section-title">PREMIUM PLACEMENT</div>
+
+        <div class="field-group">
+          <label>Are you interested in Premium Placement?</label>
+          <div style="background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:8px;padding:14px 16px;margin-bottom:12px;font-size:12px;color:var(--ink2);line-height:1.8">
+            <strong style="color:var(--ink);font-size:12px">Premium Placement (15% commission)</strong> gives your brand homepage featuring on Mirr — the first products every customer sees when they visit. Includes a Featured Brand badge, priority search ranking, and a Mirr Pick editorial spotlight updated weekly.
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label class="pill-option" style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:.5px solid var(--line);border-radius:6px;cursor:pointer;transition:all .2s;margin-bottom:0;font-size:13px;color:var(--ink2);letter-spacing:0;font-weight:300">
+              <input type="radio" name="premium_interest" value="yes" style="margin-top:2px;accent-color:var(--sky);width:16px;height:16px;flex:none">
+              <span><strong style="color:var(--ink);font-weight:500">Yes</strong> — I am interested in Premium Placement at 15%</span>
+            </label>
+            <label class="pill-option" style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:.5px solid var(--line);border-radius:6px;cursor:pointer;transition:all .2s;margin-bottom:0;font-size:13px;color:var(--ink2);letter-spacing:0;font-weight:300">
+              <input type="radio" name="premium_interest" value="tell-me-more" style="margin-top:2px;accent-color:var(--sky);width:16px;height:16px;flex:none">
+              <span><strong style="color:var(--ink);font-weight:500">Tell me more</strong> — I would like to discuss it before deciding</span>
+            </label>
+            <label class="pill-option" style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:.5px solid var(--line);border-radius:6px;cursor:pointer;transition:all .2s;margin-bottom:0;font-size:13px;color:var(--ink2);letter-spacing:0;font-weight:300">
+              <input type="radio" name="premium_interest" value="no" style="margin-top:2px;accent-color:var(--sky);width:16px;height:16px;flex:none">
+              <span><strong style="color:var(--ink);font-weight:500">Not right now</strong> — standard listing at 8% founding rate is fine</span>
+            </label>
+          </div>
+        </div>
+
         <div class="submit-area">
           <button type="submit" class="submit-btn" id="submit-btn">
             SEND YOUR DETAILS →
@@ -439,6 +493,7 @@ document.getElementById('brand-form').addEventListener('submit', async function(
   btn.textContent = 'SENDING...';
 
   // Collect all form data
+  const premiumEl = document.querySelector('input[name="premium_interest"]:checked');
   const formData = {
     brand_name: document.getElementById('brand-name').value,
     contact_name: document.getElementById('contact-name').value,
@@ -450,6 +505,7 @@ document.getElementById('brand-form').addEventListener('submit', async function(
     monthly_sales: document.getElementById('monthly-sales').value,
     message: document.getElementById('message').value,
     how_heard: document.getElementById('how-heard').value,
+    premium_placement: premiumEl ? premiumEl.value : 'not answered',
     submitted_at: new Date().toLocaleString('en-AU', {timeZone:'Australia/Melbourne'})
   };
 
