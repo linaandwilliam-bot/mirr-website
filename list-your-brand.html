@@ -513,6 +513,7 @@ document.getElementById('brand-form').addEventListener('submit', async function(
   // Generate reference number before submission — it gets sent in the email to hello@trymirr.com
   const ref = 'MIRR-' + new Date().getFullYear() + '-' + Date.now().toString(36).toUpperCase().slice(-6);
   formData.reference_number = ref;
+  formData._subject = 'New Brand Enquiry — ' + formData.brand_name + ' (' + ref + ')';
 
   try {
     // Submit to Formspree — replace xvznvrdo with your actual Formspree ID
