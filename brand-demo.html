@@ -6,648 +6,524 @@
 <meta name="theme-color" content="#FDFCFA">
 <meta name="color-scheme" content="light only">
 <title>Apex Active — on Mirr</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --page:#FDFCFA;--paper:#F7F4F0;--cream:#F0EBE3;--white:#fff;
-  --ink:#1C1C1C;--ink2:#4A4A4A;--ink3:#7A7A7A;--ink4:#ABABAB;
-  --line:#E8E4DF;--line2:#F0EDE8;
-  --sky:#7BAEC8;--sky2:rgba(123,174,200,.1);--skyb:rgba(123,174,200,.25);
-  --brand:#2D5A3D;--brand2:rgba(45,90,61,.08);--brandb:rgba(45,90,61,.2);
-  --rose:#D4A898;
-}
-html{color-scheme:light only}
-body{background:var(--page);color:var(--ink);font-family:'Inter',sans-serif;font-weight:300;line-height:1.5;overflow-x:hidden;-webkit-text-size-adjust:100%}
-@media(prefers-color-scheme:dark){html,body{background:#FDFCFA !important;color:#1C1C1C !important}*{color-scheme:light !important}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;overflow-x:hidden;background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight:300}
+@media(prefers-color-scheme:dark){html,body{background:#FDFCFA!important;color:#1C1C1C!important}}
+
+/* PAGES */
+#page-list{display:block;width:100%}
+#page-detail{display:none;width:100%}
 
 /* MIRR BAR */
-.mirr-bar{background:var(--ink);color:#fff;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
-.mirr-logo{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;letter-spacing:3px;color:#fff;text-decoration:none;display:flex;align-items:baseline}
-.mirr-logo .f{display:inline-block;transform:scaleX(-1);color:var(--sky)}
-.mirr-bar-right{display:flex;align-items:center;gap:10px}
-.mirr-bar-link{font-size:11px;color:rgba(255,255,255,.5);text-decoration:none}
-.mirr-bar-btn{font-size:10px;letter-spacing:.1em;color:var(--ink);background:var(--sky);padding:6px 12px;border-radius:2px;text-decoration:none;font-weight:500}
+.mbar{background:#1C1C1C;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;width:100%}
+.mbar-logo{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;letter-spacing:3px;color:#fff;text-decoration:none;display:flex;align-items:baseline}
+.mbar-logo .flip{display:inline-block;transform:scaleX(-1);color:#7BAEC8}
+.mbar-r{display:flex;align-items:center;gap:10px}
+.mbar-link{font-size:11px;color:rgba(255,255,255,.5);text-decoration:none}
+.mbar-btn{font-size:10px;letter-spacing:.1em;color:#1C1C1C;background:#7BAEC8;padding:6px 12px;border-radius:2px;text-decoration:none;font-weight:500}
 
 /* BRAND HEADER */
-.brand-header{background:var(--white);border-bottom:1px solid var(--line);padding:18px 18px 0}
-.brand-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-.brand-logo-box{width:48px;height:48px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none}
-.brand-logo-text{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:#fff}
-.brand-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:600;color:var(--ink);line-height:1.1;margin-bottom:2px}
-.brand-sub{font-size:10px;color:var(--ink3);letter-spacing:.08em}
-.brand-stats{display:flex;gap:24px;padding:12px 0;border-top:1px solid var(--line2)}
-.bs-num{font-family:'DM Mono',monospace;font-size:17px;font-weight:500;color:var(--brand);line-height:1;margin-bottom:2px}
-.bs-label{font-size:9px;letter-spacing:.12em;color:var(--ink4)}
-.brand-desc{font-size:12px;color:var(--ink3);line-height:1.75;padding:12px 0;border-top:1px solid var(--line2)}
-.brand-tags{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:14px}
-.btag{font-size:9px;letter-spacing:.1em;color:var(--brand);border:.5px solid var(--brandb);padding:3px 9px;border-radius:999px;background:var(--brand2)}
+.bhdr{background:#fff;border-bottom:1px solid #E8E4DF;padding:16px 16px 0;width:100%}
+.btop{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.blogo{width:46px;height:46px;background:#2D5A3D;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none}
+.blogo-t{font-family:'DM Mono',monospace;font-size:15px;font-weight:500;color:#fff}
+.bname{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:#1C1C1C;line-height:1.1;margin-bottom:2px}
+.bloc{font-size:10px;color:#ABABAB;letter-spacing:.08em}
+.bstats{display:flex;gap:20px;padding:10px 0;border-top:1px solid #F0EDE8}
+.bsn{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:#2D5A3D;line-height:1;margin-bottom:2px}
+.bsl{font-size:9px;letter-spacing:.1em;color:#ABABAB}
+.bdesc{font-size:12px;color:#7A7A7A;line-height:1.7;padding:10px 0;border-top:1px solid #F0EDE8}
+.btags{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:12px}
+.btag{font-size:9px;letter-spacing:.1em;color:#2D5A3D;border:.5px solid rgba(45,90,61,.2);padding:3px 8px;border-radius:999px;background:rgba(45,90,61,.06)}
 
 /* FILTER */
-.filter-bar{background:var(--paper);border-bottom:1px solid var(--line);padding:10px 18px;display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.filter-bar::-webkit-scrollbar{display:none}
-.fpill{white-space:nowrap;font-size:11px;padding:6px 14px;border-radius:999px;border:.5px solid var(--line);background:var(--white);color:var(--ink3);cursor:pointer;flex:none;-webkit-tap-highlight-color:transparent}
-.fpill.on{background:var(--sky);border-color:var(--sky);color:#fff}
+.fbar{background:#F7F4F0;border-bottom:1px solid #E8E4DF;padding:10px 16px;display:flex;gap:8px;overflow-x:auto;width:100%}
+.fbar::-webkit-scrollbar{display:none}
+.fpill{white-space:nowrap;font-size:11px;padding:6px 14px;border-radius:999px;border:.5px solid #E8E4DF;background:#fff;color:#7A7A7A;cursor:pointer;flex:none}
+.fpill.on{background:#7BAEC8;border-color:#7BAEC8;color:#fff}
 
 /* PRODUCT GRID */
-.pgrid{padding:14px 12px 80px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.pcard{background:var(--white);border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:rgba(123,174,200,0.1);transition:transform .15s}
-.pcard:active{transform:scale(.97);opacity:.9}
-.pimg{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--cream)}
-.pimg img{width:100%;height:100%;object-fit:cover;display:block}
-.pbadge{position:absolute;top:8px;left:8px;font-size:8px;letter-spacing:.1em;padding:3px 7px;border-radius:2px;font-weight:500}
-.b-new{background:var(--brand);color:#fff}
-.b-best{background:var(--ink);color:#fff}
-.b-sale{background:var(--rose);color:#fff}
-.mirror-chip{position:absolute;bottom:8px;right:8px;background:rgba(123,174,200,.92);color:#fff;font-size:8px;letter-spacing:.1em;padding:4px 8px;border-radius:999px;display:flex;align-items:center;gap:4px}
-.cdot{width:4px;height:4px;background:#fff;border-radius:50%;animation:blk 2s infinite}
+.pgrid{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.pcard{background:#fff;border:1px solid #E8E4DF;border-radius:8px;overflow:hidden;cursor:pointer;display:block;width:100%}
+.pcard:active{opacity:.85}
+.pimg-wrap{position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;background:#F0EBE3}
+.pimg-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.pbadge{position:absolute;top:8px;left:8px;font-size:8px;letter-spacing:.1em;padding:3px 7px;border-radius:2px;font-weight:500;color:#fff}
+.b-new{background:#2D5A3D}
+.b-best{background:#1C1C1C}
+.b-sale{background:#D4A898}
+.mcchip{position:absolute;bottom:8px;right:8px;background:rgba(123,174,200,.92);color:#fff;font-size:8px;letter-spacing:.1em;padding:4px 8px;border-radius:999px;display:flex;align-items:center;gap:4px}
+.chdot{width:4px;height:4px;background:#fff;border-radius:50%;animation:blk 2s infinite}
 @keyframes blk{0%,100%{opacity:1}50%{opacity:.3}}
-.pinfo{padding:10px 12px 14px}
-.pcat{font-size:9px;letter-spacing:.14em;color:var(--ink4);margin-bottom:3px}
-.pname{font-size:12px;color:var(--ink);margin-bottom:5px;font-weight:400;line-height:1.3}
-.pprice{font-family:'DM Mono',monospace;font-size:13px;color:var(--ink);font-weight:500}
-.pprice-old{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink4);text-decoration:line-through;margin-left:6px}
+.pinfo{padding:10px 10px 12px;width:100%}
+.pcat{font-size:9px;letter-spacing:.14em;color:#ABABAB;margin-bottom:3px}
+.pname{font-size:12px;color:#1C1C1C;margin-bottom:6px;font-weight:400;line-height:1.3}
+.pfoot{display:flex;align-items:center;justify-content:space-between}
+.pprice{font-family:'DM Mono',monospace;font-size:13px;color:#1C1C1C;font-weight:500}
+.pprice-old{font-family:'DM Mono',monospace;font-size:10px;color:#ABABAB;text-decoration:line-through;margin-left:4px}
+.pview{font-size:10px;color:#7BAEC8;letter-spacing:.06em}
 
-/* OVERLAY */
-.overlay{display:none;width:100%;min-height:100vh;background:#FDFCFA}
-.overlay.open{display:block}
-.main-page{display:block}
-.main-page.hidden{display:none}
-.ov-nav{position:sticky;top:0;z-index:10;background:#FDFCFA;border-bottom:1px solid #E8E4DF;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;width:100%}
-.back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2);cursor:pointer;border:none;background:none;padding:4px 0;-webkit-tap-highlight-color:transparent}
-.back-btn::before{content:"←";font-size:16px}
-.ov-brand{font-size:10px;letter-spacing:.14em;color:var(--ink4)}
+/* POWERED */
+.powered{text-align:center;padding:12px;font-size:10px;color:#ABABAB}
+.powered a{color:#7BAEC8;text-decoration:none}
 
-/* DETAIL */
-.dimg{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:var(--cream)}
-.dinfo{padding:18px 18px 0;width:100%;overflow-x:hidden}
-.dcat{font-size:10px;letter-spacing:.2em;color:var(--sky);margin-bottom:7px}
-.dname{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:var(--ink);margin-bottom:8px;line-height:1.15}
-.dprice{font-family:'DM Mono',monospace;font-size:19px;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.dprice-old{font-size:13px;color:var(--ink4);text-decoration:line-through}
-.ddesc{font-size:13px;color:var(--ink3);line-height:1.8;margin-bottom:18px}
+/* ─── DETAIL PAGE ─── */
+.dpage-nav{background:#FDFCFA;border-bottom:1px solid #E8E4DF;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;width:100%}
+.dbk{font-size:13px;color:#4A4A4A;cursor:pointer;border:none;background:none;padding:4px 0;display:flex;align-items:center;gap:4px}
+.dbk::before{content:"←";font-size:16px}
+.dpage-brand{font-size:10px;letter-spacing:.12em;color:#ABABAB}
 
-/* SIZE */
-.slabel{font-size:10px;letter-spacing:.16em;color:var(--ink3);margin-bottom:10px}
-.sgrid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.sbtn{width:44px;height:44px;border:.5px solid var(--line);background:var(--white);font-family:'DM Mono',monospace;font-size:12px;color:var(--ink2);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
-.sbtn.on{border-color:var(--sky);background:var(--sky2);color:var(--sky)}
-.sbtn.sold{opacity:.3;cursor:not-allowed;text-decoration:line-through}
+.dimg{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:#F0EBE3}
+.dinfo-wrap{padding:16px;width:100%}
+.dcat{font-size:10px;letter-spacing:.2em;color:#7BAEC8;margin-bottom:6px}
+.dname{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#1C1C1C;margin-bottom:8px;line-height:1.15}
+.dprice-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.dprice{font-family:'DM Mono',monospace;font-size:19px;color:#1C1C1C;font-weight:500}
+.dprice-old{font-family:'DM Mono',monospace;font-size:13px;color:#ABABAB;text-decoration:line-through}
+.ddesc{font-size:13px;color:#7A7A7A;line-height:1.8;margin-bottom:16px}
 
-/* DIVIDER */
-.sdiv{height:1px;background:var(--line);margin:18px 0}
-.shead{font-size:10px;letter-spacing:.2em;color:var(--ink4);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.shead::before{content:"";width:14px;height:.5px;background:var(--sky)}
+.slabel{font-size:10px;letter-spacing:.16em;color:#7A7A7A;margin-bottom:8px}
+.sgrid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.sbtn{width:44px;height:44px;border:.5px solid #E8E4DF;background:#fff;font-family:'DM Mono',monospace;font-size:12px;color:#4A4A4A;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sbtn.on{border-color:#7BAEC8;background:rgba(123,174,200,.1);color:#7BAEC8}
+.sbtn.sold{opacity:.3;text-decoration:line-through;cursor:not-allowed}
 
-/* MIRR EXPERIENCE */
-.mexp{background:#F7F4F0;border-radius:12px;overflow:hidden;margin:0 0 18px;width:100%}
-.mexp-head{background:var(--sky);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
-.mexp-title{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;color:#fff;font-weight:500}
-.mexp-sub{font-size:10px;color:rgba(255,255,255,.7)}
-.mexp-badge{background:rgba(255,255,255,.2);font-size:9px;letter-spacing:.1em;color:#fff;padding:3px 8px;border-radius:999px}
+.sdiv{height:1px;background:#E8E4DF;margin:16px 0}
+.shead{font-size:10px;letter-spacing:.2em;color:#ABABAB;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.shead::before{content:"";width:14px;height:.5px;background:#7BAEC8;display:inline-block}
+
+/* MIRROR EXPERIENCE */
+.mexw{background:#F7F4F0;border-radius:12px;overflow:hidden;margin-bottom:16px;width:100%}
+.mexh{background:#7BAEC8;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;width:100%}
+.mext{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;color:#fff;font-weight:500;margin-bottom:2px}
+.mexs{font-size:10px;color:rgba(255,255,255,.7)}
+.mexb{background:rgba(255,255,255,.2);font-size:9px;color:#fff;padding:3px 8px;border-radius:999px;white-space:nowrap}
 
 /* STEP INDICATOR */
-.steps-ind{display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line2)}
-.sind{flex:1;text-align:center;position:relative}
-.sind:not(:last-child)::after{content:"";position:absolute;top:14px;right:-50%;width:100%;height:1px;background:var(--line)}
-.sind-num{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);background:var(--white);font-family:'DM Mono',monospace;font-size:11px;color:var(--ink4);display:flex;align-items:center;justify-content:center;margin:0 auto 5px;position:relative;z-index:1;transition:all .3s}
-.sind.ac .sind-num{border-color:var(--sky);background:var(--sky);color:#fff}
-.sind.dn .sind-num{border-color:var(--brand);background:var(--brand);color:#fff}
-.sind-label{font-size:9px;letter-spacing:.06em;color:var(--ink4);line-height:1.3}
-.sind.ac .sind-label{color:var(--sky)}
+.stind{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid #F0EDE8;width:100%}
+.sti{flex:1;text-align:center;position:relative}
+.sti:not(:last-child)::after{content:"";position:absolute;top:13px;right:-50%;width:100%;height:1px;background:#E8E4DF;z-index:0}
+.stn{width:26px;height:26px;border-radius:50%;border:1.5px solid #E8E4DF;background:#fff;font-family:'DM Mono',monospace;font-size:10px;color:#ABABAB;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;position:relative;z-index:1;transition:all .3s}
+.sti.ac .stn{border-color:#7BAEC8;background:#7BAEC8;color:#fff}
+.sti.dn .stn{border-color:#2D5A3D;background:#2D5A3D;color:#fff}
+.stl{font-size:8px;letter-spacing:.05em;color:#ABABAB;line-height:1.3}
+.sti.ac .stl{color:#7BAEC8}
 
 /* PANELS */
-.mpanel{display:none;padding:18px;width:100%;overflow-x:hidden}
-.mpanel.ac{display:block}
+.mpnl{display:none;padding:16px;width:100%}
+.mpnl.ac{display:block}
 
-/* STEP 1 UPLOAD */
-.upload-zone{border:1.5px dashed var(--line);border-radius:8px;padding:28px 16px;text-align:center;cursor:pointer;background:var(--white);position:relative;-webkit-tap-highlight-color:transparent}
-.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.upload-icon{font-size:28px;margin-bottom:10px}
-.upload-title{font-size:14px;color:var(--ink);margin-bottom:5px;font-weight:500}
-.upload-sub{font-size:12px;color:var(--ink3);line-height:1.6}
-.upload-prev{display:none;text-align:center}
-.upload-prev img{width:100px;height:133px;object-fit:cover;border-radius:6px;border:2px solid var(--sky);margin-bottom:8px}
-.upload-prev-name{font-size:12px;color:var(--sky)}
-.utips{margin-top:14px;display:flex;flex-direction:column;gap:7px}
-.utip{display:flex;align-items:center;gap:9px;font-size:11px;color:var(--ink3)}
-.utip-dot{width:4px;height:4px;background:var(--sky);border-radius:50%;flex:none}
+/* UPLOAD */
+.upzone{border:1.5px dashed #E8E4DF;border-radius:8px;padding:24px 16px;text-align:center;background:#fff;position:relative;width:100%;margin-bottom:12px}
+.upzone input[type=file]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.upico{font-size:28px;margin-bottom:8px}
+.uptit{font-size:14px;color:#1C1C1C;font-weight:500;margin-bottom:4px}
+.upsub{font-size:12px;color:#7A7A7A;line-height:1.6}
+.upprev{display:none;text-align:center;margin-bottom:12px}
+.upprev img{width:90px;height:120px;object-fit:cover;border-radius:6px;border:2px solid #7BAEC8;margin-bottom:6px}
+.upprev p{font-size:12px;color:#7BAEC8}
+.utips{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.utip{display:flex;align-items:center;gap:8px;font-size:11px;color:#7A7A7A}
+.udot{width:4px;height:4px;background:#7BAEC8;border-radius:50%;flex:none}
 
-/* STEP 2 MEASUREMENTS */
-.unit-toggle{display:flex;background:var(--white);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:16px}
-.unit-btn{flex:1;padding:9px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;border:none;background:transparent;color:var(--ink3);cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
-.unit-btn.on{background:var(--sky);color:#fff}
-.unit-note{font-size:11px;color:var(--ink4);text-align:center;margin-bottom:14px;font-style:italic}
-.saved-note{background:var(--sky2);border:.5px solid var(--skyb);border-radius:6px;padding:10px 14px;font-size:11px;color:var(--sky);display:flex;align-items:center;gap:8px;margin-bottom:14px}
+/* UNIT TOGGLE */
+.utog{display:flex;background:#fff;border:1px solid #E8E4DF;border-radius:6px;overflow:hidden;margin-bottom:10px;width:100%}
+.utbtn{flex:1;padding:9px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;border:none;background:transparent;color:#7A7A7A;cursor:pointer}
+.utbtn.on{background:#7BAEC8;color:#fff}
+.unote{font-size:11px;color:#ABABAB;text-align:center;margin-bottom:12px;font-style:italic}
+.svdnote{background:rgba(123,174,200,.1);border:.5px solid rgba(123,174,200,.25);border-radius:6px;padding:9px 12px;font-size:11px;color:#7BAEC8;display:flex;align-items:center;gap:6px;margin-bottom:12px;width:100%}
 
-/* SCROLL INPUT — replaces +/- buttons */
-.mitem{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line2)}
+/* MEASURE ITEMS */
+.mitem{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid #F0EDE8;width:100%}
 .mitem:last-child{border-bottom:none}
-.mleft{}
-.mname{font-size:13px;color:var(--ink);margin-bottom:2px}
-.mhint{font-size:10px;color:var(--ink4)}
-.mright{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px}
-.mval-display{font-family:'DM Mono',monospace;font-size:16px;color:var(--sky);font-weight:500;text-align:center;line-height:1}
-.mval-unit{font-size:9px;letter-spacing:.1em;color:var(--ink4);text-align:center}
-.mscroll{width:72px;height:36px;-webkit-appearance:none;appearance:none;background:var(--paper);border:1px solid var(--line);border-radius:4px;outline:none;cursor:pointer;accent-color:var(--sky)}
-.mscroll::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--sky);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.mscroll::-webkit-slider-runnable-track{background:var(--sky2);border-radius:4px;height:4px}
+.mlft{flex:1}
+.mnm{font-size:13px;color:#1C1C1C;margin-bottom:1px}
+.mht{font-size:10px;color:#ABABAB}
+.mrgt{display:flex;flex-direction:column;align-items:center;gap:3px;width:90px;flex:none}
+.mvd{font-family:'DM Mono',monospace;font-size:16px;color:#7BAEC8;font-weight:500;line-height:1}
+.mvu{font-size:9px;letter-spacing:.1em;color:#ABABAB}
+.mslider{width:90px;height:32px;accent-color:#7BAEC8;cursor:pointer}
+.mslider::-webkit-slider-runnable-track{height:4px;background:rgba(123,174,200,.2);border-radius:4px}
+.mslider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#7BAEC8;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2);margin-top:-7px}
 
-/* STEP 3 RESULTS */
-.rsplit{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.rimg{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:3/4;background:var(--cream)}
+/* RESULTS */
+.rsp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;width:100%}
+.rimg{border-radius:8px;overflow:hidden;aspect-ratio:3/4;background:#F0EBE3;position:relative}
 .rimg img{width:100%;height:100%;object-fit:cover}
-.rimg-label{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:9px;letter-spacing:.1em;color:rgba(255,255,255,.9);background:rgba(0,0,0,.3);padding:5px}
-.rscores{}
-.rscore-head{font-size:9px;letter-spacing:.16em;color:var(--ink4);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--line2)}
-.ritem{padding:8px 0;border-bottom:1px solid var(--line2)}
-.ritem:last-child{border-bottom:none}
-.rtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-.rname{font-size:10px;color:var(--ink2)}
-.rpct{font-family:'DM Mono',monospace;font-size:11px;color:var(--sky);font-weight:500}
-.rbar{height:3px;background:var(--line);border-radius:3px;overflow:hidden}
-.rfill{height:100%;background:var(--sky);border-radius:3px;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
-.rfill.g{background:var(--brand)}
-.roverall{display:flex;align-items:center;justify-content:space-between;background:var(--white);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-bottom:14px}
-.rolabel{font-size:10px;color:var(--ink3);letter-spacing:.1em;margin-bottom:3px}
-.rosub{font-size:10px;color:var(--ink4)}
-.roscore{font-family:'Playfair Display',serif;font-size:34px;font-weight:500;color:var(--sky);line-height:1}
-.rverdict{background:var(--brand2);border:.5px solid var(--brandb);border-radius:8px;padding:13px 15px;margin-bottom:14px}
-.rvicon{font-size:16px;margin-bottom:5px}
-.rvtitle{font-size:13px;font-weight:500;color:var(--brand);margin-bottom:3px}
-.rvbody{font-size:12px;color:var(--ink3);line-height:1.7}
+.riml{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:9px;color:rgba(255,255,255,.9);background:rgba(0,0,0,.3);padding:4px;letter-spacing:.1em}
+.rsc{}
+.rsch{font-size:9px;letter-spacing:.14em;color:#ABABAB;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #F0EDE8}
+.rsi{padding:8px 0;border-bottom:1px solid #F0EDE8}
+.rsi:last-child{border-bottom:none}
+.rsit{display:flex;justify-content:space-between;margin-bottom:5px}
+.rsin{font-size:10px;color:#4A4A4A}
+.rsip{font-family:'DM Mono',monospace;font-size:11px;color:#7BAEC8;font-weight:500}
+.rsb{height:3px;background:#E8E4DF;border-radius:3px;overflow:hidden}
+.rsbf{height:100%;background:#7BAEC8;border-radius:3px;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+.rsbf.g{background:#2D5A3D}
+.rovr{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #E8E4DF;border-radius:8px;padding:12px 14px;margin-bottom:12px;width:100%}
+.rovl{font-size:9px;letter-spacing:.1em;color:#7A7A7A;margin-bottom:2px}
+.rovs{font-size:9px;color:#ABABAB}
+.rovn{font-family:'Playfair Display',serif;font-size:32px;font-weight:500;color:#7BAEC8;line-height:1}
+.rverd{background:rgba(45,90,61,.07);border:.5px solid rgba(45,90,61,.18);border-radius:8px;padding:12px 14px;margin-bottom:14px;width:100%}
+.rvico{font-size:14px;margin-bottom:4px}
+.rvt{font-size:13px;font-weight:500;color:#2D5A3D;margin-bottom:3px}
+.rvb{font-size:12px;color:#7A7A7A;line-height:1.7}
 
-/* NAV BUTTONS */
-.snav{display:flex;gap:10px;margin-top:18px}
-.sbk{flex:1;background:var(--white);border:1px solid var(--line);padding:13px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.06em;color:var(--ink2);cursor:pointer;border-radius:4px;-webkit-tap-highlight-color:transparent}
-.snxt{flex:2;background:var(--sky);border:none;padding:13px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.08em;font-weight:500;color:#fff;cursor:pointer;border-radius:4px;-webkit-tap-highlight-color:transparent}
+/* STEP BUTTONS */
+.snv{display:flex;gap:8px;margin-top:16px;width:100%}
+.sbk2{flex:1;background:#fff;border:1px solid #E8E4DF;padding:13px;font-family:'Inter',sans-serif;font-size:12px;color:#4A4A4A;cursor:pointer;border-radius:4px}
+.snxt{flex:2;background:#7BAEC8;border:none;padding:13px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.06em;font-weight:500;color:#fff;cursor:pointer;border-radius:4px}
 
-/* BUY */
-.buy-sec{padding:0 18px 24px}
-.buy-btn{width:100%;background:var(--brand);color:#fff;border:none;padding:15px;font-family:'Inter',sans-serif;font-size:13px;letter-spacing:.1em;font-weight:500;cursor:pointer;border-radius:4px;margin-bottom:8px;-webkit-tap-highlight-color:transparent}
-.buy-note{font-size:11px;color:var(--ink4);text-align:center;line-height:1.6}
-.buy-mirr{font-size:11px;color:var(--ink3);text-align:center;line-height:1.6;margin-top:7px;padding-top:7px;border-top:1px solid var(--line2)}
-.buy-mirr span{color:var(--sky)}
+/* BUY SECTION */
+.bsec{padding:0 16px 20px;width:100%}
+.bbtn{width:100%;background:#2D5A3D;color:#fff;border:none;padding:15px;font-family:'Inter',sans-serif;font-size:13px;letter-spacing:.1em;font-weight:500;cursor:pointer;border-radius:4px;margin-bottom:8px}
+.bnote{font-size:11px;color:#ABABAB;text-align:center;line-height:1.6}
+.bmnote{font-size:11px;color:#7A7A7A;text-align:center;line-height:1.6;margin-top:6px;padding-top:6px;border-top:1px solid #F0EDE8}
+.bmnote span{color:#7BAEC8}
 
-/* BOTTOM NAV */
-.bnav{position:fixed;bottom:0;left:0;right:0;background:#FDFCFA;border-top:1px solid #E8E4DF;padding:10px 18px 20px;z-index:10;display:none}
-.overlay.open .bnav{display:block}
-.bnav-inner{display:flex;gap:10px}
-.bnav-mirror{flex:1;background:var(--sky);color:#fff;border:none;padding:13px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px;-webkit-tap-highlight-color:transparent}
-.bnav-buy{flex:1;background:var(--brand);color:#fff;border:none;padding:13px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px;-webkit-tap-highlight-color:transparent}
+/* BOTTOM FIXED NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#FDFCFA;border-top:1px solid #E8E4DF;padding:10px 16px 22px;display:none;z-index:40}
+.bnav.show{display:block}
+.bnav-row{display:flex;gap:10px}
+.bnav-m{flex:1;background:#7BAEC8;color:#fff;border:none;padding:13px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px}
+.bnav-b{flex:1;background:#2D5A3D;color:#fff;border:none;padding:13px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px}
 
-/* POWERED BY */
-.powered{text-align:center;padding:14px 18px 6px;font-size:10px;color:var(--ink4);letter-spacing:.06em}
-.powered a{color:var(--sky);text-decoration:none;font-weight:500}
+/* SPACER */
+.bnav-space{height:80px}
 
 /* TOAST */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;font-size:12px;padding:10px 18px;border-radius:4px;opacity:0;transition:all .3s;z-index:300;white-space:nowrap;pointer-events:none}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(8px);background:#1C1C1C;color:#fff;font-size:12px;padding:10px 18px;border-radius:4px;opacity:0;transition:all .3s;z-index:200;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ── OVERLAY LAYOUT FIXES ── */
-.overlay *{max-width:100%;box-sizing:border-box}
-.overlay .dimg{width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;display:block}
-.overlay .mexp-head{flex-wrap:wrap;gap:6px}
-.overlay .mexp-title{font-size:11px;word-break:keep-all}
-.overlay .steps-ind{gap:0;padding:12px 14px}
-.overlay .sind-label{font-size:8px}
-.overlay .snav{flex-wrap:nowrap}
-.overlay .sbk,.overlay .snxt{font-size:11px;padding:12px 8px;white-space:nowrap}
-.overlay .rsplit{grid-template-columns:1fr 1fr;gap:8px}
-.overlay .rimg{aspect-ratio:3/4}
-.overlay .rscores{overflow:hidden}
-.overlay .roverall{flex-wrap:nowrap;gap:8px}
-.overlay .rolabel{font-size:9px}
-.overlay .roscore{font-size:28px}
-.overlay .buy-sec{padding:0 18px 20px}
-.overlay .mscroll{width:100%;max-width:80px}
-.overlay .mitem{gap:8px}
-.overlay .mright{min-width:70px}
-/* Prevent horizontal scroll */
-html,body{overflow-x:hidden;max-width:100vw}
-
 </style>
 </head>
 <body>
 
-<div id="main-page"><div class="mirr-bar">
-  <a href="/" class="mirr-logo">MIR<span class="f">R</span></a>
-  <div class="mirr-bar-right">
-    <a href="/" class="mirr-bar-link">All brands</a>
-    <a href="/list-your-brand" class="mirr-bar-btn">List your brand</a>
-  </div>
-</div>
+<!-- ═══ PAGE: LIST ═══ -->
+<div id="page-list">
 
-<div class="brand-header">
-  <div class="brand-top">
-    <div class="brand-logo-box"><div class="brand-logo-text">AA</div></div>
-    <div>
-      <div class="brand-name">Apex Active</div>
-      <div class="brand-sub">MELBOURNE, AUSTRALIA</div>
+  <div class="mbar">
+    <a href="/" class="mbar-logo">MIR<span class="flip">R</span></a>
+    <div class="mbar-r">
+      <a href="/" class="mbar-link">All brands</a>
+      <a href="/list-your-brand" class="mbar-btn">List your brand</a>
     </div>
   </div>
-  <div class="brand-stats">
-    <div><div class="bs-num">24</div><div class="bs-label">PRODUCTS</div></div>
-    <div><div class="bs-num">4.8★</div><div class="bs-label">RATING</div></div>
-    <div><div class="bs-num">312</div><div class="bs-label">TRY-ONS</div></div>
+
+  <div class="bhdr">
+    <div class="btop">
+      <div class="blogo"><div class="blogo-t">AA</div></div>
+      <div>
+        <div class="bname">Apex Active</div>
+        <div class="bloc">MELBOURNE, AUSTRALIA</div>
+      </div>
+    </div>
+    <div class="bstats">
+      <div><div class="bsn">24</div><div class="bsl">PRODUCTS</div></div>
+      <div><div class="bsn">4.8★</div><div class="bsl">RATING</div></div>
+      <div><div class="bsn">312</div><div class="bsl">TRY-ONS</div></div>
+    </div>
+    <div class="bdesc">Performance activewear built for real training. Designed for movement — morning runs, heavy sessions, or all-day comfort. Made from recycled fabrics, fitted in Melbourne.</div>
+    <div class="btags">
+      <div class="btag">ACTIVEWEAR</div>
+      <div class="btag">SUSTAINABLE</div>
+      <div class="btag">UNISEX</div>
+      <div class="btag">MADE IN AU</div>
+    </div>
   </div>
-  <div class="brand-desc">Performance activewear built for real training. Every piece is designed for movement — whether that's your morning run, a heavy session, or all-day comfort on rest days. Made from recycled fabrics, fitted in Melbourne.</div>
-  <div class="brand-tags">
-    <div class="btag">ACTIVEWEAR</div>
-    <div class="btag">SUSTAINABLE</div>
-    <div class="btag">UNISEX</div>
-    <div class="btag">MADE IN AU</div>
+
+  <div class="fbar">
+    <div class="fpill on" onclick="filterP('all',this)">All</div>
+    <div class="fpill" onclick="filterP('tops',this)">Tops</div>
+    <div class="fpill" onclick="filterP('bottoms',this)">Bottoms</div>
+    <div class="fpill" onclick="filterP('outerwear',this)">Outerwear</div>
+    <div class="fpill" onclick="filterP('sets',this)">Sets</div>
   </div>
+
+  <div class="pgrid" id="pgrid">
+    <div class="pcard" data-cat="tops" onclick="showDetail(0)">
+      <div class="pimg-wrap"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80&fit=crop" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMyRDVBM0QiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThDNUQ4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Gb3Jlc3QgQ29tcHJlc3Npb24gVGVlPC90ZXh0Pjx0ZXh0IHg9IjIwMCIgeT0iNDYwIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBmaWxsPSIjQThDNUQ4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjQiIGxldHRlci1zcGFjaW5nPSIyIj5NSVJSIERFTU88L3RleHQ+PC9zdmc+'" alt="Forest Compression Tee"><div class="pbadge b-best">BESTSELLER</div><div class="mcchip"><div class="chdot"></div>MIRROR IT</div></div>
+      <div class="pinfo"><div class="pcat">TOPS</div><div class="pname">Forest Compression Tee</div><div class="pfoot"><span class="pprice">$54.99</span><span class="pview">VIEW →</span></div></div>
+    </div>
+    <div class="pcard" data-cat="bottoms" onclick="showDetail(1)">
+      <div class="pimg-wrap"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80&fit=crop" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMxQTM1MjgiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4RDhDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThEOEM4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5UcmFpbmluZyBTaG9ydHM8L3RleHQ+PHRleHQgeD0iMjAwIiB5PSI0NjAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjkiIGZpbGw9IiNBOEQ4QzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNCIgbGV0dGVyLXNwYWNpbmc9IjIiPk1JUlIgREVNTzwvdGV4dD48L3N2Zz4='" alt="Apex Training Shorts"><div class="pbadge b-new">NEW</div><div class="mcchip"><div class="chdot"></div>MIRROR IT</div></div>
+      <div class="pinfo"><div class="pcat">BOTTOMS</div><div class="pname">Apex Training Shorts</div><div class="pfoot"><span class="pprice">$44.99</span><span class="pview">VIEW →</span></div></div>
+    </div>
+    <div class="pcard" data-cat="bottoms" onclick="showDetail(2)">
+      <div class="pimg-wrap"><img src="https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=500&q=80&fit=crop" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMzQTRBMzAiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0M4RDhBOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQzhEOEE4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5QZXJmb3JtYW5jZSBKb2dnZXJzPC90ZXh0Pjx0ZXh0IHg9IjIwMCIgeT0iNDYwIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBmaWxsPSIjQzhEOEE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjQiIGxldHRlci1zcGFjaW5nPSIyIj5NSVJSIERFTU88L3RleHQ+PC9zdmc+'" alt="Performance Joggers"><div class="mcchip"><div class="chdot"></div>MIRROR IT</div></div>
+      <div class="pinfo"><div class="pcat">BOTTOMS</div><div class="pname">Performance Joggers</div><div class="pfoot"><span class="pprice">$69.99</span><span class="pview">VIEW →</span></div></div>
+    </div>
+    <div class="pcard" data-cat="outerwear" onclick="showDetail(3)">
+      <div class="pimg-wrap"><img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&q=80&fit=crop" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMyQTNENUEiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThDNUQ4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Db2JhbHQgWmlwLVVwIEphY2tldDwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg=='" alt="Cobalt Zip-Up Jacket"><div class="pbadge b-sale">SALE</div><div class="mcchip"><div class="chdot"></div>MIRROR IT</div></div>
+      <div class="pinfo"><div class="pcat">OUTERWEAR</div><div class="pname">Cobalt Zip-Up Jacket</div><div class="pfoot"><span><span class="pprice">$79.99</span><span class="pprice-old">$109.99</span></span><span class="pview">VIEW →</span></div></div>
+    </div>
+    <div class="pcard" data-cat="tops" onclick="showDetail(4)">
+      <div class="pimg-wrap"><img src="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&q=80&fit=crop" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiM1QTMwNTAiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0Q4QThDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjRDhBOEM4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5TY3VscHQgU3BvcnRzIEJyYTwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0Q4QThDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg=='" alt="Sculpt Sports Bra"><div class="mcchip"><div class="chdot"></div>MIRROR IT</div></div>
+      <div class="pinfo"><div class="pcat">TOPS</div><div class="pname">Sculpt Sports Bra</div><div class="pfoot"><span class="pprice">$49.99</span><span class="pview">VIEW →</span></div></div>
+    </div>
+    <div class="pcard" data-cat="sets" onclick="showDetail(5)">
+      <div class="pimg-wrap"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80&fit=crop" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiM0QTMwMzAiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0Q4QzhBOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjRDhDOEE4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Db3JlIE1hdGNoaW5nIFNldDwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0Q4QzhBOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg=='" alt="Core Matching Set"><div class="pbadge b-new">NEW</div><div class="mcchip"><div class="chdot"></div>MIRROR IT</div></div>
+      <div class="pinfo"><div class="pcat">SETS</div><div class="pname">Core Matching Set</div><div class="pfoot"><span class="pprice">$99.99</span><span class="pview">VIEW →</span></div></div>
+    </div>
+  </div>
+  <div class="powered">Powered by <a href="/">Mirr</a> — try it on before you buy</div>
 </div>
 
-<div class="filter-bar">
-  <div class="fpill on" onclick="filter('all',this)">All</div>
-  <div class="fpill" onclick="filter('tops',this)">Tops</div>
-  <div class="fpill" onclick="filter('bottoms',this)">Bottoms</div>
-  <div class="fpill" onclick="filter('outerwear',this)">Outerwear</div>
-  <div class="fpill" onclick="filter('sets',this)">Sets</div>
-</div>
+<!-- ═══ PAGE: DETAIL ═══ -->
+<div id="page-detail">
 
-<div class="pgrid" id="pgrid">
-  <div class="pcard" data-cat="tops" onclick="open_product(0)">
-    <div class="pimg"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80&fit=crop" alt="Forest Compression Tee"><div class="pbadge b-best">BESTSELLER</div><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">TOPS</div><div class="pname">Forest Compression Tee</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span class="pprice">$54.99</span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
-  </div>
-  <div class="pcard" data-cat="bottoms" onclick="open_product(1)">
-    <div class="pimg"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80&fit=crop" alt="Training Shorts"><div class="pbadge b-new">NEW</div><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">BOTTOMS</div><div class="pname">Apex Training Shorts</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span class="pprice">$44.99</span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
-  </div>
-  <div class="pcard" data-cat="bottoms" onclick="open_product(2)">
-    <div class="pimg"><img src="https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=500&q=80&fit=crop" alt="Performance Joggers"><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">BOTTOMS</div><div class="pname">Performance Joggers</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span class="pprice">$69.99</span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
-  </div>
-  <div class="pcard" data-cat="outerwear" onclick="open_product(3)">
-    <div class="pimg"><img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&q=80&fit=crop" alt="Cobalt Zip-Up Jacket"><div class="pbadge b-sale">SALE</div><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">OUTERWEAR</div><div class="pname">Cobalt Zip-Up Jacket</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span><span class="pprice">$79.99</span><span class="pprice-old">$109.99</span></span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
-  </div>
-  <div class="pcard" data-cat="tops" onclick="open_product(4)">
-    <div class="pimg"><img src="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&q=80&fit=crop" alt="Sculpt Sports Bra"><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">TOPS</div><div class="pname">Sculpt Sports Bra</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span class="pprice">$49.99</span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
-  </div>
-  <div class="pcard" data-cat="sets" onclick="open_product(5)">
-    <div class="pimg"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80&fit=crop" alt="Core Matching Set"><div class="pbadge b-new">NEW</div><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">SETS</div><div class="pname">Core Matching Set</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span class="pprice">$99.99</span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
-  </div>
-</div>
-
-<div class="powered">Powered by <a href="/">Mirr</a> — try it on before you buy</div>
-
-</div><!-- end main-page -->
-
-<!-- PRODUCT OVERLAY -->
-<div class="overlay" id="overlay">
-  <div class="ov-nav">
-    <button class="back-btn" onclick="close_product()">Back</button>
-    <div class="ov-brand">APEX ACTIVE on MIRR</div>
+  <div class="dpage-nav">
+    <button class="dbk" onclick="hideDetail()">Back</button>
+    <div class="dpage-brand">APEX ACTIVE on MIRR</div>
   </div>
 
-  <img class="dimg" id="dimg" src="" alt="">
+  <img class="dimg" id="d-img" src="" alt="">
 
-  <div class="dinfo">
-    <div class="dcat" id="dcat"></div>
-    <div class="dname" id="dname"></div>
-    <div class="dprice" id="dprice"></div>
-    <div class="ddesc" id="ddesc"></div>
+  <div class="dinfo-wrap">
+    <div class="dcat" id="d-cat"></div>
+    <div class="dname" id="d-name"></div>
+    <div class="dprice-row" id="d-price"></div>
+    <div class="ddesc" id="d-desc"></div>
 
     <div class="slabel">SELECT SIZE</div>
     <div class="sgrid">
-      <div class="sbtn" onclick="sel_size(this)">XS</div>
-      <div class="sbtn on" onclick="sel_size(this)">S</div>
-      <div class="sbtn" onclick="sel_size(this)">M</div>
-      <div class="sbtn" onclick="sel_size(this)">L</div>
-      <div class="sbtn" onclick="sel_size(this)">XL</div>
+      <div class="sbtn" onclick="selSz(this)">XS</div>
+      <div class="sbtn on" onclick="selSz(this)">S</div>
+      <div class="sbtn" onclick="selSz(this)">M</div>
+      <div class="sbtn" onclick="selSz(this)">L</div>
+      <div class="sbtn" onclick="selSz(this)">XL</div>
       <div class="sbtn sold">XXL</div>
     </div>
 
     <div class="sdiv"></div>
     <div class="shead">THE MIRR EXPERIENCE</div>
 
-    <div class="mexp">
-      <div class="mexp-head">
-        <div><div class="mexp-title">MIRROR IT + FIT CHECK</div><div class="mexp-sub">See it on you. Know it fits.</div></div>
-        <div class="mexp-badge">3 STEPS</div>
+    <div class="mexw" id="mexw">
+      <div class="mexh">
+        <div><div class="mext">MIRROR IT + FIT CHECK</div><div class="mexs">See it on you. Know it fits.</div></div>
+        <div class="mexb">3 STEPS</div>
       </div>
 
-      <div class="steps-ind">
-        <div class="sind ac" id="si1"><div class="sind-num">1</div><div class="sind-label">Your<br>photo</div></div>
-        <div class="sind" id="si2"><div class="sind-num">2</div><div class="sind-label">Your<br>size</div></div>
-        <div class="sind" id="si3"><div class="sind-num">3</div><div class="sind-label">Your<br>result</div></div>
+      <div class="stind">
+        <div class="sti ac" id="si1"><div class="stn" id="sn1">1</div><div class="stl">Your<br>photo</div></div>
+        <div class="sti" id="si2"><div class="stn" id="sn2">2</div><div class="stl">Your<br>size</div></div>
+        <div class="sti" id="si3"><div class="stn" id="sn3">3</div><div class="stl">Your<br>result</div></div>
       </div>
 
       <!-- STEP 1 -->
-      <div class="mpanel ac" id="p1">
-        <div class="upload-zone" id="uzone">
-          <input type="file" accept="image/*" capture="user" onchange="handle_photo(this)">
-          <div class="upload-icon">📸</div>
-          <div class="upload-title">Upload your photo</div>
-          <div class="upload-sub">Full-length, standing straight, head to toe.</div>
+      <div class="mpnl ac" id="pnl1">
+        <div class="upzone" id="upzone">
+          <input type="file" accept="image/*" onchange="handlePhoto(this)">
+          <div class="upico">📸</div>
+          <div class="uptit">Upload your photo</div>
+          <div class="upsub">Full-length, standing straight, head to toe.</div>
         </div>
-        <div class="upload-prev" id="uprev">
+        <div class="upprev" id="upprev">
           <img id="prev-img" src="" alt="">
-          <div class="upload-prev-name">✓ Photo ready</div>
+          <p>✓ Photo ready</p>
         </div>
         <div class="utips">
-          <div class="utip"><div class="utip-dot"></div>Stand facing forward, arms slightly out</div>
-          <div class="utip"><div class="utip-dot"></div>Full body visible — head to feet</div>
-          <div class="utip"><div class="utip-dot"></div>Good lighting, plain background</div>
+          <div class="utip"><div class="udot"></div>Stand facing forward, arms slightly out</div>
+          <div class="utip"><div class="udot"></div>Full body visible — head to feet</div>
+          <div class="utip"><div class="udot"></div>Good lighting, plain background</div>
         </div>
-        <div class="snav"><button class="snxt" style="flex:1" onclick="go(2)">USE MY PHOTO →</button></div>
+        <div class="snv"><button class="snxt" style="flex:1" onclick="goStep(2)">USE MY PHOTO →</button></div>
       </div>
 
       <!-- STEP 2 -->
-      <div class="mpanel" id="p2">
-        <div class="unit-toggle">
-          <button class="unit-btn on" id="btn-cm" onclick="set_unit('cm')">CM (metric)</button>
-          <button class="unit-btn" id="btn-in" onclick="set_unit('in')">IN (imperial)</button>
+      <div class="mpnl" id="pnl2">
+        <div class="utog">
+          <button class="utbtn on" id="btn-cm" onclick="setUnit('cm')">CM (metric)</button>
+          <button class="utbtn" id="btn-in" onclick="setUnit('in')">IN (imperial)</button>
         </div>
-        <div class="unit-note" id="unit-note">Showing centimetres — used in AU, EU, UK, Asia</div>
-        <div class="saved-note">💾 Saved to your Mirr profile — works across every brand.</div>
+        <div class="unote" id="unote">Centimetres — AU, EU, UK, Asia</div>
+        <div class="svdnote">💾 Saved to your Mirr profile — used across every brand.</div>
         <div>
-          <div class="mitem">
-            <div class="mleft"><div class="mname">Height</div><div class="mhint">Floor to top of head</div></div>
-            <div class="mright">
-              <div class="mval-display" id="v-height">178</div>
-              <div class="mval-unit" id="u-height">cm</div>
-              <input type="range" class="mscroll" id="s-height" min="140" max="220" value="178" oninput="update_m('height',this.value)" ontouchstart="this.focus()">
-            </div>
-          </div>
-          <div class="mitem">
-            <div class="mleft"><div class="mname">Chest</div><div class="mhint">Fullest part of chest</div></div>
-            <div class="mright">
-              <div class="mval-display" id="v-chest">96</div>
-              <div class="mval-unit" id="u-chest">cm</div>
-              <input type="range" class="mscroll" id="s-chest" min="60" max="140" value="96" oninput="update_m('chest',this.value)" ontouchstart="this.focus()">
-            </div>
-          </div>
-          <div class="mitem">
-            <div class="mleft"><div class="mname">Waist</div><div class="mhint">Natural waistline</div></div>
-            <div class="mright">
-              <div class="mval-display" id="v-waist">82</div>
-              <div class="mval-unit" id="u-waist">cm</div>
-              <input type="range" class="mscroll" id="s-waist" min="50" max="130" value="82" oninput="update_m('waist',this.value)" ontouchstart="this.focus()">
-            </div>
-          </div>
-          <div class="mitem">
-            <div class="mleft"><div class="mname">Hips</div><div class="mhint">Widest part of hips</div></div>
-            <div class="mright">
-              <div class="mval-display" id="v-hips">100</div>
-              <div class="mval-unit" id="u-hips">cm</div>
-              <input type="range" class="mscroll" id="s-hips" min="60" max="150" value="100" oninput="update_m('hips',this.value)" ontouchstart="this.focus()">
-            </div>
-          </div>
-          <div class="mitem">
-            <div class="mleft"><div class="mname">Inseam</div><div class="mhint">Crotch to ankle</div></div>
-            <div class="mright">
-              <div class="mval-display" id="v-inseam">81</div>
-              <div class="mval-unit" id="u-inseam">cm</div>
-              <input type="range" class="mscroll" id="s-inseam" min="50" max="100" value="81" oninput="update_m('inseam',this.value)" ontouchstart="this.focus()">
-            </div>
-          </div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Height</div><div class="mht">Floor to top of head</div></div><div class="mrgt"><div class="mvd" id="vv-height">178</div><div class="mvu" id="vu-height">cm</div><input type="range" class="mslider" id="sl-height" min="140" max="220" value="178" oninput="updM('height',this.value)"></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Chest</div><div class="mht">Fullest part of chest</div></div><div class="mrgt"><div class="mvd" id="vv-chest">96</div><div class="mvu" id="vu-chest">cm</div><input type="range" class="mslider" id="sl-chest" min="60" max="140" value="96" oninput="updM('chest',this.value)"></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Waist</div><div class="mht">Natural waistline</div></div><div class="mrgt"><div class="mvd" id="vv-waist">82</div><div class="mvu" id="vu-waist">cm</div><input type="range" class="mslider" id="sl-waist" min="50" max="130" value="82" oninput="updM('waist',this.value)"></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Hips</div><div class="mht">Widest part of hips</div></div><div class="mrgt"><div class="mvd" id="vv-hips">100</div><div class="mvu" id="vu-hips">cm</div><input type="range" class="mslider" id="sl-hips" min="60" max="150" value="100" oninput="updM('hips',this.value)"></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Inseam</div><div class="mht">Crotch to ankle</div></div><div class="mrgt"><div class="mvd" id="vv-inseam">81</div><div class="mvu" id="vu-inseam">cm</div><input type="range" class="mslider" id="sl-inseam" min="50" max="100" value="81" oninput="updM('inseam',this.value)"></div></div>
         </div>
-        <div class="snav">
-          <button class="sbk" onclick="go(1)">← Back</button>
-          <button class="snxt" onclick="go(3)">GET MY FIT RESULT →</button>
-        </div>
+        <div class="snv"><button class="sbk2" onclick="goStep(1)">← Back</button><button class="snxt" onclick="goStep(3)">GET MY FIT RESULT →</button></div>
       </div>
 
       <!-- STEP 3 -->
-      <div class="mpanel" id="p3">
-        <div class="rsplit">
-          <div class="rimg"><img id="r-prod-img" src="" alt="Product"><div class="rimg-label">GARMENT</div></div>
-          <div class="rscores">
-            <div class="rscore-head">FIT SCORES</div>
-            <div class="ritem"><div class="rtop"><span class="rname">Chest</span><span class="rpct" id="sc-chest">—</span></div><div class="rbar"><div class="rfill" id="sf-chest"></div></div></div>
-            <div class="ritem"><div class="rtop"><span class="rname">Waist</span><span class="rpct" id="sc-waist">—</span></div><div class="rbar"><div class="rfill" id="sf-waist"></div></div></div>
-            <div class="ritem"><div class="rtop"><span class="rname">Hips</span><span class="rpct" id="sc-hips">—</span></div><div class="rbar"><div class="rfill" id="sf-hips"></div></div></div>
-            <div class="ritem"><div class="rtop"><span class="rname">Length</span><span class="rpct" id="sc-inseam">—</span></div><div class="rbar"><div class="rfill" id="sf-inseam"></div></div></div>
+      <div class="mpnl" id="pnl3">
+        <div class="rsp">
+          <div class="rimg"><img id="r-img" src="" alt=""><div class="riml">GARMENT</div></div>
+          <div class="rsc">
+            <div class="rsch">FIT SCORES</div>
+            <div class="rsi"><div class="rsit"><span class="rsin">Chest</span><span class="rsip" id="rp-chest">—</span></div><div class="rsb"><div class="rsbf" id="rb-chest"></div></div></div>
+            <div class="rsi"><div class="rsit"><span class="rsin">Waist</span><span class="rsip" id="rp-waist">—</span></div><div class="rsb"><div class="rsbf" id="rb-waist"></div></div></div>
+            <div class="rsi"><div class="rsit"><span class="rsin">Hips</span><span class="rsip" id="rp-hips">—</span></div><div class="rsb"><div class="rsbf" id="rb-hips"></div></div></div>
+            <div class="rsi"><div class="rsit"><span class="rsin">Length</span><span class="rsip" id="rp-inseam">—</span></div><div class="rsb"><div class="rsbf" id="rb-inseam"></div></div></div>
           </div>
         </div>
-        <div class="roverall">
-          <div><div class="rolabel">OVERALL FIT</div><div class="rosub" id="ro-sub">Based on your measurements</div></div>
-          <div class="roscore" id="ro-score">—</div>
-        </div>
-        <div class="rverdict" id="rverdict">
-          <div class="rvicon">✓</div>
-          <div class="rvtitle" id="rv-title">Good fit</div>
-          <div class="rvbody" id="rv-body">This item matches your measurements well.</div>
-        </div>
-        <div class="snav">
-          <button class="sbk" onclick="go(2)">← Adjust</button>
-          <button class="snxt" onclick="scroll_buy()">BUY NOW →</button>
-        </div>
+        <div class="rovr"><div><div class="rovl">OVERALL FIT</div><div class="rovs" id="rov-sub">Based on your measurements</div></div><div class="rovn" id="rov-score">—</div></div>
+        <div class="rverd"><div class="rvico">✓</div><div class="rvt" id="rv-t">Good fit</div><div class="rvb" id="rv-b">This item matches your measurements well.</div></div>
+        <div class="snv"><button class="sbk2" onclick="goStep(2)">← Adjust</button><button class="snxt" onclick="scrollToBuy()">BUY NOW →</button></div>
       </div>
     </div>
   </div>
 
-  <div class="buy-sec" id="buy-sec">
-    <button class="buy-btn" onclick="show_toast('Opening Apex Active store...')">BUY FROM APEX ACTIVE →</button>
-    <div class="buy-note">You will be taken to Apex Active to complete your purchase.</div>
-    <div class="buy-mirr">Processed through <span>Mirr</span> — 95% goes directly to the brand.</div>
+  <div class="bsec" id="buy-section">
+    <button class="bbtn" onclick="toast('Opening Apex Active store...')">BUY FROM APEX ACTIVE →</button>
+    <div class="bnote">You will be taken to Apex Active to complete your purchase.</div>
+    <div class="bmnote">Processed through <span>Mirr</span> — 95% goes directly to the brand.</div>
   </div>
-  <div style="height:100px"></div>
+  <div class="bnav-space"></div>
 
-  <div class="bnav">
-    <div class="bnav-inner">
-      <button class="bnav-mirror" onclick="scroll_mirr()">👗 MIRROR IT</button>
-      <button class="bnav-buy" onclick="scroll_buy()">BUY NOW</button>
+  <div class="bnav show">
+    <div class="bnav-row">
+      <button class="bnav-m" onclick="scrollToMirr()">👗 MIRROR IT</button>
+      <button class="bnav-b" onclick="scrollToBuy()">BUY NOW</button>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast-el"></div>
 
 <script>
-const PRODUCTS = [
-  {cat:"TOPS",name:"Forest Compression Tee",price:"$54.99",old:null,
-   desc:"Built for high-intensity training. Four-way stretch fabric with moisture-wicking technology keeps you dry. Flatlock seams reduce chafing on long sessions.",
-   scores:{chest:94,waist:88,hips:90,inseam:96}},
-  {cat:"BOTTOMS",name:"Apex Training Shorts",price:"$44.99",old:null,
-   desc:"7-inch inseam with built-in compression liner. Lightweight recycled fabric with deep side pockets. Perfect for runs, HIIT, and gym sessions.",
-   scores:{chest:null,waist:92,hips:86,inseam:91}},
-  {cat:"BOTTOMS",name:"Performance Joggers",price:"$69.99",old:null,
-   desc:"Tapered fit with a relaxed waistband. Perfect for warm-ups, cool-downs, and everything in between. Zippered ankle cuffs for a clean finish.",
-   scores:{chest:null,waist:90,hips:88,inseam:87}},
-  {cat:"OUTERWEAR",name:"Cobalt Zip-Up Jacket",price:"$79.99",old:"$109.99",
-   desc:"Lightweight, wind-resistant outer layer with a full-length zip. Packable into its own pocket. Built for pre and post training in any conditions.",
-   scores:{chest:92,waist:89,hips:94,inseam:88}},
-  {cat:"TOPS",name:"Sculpt Sports Bra",price:"$49.99",old:null,
-   desc:"Medium-impact support with a longline design. Wide underbust band stays in place during movement. Available in 8 colourways.",
-   scores:{chest:96,waist:93,hips:null,inseam:null}},
-  {cat:"SETS",name:"Core Matching Set",price:"$99.99",old:null,
-   desc:"Bra and leggings in one seamless set. Squat-proof, sweat-wicking, built to move with you. The most popular set in the Apex range.",
-   scores:{chest:93,waist:91,hips:95,inseam:89}}
+const PRODS = [
+  {cat:"TOPS",name:"Forest Compression Tee",price:"$54.99",old:null,desc:"Built for high-intensity training. Four-way stretch fabric with moisture-wicking technology keeps you dry. Flatlock seams reduce chafing.",scores:{chest:94,waist:88,hips:90,inseam:96}},
+  {cat:"BOTTOMS",name:"Apex Training Shorts",price:"$44.99",old:null,desc:"7-inch inseam with built-in compression liner. Lightweight recycled fabric with deep side pockets. Perfect for runs, HIIT, and gym sessions.",scores:{chest:null,waist:92,hips:86,inseam:91}},
+  {cat:"BOTTOMS",name:"Performance Joggers",price:"$69.99",old:null,desc:"Tapered fit with a relaxed waistband. Perfect for warm-ups, cool-downs, and everything in between. Zippered ankle cuffs for a clean finish.",scores:{chest:null,waist:90,hips:88,inseam:87}},
+  {cat:"OUTERWEAR",name:"Cobalt Zip-Up Jacket",price:"$79.99",old:"$109.99",desc:"Lightweight, wind-resistant outer layer with a full-length zip. Packable into its own pocket. Built for pre and post training in any conditions.",scores:{chest:92,waist:89,hips:94,inseam:88}},
+  {cat:"TOPS",name:"Sculpt Sports Bra",price:"$49.99",old:null,desc:"Medium-impact support with a longline design. Wide underbust band stays in place during movement. Available in 8 colourways.",scores:{chest:96,waist:93,hips:null,inseam:null}},
+  {cat:"SETS",name:"Core Matching Set",price:"$99.99",old:null,desc:"Bra and leggings in one seamless set. Squat-proof, sweat-wicking, built to move with you. The most popular set in the Apex range.",scores:{chest:93,waist:91,hips:95,inseam:89}}
 ];
 
-const IMGS = [
-  "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80&fit=crop",
+const SVG_IMGS = ["data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMyRDVBM0QiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThDNUQ4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Gb3Jlc3QgQ29tcHJlc3Npb24gVGVlPC90ZXh0Pjx0ZXh0IHg9IjIwMCIgeT0iNDYwIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBmaWxsPSIjQThDNUQ4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjQiIGxldHRlci1zcGFjaW5nPSIyIj5NSVJSIERFTU88L3RleHQ+PC9zdmc+",
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMxQTM1MjgiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4RDhDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThEOEM4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5UcmFpbmluZyBTaG9ydHM8L3RleHQ+PHRleHQgeD0iMjAwIiB5PSI0NjAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjkiIGZpbGw9IiNBOEQ4QzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNCIgbGV0dGVyLXNwYWNpbmc9IjIiPk1JUlIgREVNTzwvdGV4dD48L3N2Zz4=",
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMzQTRBMzAiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0M4RDhBOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQzhEOEE4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5QZXJmb3JtYW5jZSBKb2dnZXJzPC90ZXh0Pjx0ZXh0IHg9IjIwMCIgeT0iNDYwIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBmaWxsPSIjQzhEOEE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjQiIGxldHRlci1zcGFjaW5nPSIyIj5NSVJSIERFTU88L3RleHQ+PC9zdmc+",
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMyQTNENUEiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThDNUQ4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Db2JhbHQgWmlwLVVwIEphY2tldDwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg==",
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiM1QTMwNTAiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0Q4QThDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjRDhBOEM4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5TY3VscHQgU3BvcnRzIEJyYTwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0Q4QThDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg==",
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiM0QTMwMzAiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0Q4QzhBOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjRDhDOEE4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Db3JlIE1hdGNoaW5nIFNldDwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0Q4QzhBOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg=="];
+const REAL_IMGS = ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80&fit=crop",
   "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80&fit=crop",
   "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=500&q=80&fit=crop",
   "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&q=80&fit=crop",
   "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&q=80&fit=crop",
-  "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80&fit=crop"
-];
+  "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80&fit=crop"];
+const IMGS = REAL_IMGS; // Use real, SVG fallback via onerror in HTML
 
-let curProd=0, curStep=1, unit="cm";
-const M_CM = {height:178,chest:96,waist:82,hips:100,inseam:81};
+let curProd=0, curUnit="cm";
+const MCM = {height:178,chest:96,waist:82,hips:100,inseam:81};
 
-// cm to inch conversion
-function to_in(v){ return Math.round(v/2.54*10)/10; }
-function to_cm(v){ return Math.round(v*2.54); }
+function showDetail(idx){
+  curProd = idx;
+  const p = PRODS[idx];
+  const img = IMGS[idx];
 
-function open_product(idx){
-  curProd=idx;
-  const p=PRODUCTS[idx];
+  document.getElementById("d-img").src = img;
+  document.getElementById("d-img").onerror = function(){ this.src = SVG_IMGS[idx]; };
+  document.getElementById("r-img").src = img;
+  document.getElementById("r-img").onerror = function(){ this.src = SVG_IMGS[idx]; };
+  document.getElementById("d-cat").textContent = p.cat;
+  document.getElementById("d-name").textContent = p.name;
+  document.getElementById("d-price").innerHTML = '<span class="dprice">'+p.price+'</span>'+(p.old?'<span class="dprice-old">'+p.old+'</span>':'');
+  document.getElementById("d-desc").textContent = p.desc;
 
-  // Populate product detail
-  document.getElementById("dimg").src=IMGS[idx];
-  document.getElementById("dcat").textContent=p.cat;
-  document.getElementById("dname").textContent=p.name;
-  document.getElementById("dprice").innerHTML=p.price+(p.old?`<span class="dprice-old" style="font-size:13px;color:#ABABAB;text-decoration:line-through;margin-left:8px">${p.old}</span>`:"");
-  document.getElementById("ddesc").textContent=p.desc;
-  document.getElementById("r-prod-img").src=IMGS[idx];
-
-  // Reset to step 1
-  go(1);
+  goStep(1);
 
   // Switch pages
-  document.getElementById("main-page").classList.add("hidden");
-  const ov = document.getElementById("overlay");
-  ov.classList.add("open");
-
-  // Scroll to top of detail page first
-  window.scrollTo(0,0);
-  ov.scrollTop=0;
-
-  // Then after a short delay scroll down to the Mirror It section
-  setTimeout(function(){
-    const mirrExp = document.querySelector(".mexp");
-    if(mirrExp){
-      const offset = mirrExp.getBoundingClientRect().top + window.pageYOffset - 70;
-      window.scrollTo({top: offset, behavior: "smooth"});
-    }
-  }, 150);
-}
-
-function close_product(){
-  document.getElementById("overlay").classList.remove("open");
-  document.getElementById("main-page").classList.remove("hidden");
-  document.getElementById("uzone").style.display="block";
-  document.getElementById("uprev").style.display="none";
+  document.getElementById("page-list").style.display = "none";
+  document.getElementById("page-detail").style.display = "block";
   window.scrollTo(0,0);
 }
 
-function go(n){
-  curStep=n;
+function hideDetail(){
+  document.getElementById("page-detail").style.display = "none";
+  document.getElementById("page-list").style.display = "block";
+  window.scrollTo(0,0);
+  // Reset upload
+  document.getElementById("upzone").style.display = "block";
+  document.getElementById("upprev").style.display = "none";
+}
+
+function goStep(n){
   for(let i=1;i<=3;i++){
-    document.getElementById("p"+i).classList.toggle("ac",i===n);
-    const si=document.getElementById("si"+i);
-    const num=si.querySelector(".sind-num");
+    document.getElementById("pnl"+i).classList.toggle("ac", i===n);
+    const si = document.getElementById("si"+i);
+    const sn = document.getElementById("sn"+i);
     si.classList.remove("ac","dn");
-    if(i<n){si.classList.add("dn");num.textContent="✓";}
-    else if(i===n){si.classList.add("ac");num.textContent=i;}
-    else{num.textContent=i;}
+    if(i<n){si.classList.add("dn"); sn.textContent="✓";}
+    else if(i===n){si.classList.add("ac"); sn.textContent=i;}
+    else{sn.textContent=i;}
   }
-  if(n===3) calc_fit();
-  // Scroll mirror experience into view smoothly
-  setTimeout(function(){
-    const mexp = document.querySelector(".mexp");
-    if(mexp){
-      const top = mexp.getBoundingClientRect().top + window.pageYOffset - 70;
-      window.scrollTo({top: top, behavior: "smooth"});
-    }
-  }, 50);
+  if(n===3) calcFit();
+  window.scrollTo(0,0);
 }
 
-function handle_photo(input){
+function handlePhoto(input){
   if(input.files&&input.files[0]){
     const r=new FileReader();
     r.onload=e=>{
       document.getElementById("prev-img").src=e.target.result;
-      document.getElementById("uzone").style.display="none";
-      document.getElementById("uprev").style.display="block";
+      document.getElementById("upzone").style.display="none";
+      document.getElementById("upprev").style.display="block";
     };
     r.readAsDataURL(input.files[0]);
   }
 }
 
-function set_unit(u){
-  unit=u;
+function setUnit(u){
+  curUnit=u;
   document.getElementById("btn-cm").classList.toggle("on",u==="cm");
   document.getElementById("btn-in").classList.toggle("on",u==="in");
-  const note=u==="cm"
-    ?"Showing centimetres — used in AU, EU, UK, Asia"
-    :"Showing inches — used in US, Canada";
-  document.getElementById("unit-note").textContent=note;
-  // Update all displays
-  ["height","chest","waist","hips","inseam"].forEach(k=>display_m(k));
+  document.getElementById("unote").textContent = u==="cm" ? "Centimetres — AU, EU, UK, Asia" : "Inches — US, Canada";
+  ["height","chest","waist","hips","inseam"].forEach(k=>dispM(k));
 }
 
-function update_m(key,val){
-  M_CM[key]=parseInt(val);
-  display_m(key);
+function updM(k,v){
+  MCM[k]=parseInt(v);
+  dispM(k);
 }
 
-function display_m(key){
-  const vEl=document.getElementById("v-"+key);
-  const uEl=document.getElementById("u-"+key);
-  if(unit==="in"){
-    vEl.textContent=to_in(M_CM[key]);
-    uEl.textContent="in";
-  } else {
-    vEl.textContent=M_CM[key];
-    uEl.textContent="cm";
-  }
+function dispM(k){
+  const v = curUnit==="in" ? Math.round(MCM[k]/2.54*10)/10 : MCM[k];
+  document.getElementById("vv-"+k).textContent = v;
+  document.getElementById("vu-"+k).textContent = curUnit;
 }
 
-function calc_fit(){
-  const p=PRODUCTS[curProd].scores;
-  let total=0,count=0;
+function calcFit(){
+  const sc = PRODS[curProd].scores;
+  let tot=0,cnt=0;
   ["chest","waist","hips","inseam"].forEach(d=>{
-    const el=document.getElementById("sc-"+d);
-    const bar=document.getElementById("sf-"+d);
-    if(p[d]!=null){
-      const adj=Math.max(72,Math.min(99,p[d]+Math.floor((M_CM[d]-82)*0.08)));
-      total+=adj;count++;
+    const pe=document.getElementById("rp-"+d);
+    const be=document.getElementById("rb-"+d);
+    if(sc[d]!=null){
+      const adj=Math.max(72,Math.min(99,sc[d]+Math.floor((MCM[d]-82)*0.08)));
+      tot+=adj; cnt++;
       setTimeout(()=>{
-        el.textContent=adj+"%";
-        bar.style.width=adj+"%";
-        bar.classList.toggle("g",adj>=90);
+        pe.textContent=adj+"%";
+        be.style.width=adj+"%";
+        be.classList.toggle("g",adj>=90);
       },200);
     } else {
-      el.textContent="N/A";
-      bar.style.width="0%";
+      pe.textContent="N/A";
+      be.style.width="0";
     }
   });
-  const avg=count>0?Math.round(total/count):0;
+  const avg=cnt>0?Math.round(tot/cnt):0;
   setTimeout(()=>{
-    document.getElementById("ro-score").textContent=avg+"%";
-    if(avg>=90){
-      document.getElementById("rv-title").textContent="✓ Excellent fit for your body";
-      document.getElementById("rv-body").textContent="This item matches your measurements very well. Order your selected size with confidence.";
-    } else if(avg>=80){
-      document.getElementById("rv-title").textContent="✓ Good fit — minor variations";
-      document.getElementById("rv-body").textContent="This item fits well overall. Some dimensions vary slightly — check individual scores above.";
-    } else {
-      document.getElementById("rv-title").textContent="⚠ Consider sizing up";
-      document.getElementById("rv-body").textContent="Some dimensions suggest a larger size may fit more comfortably. Review the scores above.";
-    }
+    document.getElementById("rov-score").textContent=avg+"%";
+    if(avg>=90){document.getElementById("rv-t").textContent="✓ Excellent fit for your body";document.getElementById("rv-b").textContent="This item matches your measurements very well. Order your selected size with confidence.";}
+    else if(avg>=80){document.getElementById("rv-t").textContent="✓ Good fit — minor variations";document.getElementById("rv-b").textContent="This item fits well overall. Some dimensions vary slightly — check individual scores above.";}
+    else{document.getElementById("rv-t").textContent="⚠ Consider sizing up";document.getElementById("rv-b").textContent="Some dimensions suggest a larger size may be more comfortable.";}
   },400);
 }
 
-function sel_size(btn){
+function selSz(btn){
   if(btn.classList.contains("sold"))return;
   document.querySelectorAll(".sbtn").forEach(b=>b.classList.remove("on"));
   btn.classList.add("on");
 }
 
-function filter(cat,pill){
+function filterP(cat,pill){
   document.querySelectorAll(".fpill").forEach(p=>p.classList.remove("on"));
   pill.classList.add("on");
   document.querySelectorAll(".pcard").forEach(c=>{
@@ -655,52 +531,17 @@ function filter(cat,pill){
   });
 }
 
-function scroll_mirr(){
-  const el=document.querySelector(".mexp");
-  if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+function scrollToMirr(){
+  document.getElementById("mexw").scrollIntoView({behavior:"smooth",block:"start"});
 }
-
-function scroll_buy(){
-  const el=document.getElementById("buy-sec");
-  if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+function scrollToBuy(){
+  document.getElementById("buy-section").scrollIntoView({behavior:"smooth",block:"start"});
 }
-
-function show_toast(msg){
-  const t=document.getElementById("toast");
-  t.textContent=msg;t.classList.add("show");
+function toast(msg){
+  const t=document.getElementById("toast-el");
+  t.textContent=msg; t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"),2500);
 }
 </script>
-
-<script>
-// Image fallback if Unsplash URLs fail to load
-document.addEventListener('DOMContentLoaded', function(){
-  const fallbacks = [
-    {color:'#2D5A3D', label:'Forest Compression Tee'},
-    {color:'#1A3528', label:'Training Shorts'},
-    {color:'#3A4A30', label:'Performance Joggers'},
-    {color:'#2A3D5A', label:'Cobalt Zip-Up Jacket'},
-    {color:'#5A3050', label:'Sculpt Sports Bra'},
-    {color:'#4A3030', label:'Core Matching Set'},
-  ];
-  
-  document.querySelectorAll('.pimg img, .dimg, .rimg img').forEach((img, i) => {
-    img.addEventListener('error', function(){
-      const idx = Math.min(i, fallbacks.length-1);
-      const wrap = this.parentElement;
-      wrap.style.background = fallbacks[idx].color;
-      wrap.style.display = 'flex';
-      wrap.style.alignItems = 'center';
-      wrap.style.justifyContent = 'center';
-      this.style.display = 'none';
-      const lbl = document.createElement('div');
-      lbl.style.cssText = 'color:rgba(255,255,255,0.7);font-size:11px;text-align:center;padding:8px;font-family:Georgia,serif;font-style:italic';
-      lbl.textContent = fallbacks[idx].label;
-      wrap.appendChild(lbl);
-    });
-  });
-});
-</script>
-
 </body>
 </html>
