@@ -734,63 +734,107 @@ function runTryOn() {
   // Reset processing state
   document.getElementById('proc-state').style.display = 'block';
   document.getElementById('result-state').style.display = 'none';
+
+  var procTitle = document.querySelector('.proc-title');
+  var procSub = document.querySelector('.proc-sub');
+  if (procTitle) procTitle.textContent = 'Fitting garment to your photo...';
+  if (procSub) procSub.textContent = 'This takes about 15-30 seconds. Please wait.';
+
   ['ps1','ps2','ps3','ps4'].forEach(function(id) {
     document.getElementById(id).classList.remove('done','active');
   });
   document.getElementById('ps1').classList.add('active');
 
-  const prevSrc = document.getElementById('prev-img').src;
-  const hasPhoto = prevSrc && prevSrc.length > 200 && prevSrc.startsWith('data:image');
+  var prevSrc = document.getElementById('prev-img').src;
+  var hasPhoto = prevSrc && prevSrc.length > 200 && prevSrc.startsWith('data:image');
 
   if (!hasPhoto) {
-    showFallbackResult();
+    // No photo — skip to fallback after animation
+    animateSteps(function() { showFallbackResult(false); });
     return;
   }
 
-  // Animate steps while API processes
-  const steps = ['ps1','ps2','ps3','ps4'];
-  steps.forEach(function(id, i) {
-    setTimeout(function() {
-      document.getElementById(id).classList.remove('active');
-      document.getElementById(id).classList.add('done');
-      if (i + 1 < steps.length) {
-        document.getElementById(steps[i+1]).classList.add('active');
-      }
-    }, (i + 1) * 800);
-  });
+  var garmentUrl = REAL_IMGS[curProd];
+  var category = PRODS[curProd].tryon_cat || 'upper_body';
 
-  const garmentUrl = REAL_IMGS[curProd];
-  const category = PRODS[curProd].tryon_cat || 'upper_body';
+  // Start step animation (loops until API responds)
+  var stepInterval = startStepLoop();
 
-  // Send to Worker: person photo as base64 + garment as URL
-  // Worker uploads person photo to imgbb, then calls PixelAPI with both URLs
+  // Call Worker — no timeout so we wait as long as needed
   fetch('https://mirr-tryon-worker.linaandwilliam.workers.dev', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      person_image_b64: prevSrc,   // full data:image/...;base64,... string
-      garment_url: garmentUrl,     // direct Unsplash URL
-      category: category,          // upper_body / lower_body / full_body
+      person_image_b64: prevSrc,
+      garment_url: garmentUrl,
+      category: category,
     }),
   })
-  .then(function(res) { return res.json(); })
+  .then(function(res) {
+    if (!res.ok) throw new Error('Worker returned ' + res.status);
+    return res.json();
+  })
   .then(function(data) {
+    clearInterval(stepInterval);
+    completeSteps();
+
     if (data.success) {
-      // Show real merged result
-      var resultSrc = data.result_url || (data.result_b64 ? 'data:image/jpeg;base64,' + data.result_b64 : null);
+      var resultSrc = data.result_url
+        || (data.result_b64 ? 'data:image/jpeg;base64,' + data.result_b64 : null);
       if (resultSrc) {
         showRealResult(resultSrc);
       } else {
-        showFallbackResult();
+        showFallbackResult(true);
       }
     } else {
-      console.warn('Worker error:', data.error);
-      showFallbackResult();
+      console.warn('Worker error:', data.error, data.detail);
+      showFallbackResult(true);
     }
   })
   .catch(function(err) {
-    console.warn('Try-on fetch error:', err);
-    showFallbackResult();
+    clearInterval(stepInterval);
+    completeSteps();
+    console.warn('Fetch error:', err.message);
+    showFallbackResult(true);
+  });
+}
+
+// Animate steps continuously while waiting for API
+function startStepLoop() {
+  var step = 0;
+  var ids = ['ps1','ps2','ps3','ps4'];
+  document.getElementById(ids[0]).classList.add('active');
+
+  return setInterval(function() {
+    document.getElementById(ids[step]).classList.remove('active');
+    document.getElementById(ids[step]).classList.add('done');
+    step = (step + 1) % ids.length;
+    if (step === 0) {
+      // Reset and loop
+      ids.forEach(function(id) {
+        document.getElementById(id).classList.remove('done','active');
+      });
+    }
+    document.getElementById(ids[step]).classList.add('active');
+  }, 1500);
+}
+
+function animateSteps(callback) {
+  var ids = ['ps1','ps2','ps3','ps4'];
+  ids.forEach(function(id, i) {
+    setTimeout(function() {
+      document.getElementById(id).classList.remove('active');
+      document.getElementById(id).classList.add('done');
+      if (i + 1 < ids.length) document.getElementById(ids[i+1]).classList.add('active');
+      if (i === ids.length - 1 && callback) setTimeout(callback, 300);
+    }, (i + 1) * 700);
+  });
+}
+
+function completeSteps() {
+  ['ps1','ps2','ps3','ps4'].forEach(function(id) {
+    document.getElementById(id).classList.remove('active');
+    document.getElementById(id).classList.add('done');
   });
 }
 
@@ -819,41 +863,39 @@ function showRealResult(resultSrc) {
   calcFit();
 }
 
-function showFallbackResult() {
-  // No photo or API unavailable — show side-by-side demo
-  setTimeout(() => {
-    document.getElementById('proc-state').style.display = 'none';
+function showFallbackResult(hadError) {
+  document.getElementById('proc-state').style.display = 'none';
 
-    const userPhotoEl = document.getElementById('user-photo');
-    const prevSrc = document.getElementById('prev-img').src;
-    const hasPhoto = prevSrc && prevSrc.length > 200 && prevSrc.startsWith('data:image');
+  var userPhotoEl = document.getElementById('user-photo');
+  var prevSrc = document.getElementById('prev-img').src;
+  var hasPhoto = prevSrc && prevSrc.length > 200 && prevSrc.startsWith('data:image');
 
-    if (hasPhoto) {
-      userPhotoEl.src = prevSrc;
-      userPhotoEl.style.display = 'block';
-      document.getElementById('tryon-note').textContent =
-        '✓ When fully live, these merge into one image of you wearing the garment.';
-    } else {
-      userPhotoEl.style.display = 'none';
-      const wrap = userPhotoEl.parentElement;
-      wrap.style.cssText += ';display:flex;align-items:center;justify-content:center;background:#F7F4F0';
-      let msg = wrap.querySelector('.no-photo-msg');
-      if (!msg) {
-        msg = document.createElement('div');
-        msg.className = 'no-photo-msg';
-        msg.style.cssText = 'font-size:11px;color:#ABABAB;text-align:center;padding:12px;line-height:1.7';
-        wrap.appendChild(msg);
-      }
-      msg.textContent = 'Upload your photo in Step 1 to see yourself here';
-      document.getElementById('tryon-note').textContent =
-        'Go back to Step 1 and upload a photo to see the full try-on result.';
+  if (hasPhoto) {
+    userPhotoEl.src = prevSrc;
+    userPhotoEl.style.display = 'block';
+    document.getElementById('tryon-note').textContent = hadError
+      ? '⚠ Try-on processing unavailable right now. Showing side-by-side preview.'
+      : '✓ When live, these merge into one image of you wearing the garment.';
+  } else {
+    userPhotoEl.style.display = 'none';
+    var wrap = userPhotoEl.parentElement;
+    wrap.style.cssText += ';display:flex;align-items:center;justify-content:center;background:#F7F4F0';
+    var msg = wrap.querySelector('.no-photo-msg');
+    if (!msg) {
+      msg = document.createElement('div');
+      msg.className = 'no-photo-msg';
+      msg.style.cssText = 'font-size:11px;color:#ABABAB;text-align:center;padding:12px;line-height:1.7';
+      wrap.appendChild(msg);
     }
+    msg.textContent = 'Upload your photo in Step 1 to see yourself here';
+    document.getElementById('tryon-note').textContent = 'Go back to Step 1 and upload a photo.';
+  }
 
-    document.getElementById('r-img').src = IMGS[curProd];
-    document.getElementById('result-state').style.display = 'block';
-    calcFit();
-  }, 3200);
+  document.getElementById('r-img').src = IMGS[curProd];
+  document.getElementById('result-state').style.display = 'block';
+  calcFit();
 }
+
 
 function calcFit() {
   const sc = PRODS[curProd].scores;
