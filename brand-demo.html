@@ -779,14 +779,16 @@ function runTryOn() {
     completeSteps();
 
     if (data.success) {
-      // PixelAPI returns result as base64 string in result_b64
-      var resultSrc = data.result_b64
-        ? 'data:image/jpeg;base64,' + data.result_b64
-        : data.result_url || null;
+      // PixelAPI returns output_url (direct image URL) or result_image_b64
+      var resultSrc = data.result_url
+        || (data.result_b64 && data.result_b64.length > 0
+            ? 'data:image/jpeg;base64,' + data.result_b64
+            : null);
+      console.log('Result src:', resultSrc ? resultSrc.slice(0,80) : 'NONE');
       if (resultSrc) {
         showRealResult(resultSrc);
       } else {
-        console.warn('No result image in response:', JSON.stringify(data));
+        console.warn('No result image in response. Keys:', Object.keys(data).join(', '));
         showFallbackResult(true);
       }
     } else {
