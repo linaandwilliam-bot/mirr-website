@@ -53,8 +53,8 @@ body{background:var(--page);color:var(--ink);font-family:'Inter',sans-serif;font
 
 /* PRODUCT GRID */
 .pgrid{padding:14px 12px 80px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.pcard{background:var(--white);border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.pcard:active{opacity:.9}
+.pcard{background:var(--white);border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:rgba(123,174,200,0.1);transition:transform .15s}
+.pcard:active{transform:scale(.97);opacity:.9}
 .pimg{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--cream)}
 .pimg img{width:100%;height:100%;object-fit:cover;display:block}
 .pbadge{position:absolute;top:8px;left:8px;font-size:8px;letter-spacing:.1em;padding:3px 7px;border-radius:2px;font-weight:500}
@@ -273,27 +273,27 @@ html,body{overflow-x:hidden;max-width:100vw}
 <div class="pgrid" id="pgrid">
   <div class="pcard" data-cat="tops" onclick="open_product(0)">
     <div class="pimg"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80&fit=crop" alt="Forest Compression Tee"><div class="pbadge b-best">BESTSELLER</div><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">TOPS</div><div class="pname">Forest Compression Tee</div><div><span class="pprice">$54.99</span></div></div>
+    <div class="pinfo"><div class="pcat">TOPS</div><div class="pname">Forest Compression Tee</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span class="pprice">$54.99</span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
   </div>
   <div class="pcard" data-cat="bottoms" onclick="open_product(1)">
     <div class="pimg"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80&fit=crop" alt="Training Shorts"><div class="pbadge b-new">NEW</div><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">BOTTOMS</div><div class="pname">Apex Training Shorts</div><div><span class="pprice">$44.99</span></div></div>
+    <div class="pinfo"><div class="pcat">BOTTOMS</div><div class="pname">Apex Training Shorts</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span class="pprice">$44.99</span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
   </div>
   <div class="pcard" data-cat="bottoms" onclick="open_product(2)">
     <div class="pimg"><img src="https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=500&q=80&fit=crop" alt="Performance Joggers"><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">BOTTOMS</div><div class="pname">Performance Joggers</div><div><span class="pprice">$69.99</span></div></div>
+    <div class="pinfo"><div class="pcat">BOTTOMS</div><div class="pname">Performance Joggers</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span class="pprice">$69.99</span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
   </div>
   <div class="pcard" data-cat="outerwear" onclick="open_product(3)">
     <div class="pimg"><img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&q=80&fit=crop" alt="Cobalt Zip-Up Jacket"><div class="pbadge b-sale">SALE</div><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">OUTERWEAR</div><div class="pname">Cobalt Zip-Up Jacket</div><div><span class="pprice">$79.99</span><span class="pprice-old">$109.99</span></div></div>
+    <div class="pinfo"><div class="pcat">OUTERWEAR</div><div class="pname">Cobalt Zip-Up Jacket</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span><span class="pprice">$79.99</span><span class="pprice-old">$109.99</span></span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
   </div>
   <div class="pcard" data-cat="tops" onclick="open_product(4)">
     <div class="pimg"><img src="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&q=80&fit=crop" alt="Sculpt Sports Bra"><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">TOPS</div><div class="pname">Sculpt Sports Bra</div><div><span class="pprice">$49.99</span></div></div>
+    <div class="pinfo"><div class="pcat">TOPS</div><div class="pname">Sculpt Sports Bra</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span class="pprice">$49.99</span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
   </div>
   <div class="pcard" data-cat="sets" onclick="open_product(5)">
     <div class="pimg"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80&fit=crop" alt="Core Matching Set"><div class="pbadge b-new">NEW</div><div class="mirror-chip"><div class="cdot"></div>MIRROR IT</div></div>
-    <div class="pinfo"><div class="pcat">SETS</div><div class="pname">Core Matching Set</div><div><span class="pprice">$99.99</span></div></div>
+    <div class="pinfo"><div class="pcat">SETS</div><div class="pname">Core Matching Set</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px"><span class="pprice">$99.99</span><span style="font-size:10px;color:#7BAEC8;letter-spacing:.08em">VIEW →</span></div></div>
   </div>
 </div>
 
@@ -504,17 +504,35 @@ function to_cm(v){ return Math.round(v*2.54); }
 function open_product(idx){
   curProd=idx;
   const p=PRODUCTS[idx];
+
+  // Populate product detail
   document.getElementById("dimg").src=IMGS[idx];
   document.getElementById("dcat").textContent=p.cat;
   document.getElementById("dname").textContent=p.name;
   document.getElementById("dprice").innerHTML=p.price+(p.old?`<span class="dprice-old" style="font-size:13px;color:#ABABAB;text-decoration:line-through;margin-left:8px">${p.old}</span>`:"");
   document.getElementById("ddesc").textContent=p.desc;
   document.getElementById("r-prod-img").src=IMGS[idx];
+
+  // Reset to step 1
   go(1);
-  // Hide main, show detail
+
+  // Switch pages
   document.getElementById("main-page").classList.add("hidden");
-  document.getElementById("overlay").classList.add("open");
+  const ov = document.getElementById("overlay");
+  ov.classList.add("open");
+
+  // Scroll to top of detail page first
   window.scrollTo(0,0);
+  ov.scrollTop=0;
+
+  // Then after a short delay scroll down to the Mirror It section
+  setTimeout(function(){
+    const mirrExp = document.querySelector(".mexp");
+    if(mirrExp){
+      const offset = mirrExp.getBoundingClientRect().top + window.pageYOffset - 70;
+      window.scrollTo({top: offset, behavior: "smooth"});
+    }
+  }, 150);
 }
 
 function close_product(){
@@ -537,7 +555,14 @@ function go(n){
     else{num.textContent=i;}
   }
   if(n===3) calc_fit();
-  document.getElementById("overlay").scrollTo({top:document.querySelector(".mexp").offsetTop-80,behavior:"smooth"});
+  // Scroll mirror experience into view smoothly
+  setTimeout(function(){
+    const mexp = document.querySelector(".mexp");
+    if(mexp){
+      const top = mexp.getBoundingClientRect().top + window.pageYOffset - 70;
+      window.scrollTo({top: top, behavior: "smooth"});
+    }
+  }, 50);
 }
 
 function handle_photo(input){
