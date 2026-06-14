@@ -641,12 +641,24 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 
       <!-- STATE 2: UPLOAD -->
       <div id="hd-upload" class="hd-state" style="display:none">
-        <div style="border:1.5px dashed #7BAEC8;border-radius:8px;padding:32px 20px;text-align:center;background:#fff;margin-bottom:12px;position:relative;overflow:hidden">
-          <div style="font-size:28px;margin-bottom:10px">📸</div>
-          <div style="font-size:13px;font-weight:500;color:#1C1C1C;margin-bottom:6px">Upload your photo</div>
-          <div style="font-size:11px;color:#ABABAB;line-height:1.6;margin-bottom:14px">Full-length, standing straight, plain background</div>
-          <div class="hd-upload-bar"><div class="hd-upload-fill" id="hd-upload-fill"></div></div>
-          <div style="font-size:10px;color:#7BAEC8;margin-top:8px;letter-spacing:.08em" id="hd-upload-txt">Uploading...</div>
+        <div style="border:1.5px dashed #7BAEC8;border-radius:8px;overflow:hidden;margin-bottom:12px;position:relative;background:#F7F4F0">
+          <!-- Person photo reveal on upload -->
+          <div style="position:relative;aspect-ratio:3/4">
+            <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=300&q=80&fit=crop&crop=top"
+              onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=80&fit=crop'"
+              alt="Your photo" id="hd-upload-photo"
+              style="width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .6s">
+            <!-- Overlay that fades out as photo "uploads" -->
+            <div id="hd-upload-overlay" style="position:absolute;inset:0;background:#F7F4F0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s">
+              <div style="font-size:28px;margin-bottom:10px">📸</div>
+              <div style="font-size:12px;font-weight:500;color:#1C1C1C;margin-bottom:4px">Your photo</div>
+              <div style="font-size:10px;color:#ABABAB">Full-length, plain background</div>
+            </div>
+          </div>
+          <div style="padding:10px 14px;background:#fff;border-top:1px solid #E8E4DF">
+            <div class="hd-upload-bar" style="margin-bottom:6px"><div class="hd-upload-fill" id="hd-upload-fill"></div></div>
+            <div style="font-size:10px;color:#7BAEC8;letter-spacing:.08em" id="hd-upload-txt">Uploading...</div>
+          </div>
         </div>
         <div style="display:flex;gap:6px;font-size:10px;color:#ABABAB;align-items:flex-start">
           <div style="width:4px;height:4px;border-radius:50%;background:#7BAEC8;margin-top:4px;flex:none"></div>
@@ -674,12 +686,10 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
         <div class="hero-result">
           <div class="hero-result-label">YOUR TRY-ON RESULT</div>
           <div class="hero-result-photos">
-            <div class="hero-result-photo" style="background:#2A3D5A">
-              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-                <div style="text-align:center">
-                  <div style="font-size:32px;opacity:.6">👗</div>
-                </div>
-              </div>
+            <div class="hero-result-photo">
+              <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=300&q=80&fit=crop&crop=top"
+                onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=80&fit=crop'"
+                alt="Your photo" style="width:100%;height:100%;object-fit:cover;display:block">
               <div class="hero-result-photo-tag">YOUR PHOTO</div>
             </div>
             <div class="hero-result-photo">
@@ -1104,6 +1114,8 @@ function hdStep(step) {
     hdShow('hd-upload');
     var fill = document.getElementById('hd-upload-fill');
     var txt = document.getElementById('hd-upload-txt');
+    var photo = document.getElementById('hd-upload-photo');
+    var overlay = document.getElementById('hd-upload-overlay');
     var progress = 0;
     var iv = setInterval(function() {
       progress += Math.random() * 12 + 3;
@@ -1111,10 +1123,15 @@ function hdStep(step) {
       if(fill) fill.style.width = progress + '%';
       if(txt) {
         if(progress < 40) txt.textContent = 'Uploading...';
-        else if(progress < 80) txt.textContent = 'Processing photo...';
-        else txt.textContent = 'Ready ✓';
+        else if(progress < 75) txt.textContent = 'Processing photo...';
+        else txt.textContent = 'Photo ready ✓';
       }
-      if(progress >= 100) setTimeout(function(){ hdStep(2); }, 400);
+      // Fade photo in at 60% progress
+      if(progress >= 60) {
+        if(photo) photo.style.opacity = Math.min(1, (progress - 60) / 30).toString();
+        if(overlay) overlay.style.opacity = Math.max(0, 1 - (progress - 60) / 30).toString();
+      }
+      if(progress >= 100) setTimeout(function(){ hdStep(2); }, 500);
     }, 80);
   }
   else if(step === 2) {
