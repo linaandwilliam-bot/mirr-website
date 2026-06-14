@@ -55,9 +55,9 @@ nav{position:sticky;top:0;z-index:200;background:rgba(253,252,250,.96);backdrop-
 .nav-cta:hover{background:var(--sky-lt)}
 
 /* ── HERO ── */
-.hero{display:block;min-height:auto;border-bottom:1px solid var(--line)}
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:90vh;border-bottom:1px solid var(--line)}
 
-.hero-left{display:flex;flex-direction:column;justify-content:space-between;padding:64px 56px 48px;position:relative;max-width:900px}
+.hero-left{display:flex;flex-direction:column;justify-content:space-between;padding:64px 56px 48px;position:relative}
 .hero-left-top{}
 .hero-eyebrow{font-size:10px;letter-spacing:.28em;color:var(--ink4);margin-bottom:40px;display:flex;align-items:center;gap:10px}
 .hero-eyebrow::before{content:'';width:28px;height:.5px;background:var(--sky)}
@@ -474,6 +474,62 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
   }
 }
 
+
+/* ── HERO RIGHT — INTERACTIVE TRY-ON DEMO ── */
+.hero-right{background:var(--cream);border-left:1px solid var(--line);position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 36px}
+.hero-demo{width:100%;max-width:340px}
+.hero-demo-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.hero-demo-label{font-size:10px;letter-spacing:.2em;color:var(--ink4)}
+.hero-demo-live{display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;color:var(--sky)}
+.hero-demo-live-dot{width:6px;height:6px;border-radius:50%;background:var(--sky);animation:blk 2s infinite}
+@keyframes blk{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* PRODUCT CARD IN HERO */
+.hero-product{background:var(--white);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:16px}
+.hero-product-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--cream);display:block}
+.hero-product-info{padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
+.hero-product-name{font-size:12px;color:var(--ink);font-weight:400}
+.hero-product-price{font-family:'DM Mono',monospace;font-size:13px;color:var(--ink);font-weight:500}
+
+/* TRY-ON RESULT CARD */
+.hero-result{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:16px}
+.hero-result-label{font-size:9px;letter-spacing:.16em;color:var(--sky);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.hero-result-label::before{content:"";width:12px;height:.5px;background:var(--sky);display:inline-block}
+.hero-result-photos{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.hero-result-photo{aspect-ratio:3/4;border-radius:5px;overflow:hidden;position:relative;background:var(--cream)}
+.hero-result-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-result-photo-tag{position:absolute;bottom:0;left:0;right:0;font-size:8px;letter-spacing:.1em;color:rgba(255,255,255,.9);background:rgba(0,0,0,.3);padding:4px;text-align:center}
+.hero-result-mirr-badge{position:absolute;top:6px;right:6px;background:var(--sky);color:#fff;font-size:7px;letter-spacing:.1em;padding:2px 6px;border-radius:999px}
+
+/* FIT BARS */
+.hero-fit-bars{display:flex;flex-direction:column;gap:5px}
+.hero-fit-row{display:flex;align-items:center;gap:8px}
+.hero-fit-name{font-size:10px;color:var(--ink3);width:42px;flex:none}
+.hero-fit-track{flex:1;height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+.hero-fit-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.hero-fit-fill.g{background:var(--brand, #2D5A3D)}
+.hero-fit-fill.b{background:var(--sky)}
+.hero-fit-pct{font-family:'DM Mono',monospace;font-size:10px;color:var(--sky);width:32px;text-align:right;flex:none}
+
+/* OVERALL SCORE */
+.hero-score{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--paper);border-radius:5px;margin-top:10px}
+.hero-score-label{font-size:10px;color:var(--ink3);letter-spacing:.08em}
+.hero-score-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:500;color:var(--sky);line-height:1}
+
+/* MIRROR IT BUTTON */
+.hero-mirr-btn{width:100%;background:var(--sky);color:#fff;border:none;padding:12px;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:.1em;font-weight:500;cursor:pointer;border-radius:4px;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.hero-mirr-btn:hover{opacity:.88}
+.hero-mirr-btn a{color:#fff;text-decoration:none}
+
+/* NOISE TEXTURE OVERLAY */
+.hero-right::after{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+.hero-demo{position:relative;z-index:1}
+
+@media(max-width:860px){
+  .hero{grid-template-columns:1fr}
+  .hero-right{display:none}
+}
+
 </style>
 </head>
 <body>
@@ -528,6 +584,84 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
         <div class="hero-stat-num">24h</div>
         <div class="hero-stat-label">TO GO<br>LIVE</div>
       </div>
+    </div>
+  </div>
+
+  <!-- HERO RIGHT — LIVE TRY-ON DEMO -->
+  <div class="hero-right">
+    <div class="hero-demo">
+
+      <div class="hero-demo-head">
+        <div class="hero-demo-label">LIVE DEMO</div>
+        <div class="hero-demo-live"><div class="hero-demo-live-dot"></div>MIRROR IT</div>
+      </div>
+
+      <!-- PRODUCT -->
+      <div class="hero-product">
+        <img class="hero-product-img"
+          src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80&fit=crop"
+          onerror="this.onerror=null;this.style.background='#F0EBE3'"
+          alt="Cobalt Zip-Up Jacket">
+        <div class="hero-product-info">
+          <div class="hero-product-name">Cobalt Zip-Up Jacket</div>
+          <div class="hero-product-price">$79.99</div>
+        </div>
+      </div>
+
+      <!-- TRY-ON RESULT -->
+      <div class="hero-result">
+        <div class="hero-result-label">YOUR TRY-ON RESULT</div>
+        <div class="hero-result-photos">
+          <div class="hero-result-photo" style="background:#E8E4DF;display:flex;align-items:center;justify-content:center">
+            <div style="text-align:center;padding:12px">
+              <div style="font-size:20px;margin-bottom:6px;opacity:.4">👤</div>
+              <div style="font-size:9px;color:#ABABAB;letter-spacing:.08em;line-height:1.5">Upload your<br>photo</div>
+            </div>
+            <div class="hero-result-photo-tag">YOU</div>
+          </div>
+          <div class="hero-result-photo">
+            <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=300&q=80&fit=crop"
+              onerror="this.onerror=null;this.style.display='none'"
+              alt="Jacket try-on result">
+            <div class="hero-result-photo-tag">GARMENT</div>
+            <div class="hero-result-mirr-badge">MIRR IT</div>
+          </div>
+        </div>
+
+        <!-- FIT BARS — animated on load -->
+        <div class="hero-fit-bars" id="hero-fit-bars">
+          <div class="hero-fit-row">
+            <div class="hero-fit-name">Chest</div>
+            <div class="hero-fit-track"><div class="hero-fit-fill g" id="hf-chest" style="width:0%"></div></div>
+            <div class="hero-fit-pct" id="hp-chest">—</div>
+          </div>
+          <div class="hero-fit-row">
+            <div class="hero-fit-name">Waist</div>
+            <div class="hero-fit-track"><div class="hero-fit-fill b" id="hf-waist" style="width:0%"></div></div>
+            <div class="hero-fit-pct" id="hp-waist">—</div>
+          </div>
+          <div class="hero-fit-row">
+            <div class="hero-fit-name">Hips</div>
+            <div class="hero-fit-track"><div class="hero-fit-fill g" id="hf-hips" style="width:0%"></div></div>
+            <div class="hero-fit-pct" id="hp-hips">—</div>
+          </div>
+          <div class="hero-fit-row">
+            <div class="hero-fit-name">Length</div>
+            <div class="hero-fit-track"><div class="hero-fit-fill g" id="hf-length" style="width:0%"></div></div>
+            <div class="hero-fit-pct" id="hp-length">—</div>
+          </div>
+        </div>
+
+        <div class="hero-score">
+          <div class="hero-score-label">OVERALL FIT</div>
+          <div class="hero-score-num" id="hero-score">—</div>
+        </div>
+      </div>
+
+      <button class="hero-mirr-btn">
+        <a href="/brand-demo">TRY IT YOURSELF →</a>
+      </button>
+
     </div>
   </div>
 
@@ -894,6 +1028,30 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 </footer>
 
 <script>
+// Hero fit bar animation
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    var bars = [
+      {id:'hf-chest', pid:'hp-chest', val:92},
+      {id:'hf-waist', pid:'hp-waist', val:85},
+      {id:'hf-hips',  pid:'hp-hips',  val:94},
+      {id:'hf-length',pid:'hp-length', val:88},
+    ];
+    bars.forEach(function(b, i) {
+      setTimeout(function() {
+        var el = document.getElementById(b.id);
+        var pe = document.getElementById(b.pid);
+        if(el) el.style.width = b.val + '%';
+        if(pe) pe.textContent = b.val + '%';
+      }, i * 200);
+    });
+    setTimeout(function() {
+      var sc = document.getElementById('hero-score');
+      if(sc) sc.textContent = '90%';
+    }, bars.length * 200 + 100);
+  }, 600);
+});
+
 // Reveal
 const ro=new IntersectionObserver((es)=>{
   es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('vi'),i*70);ro.unobserve(e.target)}});
