@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Submit your products — Mirr</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight:300;line-height:1.55}
+@media(prefers-color-scheme:dark){html,body{background:#FDFCFA!important;color:#1C1C1C!important}}
+
+/* NAV */
+nav{border-bottom:1px solid #E8E4DF;padding:0 48px;background:#FDFCFA;position:sticky;top:0;z-index:50}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{display:flex;align-items:baseline;text-decoration:none}
+.logo-word{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;letter-spacing:3px;color:#1C1C1C}
+.logo-flip{display:inline-block;transform:scaleX(-1);color:#7BAEC8}
+.nav-back{font-size:12px;color:#7A7A7A;text-decoration:none;padding:8px 0}
+
+/* PAGE */
+.page{max-width:860px;margin:0 auto;padding:48px 24px 80px}
+
+/* HEADER */
+.page-eyebrow{font-size:10px;letter-spacing:.24em;color:#ABABAB;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.page-eyebrow::before{content:"";width:16px;height:.5px;background:#7BAEC8;display:inline-block}
+.page-title{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,40px);font-weight:500;color:#1C1C1C;margin-bottom:10px;line-height:1.1}
+.page-sub{font-size:14px;color:#7A7A7A;line-height:1.8;margin-bottom:36px;max-width:560px}
+
+/* INFO BOXES */
+.info-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px}
+.info-box{background:#F7F4F0;border:.5px solid #E8E4DF;border-radius:8px;padding:16px 18px}
+.info-box-label{font-size:9px;letter-spacing:.2em;color:#ABABAB;margin-bottom:8px}
+.info-box-body{font-size:12px;color:#4A4A4A;line-height:1.75}
+.info-box-body strong{color:#1C1C1C;font-weight:500}
+
+/* BRAND DETAILS STRIP */
+.brand-strip{background:#fff;border:1px solid #E8E4DF;border-radius:8px;padding:18px 20px;margin-bottom:36px}
+.strip-label{font-size:10px;letter-spacing:.18em;color:#ABABAB;margin-bottom:12px}
+.strip-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* FORM BASICS */
+label{display:block;font-size:11px;letter-spacing:.1em;color:#7A7A7A;margin-bottom:7px}
+label .req{color:#D4A898;margin-left:2px}
+input[type=text],input[type=email],input[type=number],select,textarea{
+  width:100%;background:#fff;border:1px solid #E8E4DF;padding:11px 14px;
+  font-family:'Inter',sans-serif;font-size:13px;color:#1C1C1C;outline:none;
+  transition:border-color .2s,box-shadow .2s;border-radius:0;
+  -webkit-appearance:none;appearance:none
+}
+input:focus,select:focus,textarea:focus{border-color:#7BAEC8;box-shadow:0 0 0 3px rgba(123,174,200,.08)}
+input.err,select.err,textarea.err{border-color:#D4A898}
+input::placeholder,textarea::placeholder{color:#ABABAB;font-weight:300}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ABABAB' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+textarea{resize:vertical;min-height:72px;line-height:1.6}
+.field-err{font-size:11px;color:#D4A898;margin-top:5px;display:none}
+.field-group{margin-bottom:18px}
+.field-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.field-row-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+/* DIVIDER */
+.divider{height:1px;background:#E8E4DF;margin:24px 0}
+.section-label{font-size:10px;letter-spacing:.2em;color:#ABABAB;margin-bottom:16px}
+
+/* PRODUCT CARDS */
+.products-container{display:flex;flex-direction:column;gap:0}
+.product-card{background:#fff;border:1px solid #E8E4DF;border-radius:8px;overflow:hidden;margin-bottom:16px}
+.product-card-head{background:#F7F4F0;border-bottom:1px solid #E8E4DF;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.product-card-num{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;color:#7BAEC8}
+.product-card-name{font-size:13px;color:#1C1C1C;font-weight:400}
+.product-card-remove{font-size:11px;color:#D4A898;cursor:pointer;border:none;background:none;padding:4px 8px;border-radius:4px;transition:background .2s}
+.product-card-remove:hover{background:rgba(212,168,152,.1)}
+.product-card-body{padding:20px}
+
+/* PHOTO UPLOAD */
+.photo-upload-area{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.photo-slot{border:1.5px dashed #E8E4DF;border-radius:6px;padding:0;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;aspect-ratio:3/4;background:#FDFCFA}
+.photo-slot:hover{border-color:#7BAEC8;background:rgba(123,174,200,.04)}
+.photo-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-slot-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:16px;pointer-events:none}
+.photo-slot-icon{font-size:22px;margin-bottom:8px;opacity:.5}
+.photo-slot-label{font-size:11px;letter-spacing:.08em;color:#ABABAB;margin-bottom:4px}
+.photo-slot-sub{font-size:10px;color:#ABABAB;line-height:1.5}
+.photo-slot.has-photo{border-color:#7BAEC8;border-style:solid}
+.photo-slot .preview-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.photo-slot.has-photo .preview-img{display:block}
+.photo-slot.has-photo .photo-slot-inner{display:none}
+.photo-slot-tick{position:absolute;top:8px;right:8px;width:20px;height:20px;background:#7BAEC8;border-radius:50%;display:none;align-items:center;justify-content:center;color:#fff;font-size:10px}
+.photo-slot.has-photo .photo-slot-tick{display:flex}
+
+/* PHOTO TIPS */
+.photo-tips{background:rgba(123,174,200,.06);border:.5px solid rgba(123,174,200,.2);border-radius:6px;padding:12px 14px;margin-bottom:18px}
+.photo-tips-title{font-size:10px;letter-spacing:.14em;color:#7BAEC8;margin-bottom:8px}
+.photo-tips-list{display:flex;flex-direction:column;gap:5px}
+.photo-tip-item{font-size:11px;color:#7A7A7A;display:flex;align-items:flex-start;gap:7px;line-height:1.55}
+.photo-tip-dot{width:4px;height:4px;background:#7BAEC8;border-radius:50%;flex:none;margin-top:5px}
+
+/* SIZES TABLE */
+.sizes-table{width:100%;border-collapse:collapse;margin-bottom:6px}
+.sizes-table th{font-size:10px;letter-spacing:.12em;color:#ABABAB;font-weight:400;text-align:left;padding:0 8px 10px 0;border-bottom:1px solid #E8E4DF}
+.sizes-table th:first-child{padding-left:0;width:60px}
+.sizes-table td{padding:8px 8px 8px 0;border-bottom:1px solid #F0EDE8;vertical-align:middle}
+.sizes-table td:first-child{padding-left:0}
+.sizes-table tr:last-child td{border-bottom:none}
+.size-label{font-family:'DM Mono',monospace;font-size:12px;color:#4A4A4A}
+.size-check{width:36px;height:36px;border:.5px solid #E8E4DF;background:#fff;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:14px}
+.size-check.active{background:#2D5A3D;border-color:#2D5A3D;color:#fff}
+.sizes-note{font-size:11px;color:#ABABAB;font-style:italic;margin-top:4px}
+
+/* ADD PRODUCT BUTTON */
+.add-product-btn{width:100%;background:#fff;border:1.5px dashed #E8E4DF;padding:16px;font-family:'Inter',sans-serif;font-size:13px;color:#7BAEC8;cursor:pointer;border-radius:8px;margin-bottom:32px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.04em}
+.add-product-btn:hover{border-color:#7BAEC8;background:rgba(123,174,200,.04)}
+.add-product-btn::before{content:"＋";font-size:16px}
+
+/* SUBMIT */
+.submit-section{background:#F7F4F0;border-radius:8px;padding:24px;margin-top:8px}
+.submit-section-title{font-size:10px;letter-spacing:.2em;color:#ABABAB;margin-bottom:12px}
+.submit-section-body{font-size:13px;color:#4A4A4A;line-height:1.8;margin-bottom:20px}
+.submit-btn{width:100%;background:#1C1C1C;color:#fff;border:none;padding:16px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.12em;font-weight:500;cursor:pointer;border-radius:4px;transition:background .2s;margin-bottom:10px}
+.submit-btn:hover{background:#4A4A4A}
+.submit-btn:disabled{background:#ABABAB;cursor:not-allowed}
+.submit-note{font-size:11px;color:#ABABAB;text-align:center;line-height:1.6}
+
+/* PROGRESS */
+.progress-bar{height:3px;background:#E8E4DF;border-radius:3px;margin-bottom:32px;overflow:hidden}
+.progress-fill{height:100%;background:#7BAEC8;border-radius:3px;transition:width .4s;width:0%}
+
+/* SUCCESS */
+.success-screen{display:none;text-align:center;padding:60px 24px}
+.success-icon{width:56px;height:56px;border:1px solid #7BAEC8;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;color:#7BAEC8;font-size:22px}
+.success-h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:500;color:#1C1C1C;margin-bottom:10px}
+.success-body{font-size:14px;color:#7A7A7A;line-height:1.8;max-width:400px;margin:0 auto 24px}
+.success-ref{font-family:'DM Mono',monospace;font-size:11px;color:#ABABAB;letter-spacing:.1em;display:block;margin-bottom:24px}
+.success-next{background:#F7F4F0;border-radius:8px;padding:20px 24px;text-align:left;max-width:480px;margin:0 auto 24px}
+.success-next-title{font-size:10px;letter-spacing:.2em;color:#ABABAB;margin-bottom:12px}
+.success-next-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#4A4A4A;line-height:1.6;margin-bottom:8px}
+.success-next-item::before{content:"→";color:#7BAEC8;flex:none}
+.back-link{font-size:12px;color:#7BAEC8;text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3);padding-bottom:2px}
+
+@media(max-width:640px){
+  nav{padding:0 20px}
+  .page{padding:32px 18px 60px}
+  .info-row{grid-template-columns:1fr}
+  .strip-fields{grid-template-columns:1fr}
+  .field-row-2,.field-row-3,.field-row-4{grid-template-columns:1fr 1fr}
+  .field-row-4{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-word">MIR<span class="logo-flip">R</span></span></a>
+    <a href="/" class="nav-back">← Go back</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- FORM STATE -->
+  <div id="form-state">
+
+    <div class="page-eyebrow">BRAND PRODUCT SUBMISSION</div>
+    <h1 class="page-title">Submit your products.</h1>
+    <p class="page-sub">Add each product below with its photos and garment dimensions. Once submitted our team will review and get your products live on Mirr within 24 hours.</p>
+
+    <div class="info-row">
+      <div class="info-box">
+        <div class="info-box-label">WHAT WE NEED</div>
+        <div class="info-box-body">
+          <strong>Front flat-lay photo</strong> — garment on white background, no model<br>
+          <strong>Back flat-lay photo</strong> — same conditions, rear of garment<br>
+          <strong>Garment dimensions</strong> — per size in centimetres<br>
+          <strong>Price and category</strong>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-label">PHOTO REQUIREMENTS</div>
+        <div class="info-box-body">
+          Plain <strong>white or light background</strong><br>
+          Garment laid <strong>flat and centred</strong><br>
+          No models, no props, no shadows<br>
+          JPEG or PNG, minimum <strong>800 × 1000px</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+    <!-- BRAND DETAILS -->
+    <div class="brand-strip">
+      <div class="strip-label">YOUR BRAND</div>
+      <div class="strip-fields">
+        <div class="field-group" style="margin-bottom:0">
+          <label for="brand-name">Brand name <span class="req">*</span></label>
+          <input type="text" id="brand-name" placeholder="e.g. Apex Active">
+          <div class="field-err" id="err-brand-name">Required</div>
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label for="brand-email">Your email <span class="req">*</span></label>
+          <input type="email" id="brand-email" placeholder="you@yourbrand.com">
+          <div class="field-err" id="err-brand-email">Enter a valid email</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="section-label">YOUR PRODUCTS</div>
+    <div class="products-container" id="products-container">
+      <!-- Products inserted by JS -->
+    </div>
+
+    <button class="add-product-btn" onclick="addProduct()">Add another product</button>
+
+    <!-- SUBMIT -->
+    <div class="submit-section">
+      <div class="submit-section-title">READY TO SUBMIT</div>
+      <div class="submit-section-body">Once you submit, our team will review your products and have them live on Mirr within 24 hours. We'll email you to confirm when each product is available.</div>
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">SUBMIT ALL PRODUCTS →</button>
+      <p class="submit-note">Your photos are uploaded securely. We'll contact you if we need anything adjusted.</p>
+    </div>
+
+  </div>
+
+  <!-- SUCCESS STATE -->
+  <div class="success-screen" id="success-state">
+    <div class="success-icon">✓</div>
+    <h2 class="success-h2">Products received.</h2>
+    <p class="success-body">We've received your product submissions and will have them live on Mirr within 24 hours.</p>
+    <span class="success-ref" id="success-ref"></span>
+    <div class="success-next">
+      <div class="success-next-title">WHAT HAPPENS NEXT</div>
+      <div class="success-next-item">Our team reviews your photos and dimensions</div>
+      <div class="success-next-item">We set up each product with virtual try-on enabled</div>
+      <div class="success-next-item">You receive a confirmation email when products are live</div>
+      <div class="success-next-item">Customers can start trying on and purchasing immediately</div>
+    </div>
+    <a href="/" class="back-link">← Back to Mirr</a>
+  </div>
+
+</div>
+
+<script>
+const IMGBB_KEY = '24f6f02af06d8592eda20babf7a1fc1b';
+const FORMSPREE = 'https://formspree.io/f/xvznvrdo';
+
+let productCount = 0;
+const productData = {};
+
+// Add first product on load
+addProduct();
+
+function addProduct() {
+  productCount++;
+  const idx = productCount;
+  productData[idx] = { frontFile: null, backFile: null, sizes: [] };
+
+  const card = document.createElement('div');
+  card.className = 'product-card';
+  card.id = 'product-' + idx;
+  card.innerHTML = `
+    <div class="product-card-head">
+      <div>
+        <div class="product-card-num">PRODUCT ${idx}</div>
+        <div class="product-card-name" id="pname-display-${idx}">Untitled product</div>
+      </div>
+      ${idx > 1 ? `<button class="product-card-remove" onclick="removeProduct(${idx})">Remove</button>` : ''}
+    </div>
+    <div class="product-card-body">
+
+      <div class="field-row-2" style="margin-bottom:18px">
+        <div class="field-group" style="margin-bottom:0">
+          <label>Product name <span class="req">*</span></label>
+          <input type="text" id="pname-${idx}" placeholder="e.g. Forest Compression Tee"
+            oninput="document.getElementById('pname-display-${idx}').textContent=this.value||'Untitled product'">
+          <div class="field-err" id="err-pname-${idx}">Required</div>
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label>Category <span class="req">*</span></label>
+          <select id="pcat-${idx}">
+            <option value="" disabled selected>Select category</option>
+            <option value="Tops">Tops</option>
+            <option value="Bottoms">Bottoms</option>
+            <option value="Outerwear">Outerwear</option>
+            <option value="Sets">Sets</option>
+            <option value="Swimwear">Swimwear</option>
+            <option value="Dresses">Dresses</option>
+            <option value="Activewear">Activewear</option>
+            <option value="Formalwear">Formalwear</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="field-err" id="err-pcat-${idx}">Required</div>
+        </div>
+      </div>
+
+      <div class="field-row-3" style="margin-bottom:18px">
+        <div class="field-group" style="margin-bottom:0">
+          <label>Price (AUD) <span class="req">*</span></label>
+          <input type="number" id="pprice-${idx}" placeholder="0.00" min="0" step="0.01">
+          <div class="field-err" id="err-pprice-${idx}">Required</div>
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label>SKU / Product code</label>
+          <input type="text" id="psku-${idx}" placeholder="Optional">
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label>Material</label>
+          <input type="text" id="pmaterial-${idx}" placeholder="e.g. 80% Polyester">
+        </div>
+      </div>
+
+      <div class="photo-tips">
+        <div class="photo-tips-title">PHOTO REQUIREMENTS</div>
+        <div class="photo-tips-list">
+          <div class="photo-tip-item"><div class="photo-tip-dot"></div>White or very light background — no coloured surfaces</div>
+          <div class="photo-tip-item"><div class="photo-tip-dot"></div>Garment laid flat and centred — no models, no mannequins</div>
+          <div class="photo-tip-item"><div class="photo-tip-dot"></div>No creases, no shadows — iron the garment before photographing</div>
+          <div class="photo-tip-item"><div class="photo-tip-dot"></div>Minimum 800 × 1000px — JPEG or PNG</div>
+        </div>
+      </div>
+
+      <label style="margin-bottom:10px">Product photos <span class="req">*</span></label>
+      <div class="photo-upload-area">
+        <div class="photo-slot" id="front-slot-${idx}" onclick="triggerUpload('front-input-${idx}')">
+          <input type="file" id="front-input-${idx}" accept="image/jpeg,image/png,image/webp"
+            onchange="handlePhoto(this,'front',${idx})">
+          <img class="preview-img" id="front-preview-${idx}" src="" alt="">
+          <div class="photo-slot-tick">✓</div>
+          <div class="photo-slot-inner">
+            <div class="photo-slot-icon">📷</div>
+            <div class="photo-slot-label">FRONT VIEW</div>
+            <div class="photo-slot-sub">Required for try-on</div>
+          </div>
+        </div>
+        <div class="photo-slot" id="back-slot-${idx}" onclick="triggerUpload('back-input-${idx}')">
+          <input type="file" id="back-input-${idx}" accept="image/jpeg,image/png,image/webp"
+            onchange="handlePhoto(this,'back',${idx})">
+          <img class="preview-img" id="back-preview-${idx}" src="" alt="">
+          <div class="photo-slot-tick">✓</div>
+          <div class="photo-slot-inner">
+            <div class="photo-slot-icon">📷</div>
+            <div class="photo-slot-label">BACK VIEW</div>
+            <div class="photo-slot-sub">Recommended</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-label">GARMENT DIMENSIONS — SIZE S (cm)</div>
+      <p style="font-size:12px;color:#7A7A7A;margin-bottom:14px;line-height:1.7">Enter the actual garment measurements in centimetres for your size S (or your smallest size). We use these to calculate customer fit scores. Measure the garment flat.</p>
+
+      <div class="field-row-4" style="margin-bottom:8px">
+        <div class="field-group" style="margin-bottom:0">
+          <label>Chest (cm)</label>
+          <input type="number" id="dim-chest-${idx}" placeholder="e.g. 48" min="0">
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label>Waist (cm)</label>
+          <input type="number" id="dim-waist-${idx}" placeholder="e.g. 42" min="0">
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label>Length (cm)</label>
+          <input type="number" id="dim-length-${idx}" placeholder="e.g. 70" min="0">
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label>Inseam (cm)</label>
+          <input type="number" id="dim-inseam-${idx}" placeholder="e.g. 80" min="0">
+        </div>
+      </div>
+      <p class="sizes-note" style="margin-bottom:18px">Inseam only required for bottoms. Leave blank if not applicable.</p>
+
+      <div class="divider"></div>
+      <div class="section-label">AVAILABLE SIZES</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px" id="sizes-${idx}">
+        ${['XS','S','M','L','XL','XXL','XXXL'].map(s => `
+        <div class="size-check" id="sz-${idx}-${s}" onclick="toggleSize(${idx},'${s}',this)">${s}</div>
+        `).join('')}
+      </div>
+      <p class="sizes-note">Tap to select all sizes you currently have in stock.</p>
+
+      <div class="divider"></div>
+      <div class="field-group" style="margin-bottom:0">
+        <label>Product description</label>
+        <textarea id="pdesc-${idx}" placeholder="Brief description for customers — fabric, fit, key features..." rows="3"></textarea>
+      </div>
+
+    </div>
+  </div>`;
+
+  document.getElementById('products-container').appendChild(card);
+  updateProgress();
+
+  // Scroll to new card
+  if (idx > 1) {
+    setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+}
+
+function removeProduct(idx) {
+  const card = document.getElementById('product-' + idx);
+  if (card) card.remove();
+  delete productData[idx];
+  updateProgress();
+}
+
+function triggerUpload(inputId) {
+  document.getElementById(inputId).click();
+}
+
+function handlePhoto(input, side, idx) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const slotId = side + '-slot-' + idx;
+    const previewId = side + '-preview-' + idx;
+    document.getElementById(previewId).src = e.target.result;
+    document.getElementById(slotId).classList.add('has-photo');
+    productData[idx][side + 'File'] = file;
+    updateProgress();
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function toggleSize(idx, size, el) {
+  el.classList.toggle('active');
+  const sizes = productData[idx].sizes;
+  const i = sizes.indexOf(size);
+  if (i > -1) sizes.splice(i, 1);
+  else sizes.push(size);
+  updateProgress();
+}
+
+function updateProgress() {
+  const cards = document.querySelectorAll('.product-card');
+  let filled = 0;
+  const total = cards.length * 3; // name + front photo + category
+  cards.forEach(card => {
+    const id = card.id.replace('product-', '');
+    if (document.getElementById('pname-' + id)?.value.trim()) filled++;
+    if (productData[id]?.frontFile) filled++;
+    if (document.getElementById('pcat-' + id)?.value) filled++;
+  });
+  const brand = document.getElementById('brand-name')?.value.trim() ? 1 : 0;
+  const pct = Math.min(100, Math.round((filled + brand) / (total + 1) * 100));
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+document.addEventListener('input', updateProgress);
+
+// VALIDATION
+function setErr(id, show) {
+  const el = document.getElementById('err-' + id);
+  if (el) el.style.display = show ? 'block' : 'none';
+  const field = document.getElementById(id);
+  if (field) field.classList.toggle('err', show);
+}
+
+function validate() {
+  let ok = true;
+
+  const bn = document.getElementById('brand-name').value.trim();
+  setErr('brand-name', !bn);
+  if (!bn) ok = false;
+
+  const be = document.getElementById('brand-email').value.trim();
+  const beOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(be);
+  setErr('brand-email', !beOk);
+  if (!beOk) ok = false;
+
+  // Validate each product card
+  document.querySelectorAll('.product-card').forEach(card => {
+    const id = card.id.replace('product-', '');
+
+    const name = document.getElementById('pname-' + id)?.value.trim();
+    setErr('pname-' + id, !name);
+    if (!name) ok = false;
+
+    const cat = document.getElementById('pcat-' + id)?.value;
+    setErr('pcat-' + id, !cat);
+    if (!cat) ok = false;
+
+    const price = document.getElementById('pprice-' + id)?.value;
+    setErr('pprice-' + id, !price);
+    if (!price) ok = false;
+
+    if (!productData[id]?.frontFile) {
+      const slot = document.getElementById('front-slot-' + id);
+      if (slot) { slot.style.borderColor = '#D4A898'; slot.style.borderStyle = 'solid'; }
+      ok = false;
+    }
+  });
+
+  if (!ok) {
+    const first = document.querySelector('.err, [style*="D4A898"]');
+    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  return ok;
+}
+
+// UPLOAD photo to imgbb, return URL
+async function uploadToImgbb(file) {
+  const b64 = await new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+  const form = new FormData();
+  form.append('image', b64);
+  const resp = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+    method: 'POST', body: form
+  });
+  const data = await resp.json();
+  return data.data.url;
+}
+
+// SUBMIT
+async function submitForm() {
+  if (!validate()) return;
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'UPLOADING PHOTOS...';
+
+  const ref = 'MIRR-PROD-' + new Date().getFullYear() + '-' + Date.now().toString(36).toUpperCase().slice(-6);
+
+  // Collect all product data
+  const products = [];
+  const cards = document.querySelectorAll('.product-card');
+
+  for (const card of cards) {
+    const id = card.id.replace('product-', '');
+    btn.textContent = `UPLOADING PRODUCT ${id} OF ${cards.length}...`;
+
+    let frontUrl = '', backUrl = '';
+
+    // Upload photos to imgbb
+    try {
+      if (productData[id]?.frontFile) {
+        frontUrl = await uploadToImgbb(productData[id].frontFile);
+      }
+      if (productData[id]?.backFile) {
+        backUrl = await uploadToImgbb(productData[id].backFile);
+      }
+    } catch (e) {
+      console.warn('Photo upload error:', e);
+    }
+
+    products.push({
+      name: document.getElementById('pname-' + id)?.value || '',
+      category: document.getElementById('pcat-' + id)?.value || '',
+      price: document.getElementById('pprice-' + id)?.value || '',
+      sku: document.getElementById('psku-' + id)?.value || '',
+      material: document.getElementById('pmaterial-' + id)?.value || '',
+      description: document.getElementById('pdesc-' + id)?.value || '',
+      front_photo: frontUrl,
+      back_photo: backUrl,
+      sizes_in_stock: productData[id]?.sizes.join(', ') || '',
+      dim_chest_cm: document.getElementById('dim-chest-' + id)?.value || '',
+      dim_waist_cm: document.getElementById('dim-waist-' + id)?.value || '',
+      dim_length_cm: document.getElementById('dim-length-' + id)?.value || '',
+      dim_inseam_cm: document.getElementById('dim-inseam-' + id)?.value || '',
+    });
+  }
+
+  btn.textContent = 'SENDING...';
+
+  const payload = {
+    brand_name: document.getElementById('brand-name').value,
+    brand_email: document.getElementById('brand-email').value,
+    reference_number: ref,
+    product_count: products.length,
+    products: JSON.stringify(products, null, 2),
+    submitted_at: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' }),
+    _subject: `Product Submission — ${document.getElementById('brand-name').value} (${products.length} products) (${ref})`,
+  };
+
+  try {
+    await fetch(FORMSPREE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    console.warn('Formspree error:', e);
+  }
+
+  // Show success regardless
+  document.getElementById('form-state').style.display = 'none';
+  document.getElementById('success-state').style.display = 'block';
+  document.getElementById('success-ref').textContent = 'Reference: ' + ref;
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
