@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Contact us — Mirr</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight:300;height:100%}
+@media(prefers-color-scheme:dark){html,body{background:#FDFCFA!important;color:#1C1C1C!important}}
+nav{border-bottom:1px solid #E8E4DF;padding:0 48px}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{display:flex;align-items:baseline;text-decoration:none}
+.logo-word{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;letter-spacing:3px;color:#1C1C1C}
+.logo-flip{display:inline-block;transform:scaleX(-1);color:#7BAEC8}
+.nav-back{font-size:12px;color:#7A7A7A;text-decoration:none}
+.wrap{min-height:calc(100vh - 63px);display:flex;align-items:center;justify-content:center;padding:40px 24px}
+.card{max-width:460px;text-align:center}
+.eyebrow{font-size:10px;letter-spacing:.24em;color:#ABABAB;margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px}
+.eyebrow::before,.eyebrow::after{content:"";width:16px;height:.5px;background:#7BAEC8}
+.title{font-family:'Playfair Display',serif;font-size:34px;font-weight:500;margin-bottom:14px;line-height:1.15}
+.sub{font-size:14px;color:#7A7A7A;line-height:1.8;margin-bottom:32px}
+.email-btn{display:inline-flex;align-items:center;gap:10px;background:#1C1C1C;color:#fff;text-decoration:none;padding:16px 28px;border-radius:4px;font-size:13px;letter-spacing:.08em;font-weight:500;transition:background .2s;margin-bottom:14px}
+.email-btn:hover{background:#4A4A4A}
+.email-btn-icon{font-size:16px}
+.email-fallback{font-size:12px;color:#ABABAB;line-height:1.7}
+.email-fallback strong{color:#7BAEC8;font-weight:500}
+.divider{height:1px;background:#E8E4DF;margin:32px 0}
+.quick-links{display:flex;flex-direction:column;gap:10px;text-align:left;background:#F7F4F0;border-radius:8px;padding:20px 22px}
+.ql-label{font-size:9px;letter-spacing:.18em;color:#ABABAB;margin-bottom:6px}
+.ql-link{font-size:13px;color:#4A4A4A;text-decoration:none;display:flex;align-items:center;gap:8px}
+.ql-link:hover{color:#7BAEC8}
+.ql-link::before{content:"→";color:#7BAEC8;font-size:12px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-word">MIR<span class="logo-flip">R</span></span></a>
+    <a href="/" class="nav-back">← Go back</a>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="card">
+    <div class="eyebrow">GET IN TOUCH</div>
+    <h1 class="title">Let's talk.</h1>
+    <p class="sub">Whether you're a brand interested in listing, a customer with a question, or just curious about Mirr — we'd love to hear from you.</p>
+
+    <a href="mailto:hello@trymirr.com" class="email-btn">
+      <span class="email-btn-icon">✉</span>
+      EMAIL HELLO@TRYMIRR.COM
+    </a>
+    <p class="email-fallback">This opens your email app. If nothing happens, email us directly at<br><strong>hello@trymirr.com</strong></p>
+
+    <div class="divider"></div>
+
+    <div class="quick-links">
+      <div class="ql-label">LOOKING FOR SOMETHING SPECIFIC?</div>
+      <a href="/list-your-brand" class="ql-link">List your brand on Mirr</a>
+      <a href="/submit-products" class="ql-link">Submit products as a listed brand</a>
+      <a href="/about" class="ql-link">Read about our journey</a>
+      <a href="/founding-brands" class="ql-link">See our founding brands</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
