@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>About Mirr — Our story</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight:300;line-height:1.7}
+@media(prefers-color-scheme:dark){html,body{background:#FDFCFA!important;color:#1C1C1C!important}}
+nav{border-bottom:1px solid #E8E4DF;padding:0 48px;position:sticky;top:0;background:#FDFCFA;z-index:50}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{display:flex;align-items:baseline;text-decoration:none}
+.logo-word{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;letter-spacing:3px;color:#1C1C1C}
+.logo-flip{display:inline-block;transform:scaleX(-1);color:#7BAEC8}
+.nav-back{font-size:12px;color:#7A7A7A;text-decoration:none}
+
+.hero{max-width:720px;margin:0 auto;padding:80px 24px 56px;text-align:center}
+.eyebrow{font-size:10px;letter-spacing:.24em;color:#ABABAB;margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px}
+.eyebrow::before,.eyebrow::after{content:"";width:16px;height:.5px;background:#7BAEC8}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,52px);font-weight:500;line-height:1.1;margin-bottom:20px}
+.hero-title em{font-style:italic;color:#7BAEC8}
+.hero-sub{font-size:16px;color:#7A7A7A;line-height:1.85;max-width:560px;margin:0 auto}
+
+.section{max-width:680px;margin:0 auto;padding:0 24px}
+.divider-wide{height:1px;background:#E8E4DF;margin:56px auto;max-width:680px}
+.s-label{font-size:10px;letter-spacing:.2em;color:#7BAEC8;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.s-label::before{content:"";width:16px;height:.5px;background:#7BAEC8}
+.s-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:500;margin-bottom:20px;line-height:1.25}
+.s-body{font-size:15px;color:#4A4A4A;line-height:1.9;margin-bottom:18px}
+.s-body strong{color:#1C1C1C;font-weight:500}
+
+.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#E8E4DF;margin:48px 0;border:1px solid #E8E4DF}
+.stat-cell{background:#FDFCFA;padding:32px 20px;text-align:center}
+.stat-num{font-family:'Playfair Display',serif;font-size:30px;font-weight:500;color:#7BAEC8;margin-bottom:6px;line-height:1}
+.stat-label{font-size:10px;letter-spacing:.1em;color:#ABABAB;line-height:1.5}
+
+.quote-block{background:#F7F4F0;border-left:2px solid #7BAEC8;padding:24px 28px;margin:32px 0;border-radius:0 8px 8px 0}
+.quote-text{font-family:'Playfair Display',serif;font-style:italic;font-size:19px;color:#1C1C1C;line-height:1.6;margin-bottom:10px}
+.quote-attr{font-size:12px;color:#7A7A7A;letter-spacing:.04em}
+
+.value-list{display:flex;flex-direction:column;gap:24px;margin:28px 0}
+.value-item{display:flex;gap:18px;align-items:flex-start}
+.value-num{font-family:'DM Mono',monospace;font-size:13px;color:#7BAEC8;flex:none;padding-top:2px}
+.value-content{flex:1}
+.value-title{font-size:15px;font-weight:500;color:#1C1C1C;margin-bottom:5px}
+.value-desc{font-size:14px;color:#7A7A7A;line-height:1.8}
+
+.cta-section{background:#1C1C1C;color:#fff;padding:64px 24px;text-align:center;margin-top:64px}
+.cta-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:500;margin-bottom:14px}
+.cta-sub{font-size:14px;color:rgba(255,255,255,.65);margin-bottom:28px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.8}
+.cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-btn{padding:14px 26px;border-radius:4px;font-size:12px;letter-spacing:.08em;font-weight:500;text-decoration:none;transition:opacity .2s}
+.cta-btn:hover{opacity:.85}
+.cta-btn-primary{background:#7BAEC8;color:#fff}
+.cta-btn-secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3)}
+
+footer{padding:32px 24px;text-align:center}
+.footer-note{font-size:12px;color:#ABABAB}
+.footer-note a{color:#7BAEC8;text-decoration:none}
+
+@media(max-width:640px){
+  nav{padding:0 20px}
+  .hero{padding:48px 20px 40px}
+  .stat-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-word">MIR<span class="logo-flip">R</span></span></a>
+    <a href="/" class="nav-back">← Go back</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">OUR STORY</div>
+  <h1 class="hero-title">Built because trying on<br>clothes <em>shouldn't end</em><br>when you close the tab.</h1>
+  <p class="hero-sub">Mirr exists to solve one specific, frustrating problem: buying clothes online means guessing. We think customers deserve better than guessing, and brands deserve fewer returns.</p>
+</div>
+
+<div class="section">
+
+  <div class="s-label">THE PROBLEM</div>
+  <p class="s-title">Online shopping broke one thing that physical stores always got right.</p>
+  <p class="s-body">Walk into a store and you can hold a garment up, try it on, and know in seconds whether it fits and whether it suits you. Buy online and you're left staring at a size chart, hoping a "Medium" from one brand means the same thing as a "Medium" from another. It usually doesn't.</p>
+  <p class="s-body">The result is an industry-wide problem: <strong>online fashion return rates regularly sit between 20-40%</strong>, driven almost entirely by sizing and fit uncertainty, not product quality. Every one of those returns costs a brand money, costs the planet in shipping emissions, and costs the customer the disappointment of an item that didn't work out.</p>
+
+  <div class="stat-row">
+    <div class="stat-cell"><div class="stat-num">20-40%</div><div class="stat-label">TYPICAL ONLINE<br>FASHION RETURN RATE</div></div>
+    <div class="stat-cell"><div class="stat-num">70%+</div><div class="stat-label">OF RETURNS CAUSED<br>BY SIZE OR FIT</div></div>
+    <div class="stat-cell"><div class="stat-num">$0</div><div class="stat-label">TO LIST A BRAND<br>ON MIRR</div></div>
+  </div>
+
+  <div class="s-label">WHAT WE BUILT</div>
+  <p class="s-title">A marketplace where you see yourself in the product before you buy it.</p>
+  <p class="s-body">Mirr combines two things that have always existed separately in online retail: virtual try-on, so you can see roughly how a garment looks on you, and dimension-based fit scoring, so you know precisely how it fits against your actual body measurements — not just a generic size label.</p>
+  <p class="s-body">We didn't want to build another size-chart calculator, and we didn't want to build a filter that just slaps a garment over a photo for a laugh. We wanted both pieces of the puzzle working together, because <strong>seeing</strong> and <strong>knowing it fits</strong> are different problems that both need solving before someone clicks "buy" with confidence.</p>
+
+  <div class="quote-block">
+    <div class="quote-text">"The goal was never to build flashy technology. It was to stop people from ordering three sizes of the same shirt just to find out which one fits."</div>
+    <div class="quote-attr">— Founding principle, Mirr</div>
+  </div>
+
+  <div class="s-label">WHY A MARKETPLACE</div>
+  <p class="s-title">We chose to own the full experience, not rent it out.</p>
+  <p class="s-body">Early on we considered building a plugin that brands could bolt onto their own websites. We decided against it. A plugin means every brand's customer has a different, inconsistent experience, and Mirr has no control over the quality of what customers actually see.</p>
+  <p class="s-body">Instead, Mirr is a destination — a marketplace where customers come specifically because they want the try-on and fit-check experience, and brands list their products into an environment built entirely around solving the fit problem. <strong>One consistent experience, one clear story, full control over quality.</strong></p>
+
+  <div class="s-label">WHAT WE BELIEVE</div>
+  <div class="value-list">
+    <div class="value-item">
+      <div class="value-num">01</div>
+      <div class="value-content">
+        <div class="value-title">Zero risk for brands, always</div>
+        <div class="value-desc">No monthly fee, no setup cost, no minimum product count. We only succeed when a brand makes a sale through Mirr.</div>
+      </div>
+    </div>
+    <div class="value-item">
+      <div class="value-num">02</div>
+      <div class="value-content">
+        <div class="value-title">Fit is personal, not generic</div>
+        <div class="value-desc">A size Medium means something different at every brand. Our fit scores are calculated against the actual garment, not a size label.</div>
+      </div>
+    </div>
+    <div class="value-item">
+      <div class="value-num">03</div>
+      <div class="value-content">
+        <div class="value-title">Built for everyone, not one demographic</div>
+        <div class="value-desc">Fashion technology has historically targeted younger, narrower audiences. Mirr is built for anyone trying to buy clothes online with more confidence — 18 to 65 and beyond.</div>
+      </div>
+    </div>
+    <div class="value-item">
+      <div class="value-num">04</div>
+      <div class="value-content">
+        <div class="value-title">Fewer returns is good for everyone</div>
+        <div class="value-desc">Less wasted shipping, less landfill, fewer disappointed customers, and better margins for brands. Reducing returns isn't a side effect of Mirr — it's the point.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s-label">WHERE WE'RE HEADED</div>
+  <p class="s-title">This is the beginning, not the finished product.</p>
+  <p class="s-body">Mirr launched with front-facing virtual try-on and dimension-based fit scoring — already ahead of what most fashion retailers offer today. Multi-angle try-on, deeper size guidance, and tools that help brands understand exactly why a return happened are all part of where we're going next.</p>
+  <p class="s-body">We're building this with our founding brands, not for them from a distance. Every brand that lists in these early days shapes what Mirr becomes.</p>
+
+</div>
+
+<div class="cta-section">
+  <div class="cta-title">Want to be part of the early story?</div>
+  <p class="cta-sub">Founding brands lock in an 8% commission rate for 12 months and help shape the platform from here.</p>
+  <div class="cta-buttons">
+    <a href="/list-your-brand" class="cta-btn cta-btn-primary">LIST YOUR BRAND →</a>
+    <a href="/founding-brands" class="cta-btn cta-btn-secondary">SEE FOUNDING BRANDS</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-note">Questions? <a href="/contact">Get in touch</a> — or email <a href="mailto:hello@trymirr.com">hello@trymirr.com</a></div>
+</footer>
+
+</body>
+</html>
