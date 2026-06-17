@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Founding brands — Mirr</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight:300;line-height:1.7}
+@media(prefers-color-scheme:dark){html,body{background:#FDFCFA!important;color:#1C1C1C!important}}
+nav{border-bottom:1px solid #E8E4DF;padding:0 48px;position:sticky;top:0;background:#FDFCFA;z-index:50}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{display:flex;align-items:baseline;text-decoration:none}
+.logo-word{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;letter-spacing:3px;color:#1C1C1C}
+.logo-flip{display:inline-block;transform:scaleX(-1);color:#7BAEC8}
+.nav-back{font-size:12px;color:#7A7A7A;text-decoration:none}
+
+.hero{max-width:720px;margin:0 auto;padding:72px 24px 40px;text-align:center}
+.eyebrow{font-size:10px;letter-spacing:.24em;color:#ABABAB;margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px}
+.eyebrow::before,.eyebrow::after{content:"";width:16px;height:.5px;background:#7BAEC8}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4.5vw,46px);font-weight:500;line-height:1.15;margin-bottom:18px}
+.hero-title em{font-style:italic;color:#7BAEC8}
+.hero-sub{font-size:15px;color:#7A7A7A;line-height:1.85;max-width:540px;margin:0 auto}
+
+/* PROGRESS TRACKER */
+.progress-section{max-width:680px;margin:0 auto 64px;padding:0 24px}
+.progress-card{background:#F7F4F0;border:1px solid #E8E4DF;border-radius:10px;padding:32px}
+.progress-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
+.progress-num{font-family:'Playfair Display',serif;font-size:38px;font-weight:500;color:#7BAEC8;line-height:1}
+.progress-num span{font-size:20px;color:#ABABAB}
+.progress-label{font-size:11px;letter-spacing:.1em;color:#7A7A7A}
+.progress-track{height:8px;background:#E8E4DF;border-radius:8px;overflow:hidden;margin-bottom:10px}
+.progress-fill{height:100%;background:#7BAEC8;border-radius:8px;transition:width 1s ease}
+.progress-note{font-size:12px;color:#ABABAB;line-height:1.7}
+
+/* EMPTY STATE / FOUNDING SLOTS */
+.section{max-width:680px;margin:0 auto;padding:0 24px 64px}
+.s-label{font-size:10px;letter-spacing:.2em;color:#7BAEC8;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.s-label::before{content:"";width:16px;height:.5px;background:#7BAEC8}
+
+.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:32px}
+.slot{aspect-ratio:1;border:1.5px dashed #E8E4DF;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#fff;position:relative}
+.slot-filled{border-style:solid;border-color:#7BAEC8;background:rgba(123,174,200,.06)}
+.slot-num{font-family:'DM Mono',monospace;font-size:11px;color:#ABABAB}
+.slot-filled .slot-num{color:#7BAEC8}
+
+.empty-state{text-align:center;padding:48px 24px;background:#fff;border:1px solid #E8E4DF;border-radius:10px;margin-bottom:32px}
+.empty-icon{font-size:32px;margin-bottom:16px;opacity:.4}
+.empty-title{font-family:'Playfair Display',serif;font-size:21px;font-weight:500;margin-bottom:10px}
+.empty-body{font-size:14px;color:#7A7A7A;line-height:1.8;max-width:420px;margin:0 auto 24px}
+.empty-cta{display:inline-block;background:#1C1C1C;color:#fff;text-decoration:none;padding:13px 26px;border-radius:4px;font-size:12px;letter-spacing:.08em;font-weight:500;transition:background .2s}
+.empty-cta:hover{background:#4A4A4A}
+
+/* WHAT FOUNDING MEANS */
+.perks-list{display:flex;flex-direction:column;gap:18px}
+.perk-item{display:flex;gap:16px;align-items:flex-start;background:#F7F4F0;border-radius:8px;padding:18px 20px}
+.perk-num{font-family:'Playfair Display',serif;font-size:22px;color:#7BAEC8;font-weight:500;flex:none;line-height:1}
+.perk-content{flex:1}
+.perk-title{font-size:14px;font-weight:500;color:#1C1C1C;margin-bottom:4px}
+.perk-desc{font-size:13px;color:#7A7A7A;line-height:1.7}
+
+.cta-section{background:#1C1C1C;color:#fff;padding:56px 24px;text-align:center}
+.cta-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:500;margin-bottom:12px}
+.cta-sub{font-size:14px;color:rgba(255,255,255,.65);margin-bottom:26px;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.8}
+.cta-btn{display:inline-block;background:#7BAEC8;color:#fff;text-decoration:none;padding:15px 30px;border-radius:4px;font-size:12px;letter-spacing:.08em;font-weight:500;transition:opacity .2s}
+.cta-btn:hover{opacity:.85}
+
+footer{padding:32px 24px;text-align:center}
+.footer-note{font-size:12px;color:#ABABAB}
+.footer-note a{color:#7BAEC8;text-decoration:none}
+
+@media(max-width:640px){
+  nav{padding:0 20px}
+  .hero{padding:48px 20px 32px}
+  .slots-grid{grid-template-columns:repeat(4,1fr);gap:8px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-word">MIR<span class="logo-flip">R</span></span></a>
+    <a href="/" class="nav-back">← Go back</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">FOUNDING BRANDS</div>
+  <h1 class="hero-title">The first 20 brands<br>on Mirr <em>shape what<br>comes next.</em></h1>
+  <p class="hero-sub">Founding brands lock in an 8% commission rate for 12 months, help define the early Mirr experience, and get permanent recognition as the brands who joined first.</p>
+</div>
+
+<div class="progress-section">
+  <div class="progress-card">
+    <div class="progress-head">
+      <div class="progress-num">0<span> / 20</span></div>
+      <div class="progress-label">FOUNDING SPOTS FILLED</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+    <div class="progress-note">Mirr has just launched — these 20 spots are open now. Once filled, new brands join at the standard 12% rate.</div>
+  </div>
+</div>
+
+<div class="section">
+
+  <div class="s-label">FOUNDING SLOTS</div>
+  <div class="slots-grid">
+    <div class="slot"><div class="slot-num">01</div></div>
+    <div class="slot"><div class="slot-num">02</div></div>
+    <div class="slot"><div class="slot-num">03</div></div>
+    <div class="slot"><div class="slot-num">04</div></div>
+    <div class="slot"><div class="slot-num">05</div></div>
+    <div class="slot"><div class="slot-num">06</div></div>
+    <div class="slot"><div class="slot-num">07</div></div>
+    <div class="slot"><div class="slot-num">08</div></div>
+    <div class="slot"><div class="slot-num">09</div></div>
+    <div class="slot"><div class="slot-num">10</div></div>
+    <div class="slot"><div class="slot-num">11</div></div>
+    <div class="slot"><div class="slot-num">12</div></div>
+    <div class="slot"><div class="slot-num">13</div></div>
+    <div class="slot"><div class="slot-num">14</div></div>
+    <div class="slot"><div class="slot-num">15</div></div>
+    <div class="slot"><div class="slot-num">16</div></div>
+    <div class="slot"><div class="slot-num">17</div></div>
+    <div class="slot"><div class="slot-num">18</div></div>
+    <div class="slot"><div class="slot-num">19</div></div>
+    <div class="slot"><div class="slot-num">20</div></div>
+  </div>
+
+  <div class="empty-state">
+    <div class="empty-icon">✦</div>
+    <div class="empty-title">Be the first name here.</div>
+    <div class="empty-body">Mirr is brand new, and every founding spot is genuinely open. The brands who join now get permanent founding status and the lowest commission rate Mirr will ever offer.</div>
+    <a href="/list-your-brand" class="empty-cta">CLAIM A FOUNDING SPOT →</a>
+  </div>
+
+  <div class="s-label">WHAT FOUNDING BRAND STATUS MEANS</div>
+  <div class="perks-list">
+    <div class="perk-item">
+      <div class="perk-num">01</div>
+      <div class="perk-content">
+        <div class="perk-title">8% commission, locked for 12 months</div>
+        <div class="perk-desc">The lowest rate Mirr will offer. After the founding period, the standard rate is 12%.</div>
+      </div>
+    </div>
+    <div class="perk-item">
+      <div class="perk-num">02</div>
+      <div class="perk-content">
+        <div class="perk-title">Permanent founding brand recognition</div>
+        <div class="perk-desc">A founding badge on your Mirr listing for as long as you remain on the platform.</div>
+      </div>
+    </div>
+    <div class="perk-item">
+      <div class="perk-num">03</div>
+      <div class="perk-content">
+        <div class="perk-title">Direct input on new features</div>
+        <div class="perk-desc">Founding brands get early access to new tools and a direct line to the Mirr team for feedback.</div>
+      </div>
+    </div>
+    <div class="perk-item">
+      <div class="perk-num">04</div>
+      <div class="perk-content">
+        <div class="perk-title">Zero monthly fee, zero setup cost</div>
+        <div class="perk-desc">Applies to every brand on Mirr, founding or not — but worth repeating. Mirr earns only when you do.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="cta-section">
+  <div class="cta-title">20 spots. No catch. No fee.</div>
+  <p class="cta-sub">Submit your details and we'll be in touch within 24 hours to get your products live on Mirr.</p>
+  <a href="/list-your-brand" class="cta-btn">LIST YOUR BRAND →</a>
+</div>
+
+<footer>
+  <div class="footer-note">Questions? <a href="/contact">Get in touch</a> — or email <a href="mailto:hello@trymirr.com">hello@trymirr.com</a></div>
+</footer>
+
+</body>
+</html>
