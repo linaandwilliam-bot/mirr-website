@@ -555,7 +555,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 
 <nav>
   <div class="nav-inner">
-    <a href="#" class="logo">
+    <a href="/" class="logo">
       <span class="logo-word">MIR<span class="logo-flip">R</span></span>
     </a>
     <div class="nav-mid">
@@ -1048,7 +1048,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
   <p class="cta-sub">Join the founding brands on Mirr. No monthly fee. No setup cost. 8% founding rate locked for 12 months.</p>
   <div class="cta-form">
     <input type="email" class="cta-input" placeholder="your brand email" id="ei">
-    <button class="cta-btn" onclick="sub()">GET EARLY ACCESS</button>
+    <button class="cta-btn" id="sub-btn" onclick="sub()">GET EARLY ACCESS</button>
   </div>
   <p class="cta-note" id="sn">We'll reach out within 24 hours to get your brand listed.</p>
 </section>
@@ -1057,7 +1057,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 <footer>
   <div class="footer-top">
     <div>
-      <a href="#" class="footer-brand-logo">
+      <a href="/" class="footer-brand-logo">
         <span class="flogo-word">MIR<span class="flogo-flip">R</span></span>
       </a>
       <div class="footer-tagline">try it on. buy with confidence.</div>
@@ -1240,11 +1240,28 @@ function tfaq(btn){
 
 // Submit
 function sub(){
-  const e=document.getElementById('ei').value,n=document.getElementById('sn');
-  if(!e||!e.includes('@')){n.textContent='Please enter a valid email address.';n.style.color='var(--rose)';return}
-  n.textContent="✓ You're on the list. We'll be in touch within 24 hours.";
-  n.style.color='var(--sky)';
-  document.getElementById('ei').value='';
+  const e=document.getElementById('ei').value,n=document.getElementById('sn'),btn=document.getElementById('sub-btn');
+  if(!e||!e.includes('@')||!e.includes('.')){n.textContent='Please enter a valid email address.';n.style.color='var(--rose)';return}
+  if(btn){btn.disabled=true;btn.textContent='SENDING...'}
+  fetch('https://formspree.io/f/xvznvrdo',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({
+      brand_email:e,
+      source:'Homepage early access form',
+      submitted_at:new Date().toLocaleString('en-AU',{timeZone:'Australia/Melbourne'}),
+      _subject:'Early Access Request — '+e
+    })
+  }).then(function(){
+    n.textContent="✓ You're on the list. We'll be in touch within 24 hours.";
+    n.style.color='var(--sky)';
+    document.getElementById('ei').value='';
+    if(btn){btn.disabled=false;btn.textContent='GET EARLY ACCESS'}
+  }).catch(function(){
+    n.textContent='Something went wrong — please email hello@trymirr.com directly.';
+    n.style.color='var(--rose)';
+    if(btn){btn.disabled=false;btn.textContent='GET EARLY ACCESS'}
+  });
 }
 </script>
 </body>
