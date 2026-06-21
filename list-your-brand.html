@@ -495,9 +495,9 @@ function showSuccess(brandName, brandEmail, premiumVal, ref) {
     + '?subject=' + encodeURIComponent(reply.subject)
     + '&body=' + encodeURIComponent(reply.body);
 
+  // Populated for internal reference only — intentionally not shown to the brand.
   document.getElementById('reply-to-email').textContent = brandEmail;
   document.getElementById('reply-link').href = mailto;
-  document.getElementById('reply-box').style.display = 'block';
 
   window.scrollTo(0, 0);
 }
