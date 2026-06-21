@@ -173,7 +173,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 
     <div class="page-eyebrow">BRAND PRODUCT SUBMISSION</div>
     <h1 class="page-title">Submit your products.</h1>
-    <p class="page-sub">Add each product below with its photos and garment dimensions. Once submitted our team will review and get your products live on Mirr within 24 hours.</p>
+    <p class="page-sub">Add each product below with its photos and garment dimensions. Once submitted our team will review and get your products live on Mirr within 72 hours.</p>
 
     <div class="info-row">
       <div class="info-box">
@@ -226,7 +226,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
     <!-- SUBMIT -->
     <div class="submit-section">
       <div class="submit-section-title">READY TO SUBMIT</div>
-      <div class="submit-section-body">Once you submit, our team will review your products and have them live on Mirr within 24 hours. We'll email you to confirm when each product is available.</div>
+      <div class="submit-section-body">Once you submit, our team will review your products and have them live on Mirr within 72 hours. We'll email you to confirm when each product is available.</div>
       <button class="submit-btn" id="submit-btn" onclick="submitForm()">SUBMIT ALL PRODUCTS →</button>
       <p class="submit-note">Your photos are uploaded securely. We'll contact you if we need anything adjusted.</p>
     </div>
@@ -237,7 +237,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
   <div class="success-screen" id="success-state">
     <div class="success-icon">✓</div>
     <h2 class="success-h2">Products received.</h2>
-    <p class="success-body">We've received your product submissions and will have them live on Mirr within 24 hours.</p>
+    <p class="success-body">We've received your product submissions and will have them live on Mirr within 72 hours.</p>
     <span class="success-ref" id="success-ref"></span>
     <div class="success-next">
       <div class="success-next-title">WHAT HAPPENS NEXT</div>
@@ -264,6 +264,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 <script>
 const IMGBB_KEY = '24f6f02af06d8592eda20babf7a1fc1b';
 const FORMSPREE = 'https://formspree.io/f/xvznvrdo';
+const CATALOG_WORKER = 'https://mirr-catalog-worker.linaandwilliam.workers.dev';
 
 let productCount = 0;
 const productData = {};
@@ -568,8 +569,6 @@ async function attemptSubmit() {
   btn.disabled = true;
   btn.textContent = 'UPLOADING PHOTOS...';
 
-  const ref = 'MIRR-PROD-' + new Date().getFullYear() + '-' + Date.now().toString(36).toUpperCase().slice(-6);
-
   // Collect all product data
   const products = [];
   const cards = document.querySelectorAll('.product-card');
@@ -620,32 +619,54 @@ async function attemptSubmit() {
 
   btn.textContent = 'SENDING...';
 
-  const payload = {
-    brand_name: document.getElementById('brand-name').value,
-    brand_email: document.getElementById('brand-email').value,
-    reference_number: ref,
-    product_count: products.length,
-    products: JSON.stringify(products, null, 2),
-    submitted_at: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' }),
-    _subject: `Product Submission — ${document.getElementById('brand-name').value} (${products.length} products) (${ref})`,
-  };
+  const brandName = document.getElementById('brand-name').value;
+  const brandEmail = document.getElementById('brand-email').value;
 
+  // ── Catalog Worker is the authoritative pipeline record ──
+  // This is what actually tracks submitted → reviewing → live, and what
+  // triggers the automated confirmation email once a brand reviewer marks
+  // a submission live. If this call fails, the submission genuinely has
+  // not entered the pipeline, so we show the honest error state.
+  let ref;
   try {
-    const resp = await fetch(FORMSPREE, {
+    const resp = await fetch(CATALOG_WORKER + '/submit', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brand_name: brandName, brand_email: brandEmail, products }),
     });
-    if (!resp.ok) throw new Error('Formspree returned ' + resp.status);
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) throw new Error(data.error || ('Worker returned ' + resp.status));
+    ref = data.ref;
   } catch (e) {
-    console.warn('Formspree error:', e);
-    showError("We couldn't send your submission to our team. Your products and details are still filled in below — please try again in a moment.");
+    console.warn('Catalog worker submit error:', e);
+    showError("We couldn't register your submission in our system. Your products and details are still filled in below — please try again in a moment.");
     btn.disabled = false;
     btn.textContent = 'SUBMIT ALL PRODUCTS →';
     return;
   }
 
-  // Only reached if everything actually succeeded
+  // ── Formspree: secondary, non-blocking notification ──
+  // This just gives an inbox heads-up; it is no longer the source of truth
+  // for the pipeline, so its failure does not block the submission.
+  try {
+    await fetch(FORMSPREE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        brand_name: brandName,
+        brand_email: brandEmail,
+        reference_number: ref,
+        product_count: products.length,
+        products: JSON.stringify(products, null, 2),
+        submitted_at: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' }),
+        _subject: `Product Submission — ${brandName} (${products.length} products) (${ref})`,
+      }),
+    });
+  } catch (e) {
+    console.warn('Formspree notification failed (non-blocking):', e);
+  }
+
+  // Only reached if the catalog submission actually succeeded
   document.getElementById('form-state').style.display = 'none';
   document.getElementById('error-state').style.display = 'none';
   document.getElementById('success-state').style.display = 'block';
