@@ -133,6 +133,13 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 .success-icon{width:56px;height:56px;border:1px solid #7BAEC8;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;color:#7BAEC8;font-size:22px}
 .success-h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:500;color:#1C1C1C;margin-bottom:10px}
 .success-body{font-size:14px;color:#7A7A7A;line-height:1.8;max-width:400px;margin:0 auto 24px}
+.error-screen{display:none;text-align:center;padding:60px 24px}
+.error-icon{width:56px;height:56px;border:1px solid #D4A898;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;color:#8A6A5C;font-size:22px}
+.error-h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:500;color:#1C1C1C;margin-bottom:10px}
+.error-body{font-size:14px;color:#7A7A7A;line-height:1.8;max-width:440px;margin:0 auto 20px}
+.error-detail{font-size:12px;color:#ABABAB;background:#F7F4F0;border-radius:6px;padding:12px 16px;max-width:440px;margin:0 auto 24px;text-align:left;line-height:1.7}
+.retry-btn{display:inline-block;background:#1C1C1C;color:#fff;text-decoration:none;border:none;padding:14px 28px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.1em;font-weight:500;cursor:pointer;border-radius:4px;margin-bottom:14px}
+.retry-btn:hover{background:#4A4A4A}
 .success-ref{font-family:'DM Mono',monospace;font-size:11px;color:#ABABAB;letter-spacing:.1em;display:block;margin-bottom:24px}
 .success-next{background:#F7F4F0;border-radius:8px;padding:20px 24px;text-align:left;max-width:480px;margin:0 auto 24px}
 .success-next-title{font-size:10px;letter-spacing:.2em;color:#ABABAB;margin-bottom:12px}
@@ -240,6 +247,16 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
       <div class="success-next-item">Customers can start trying on and purchasing immediately</div>
     </div>
     <a href="/" class="back-link">← Back to Mirr</a>
+  </div>
+
+  <!-- ERROR STATE -->
+  <div class="error-screen" id="error-state">
+    <div class="error-icon">!</div>
+    <h2 class="error-h2">Submission didn't go through.</h2>
+    <p class="error-body">Something went wrong sending your products — this is on our end, not yours. Your details haven't been lost; nothing has been submitted yet.</p>
+    <div class="error-detail" id="error-detail-text">We couldn't reach our submission service. Please check your connection and try again.</div>
+    <button class="retry-btn" onclick="retrySubmit()">TRY AGAIN →</button>
+    <p class="success-body" style="margin-bottom:0">Still not working? Email your details directly to <a href="mailto:hello@trymirr.com" style="color:#7BAEC8;text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">hello@trymirr.com</a> and we'll get it sorted.</p>
   </div>
 
 </div>
@@ -350,8 +367,8 @@ function addProduct() {
       </div>
 
       <div class="divider"></div>
-      <div class="section-label">GARMENT DIMENSIONS — SIZE S (cm)</div>
-      <p style="font-size:12px;color:#7A7A7A;margin-bottom:14px;line-height:1.7">Enter the actual garment measurements in centimetres for your size S (or your smallest size). We use these to calculate customer fit scores. Measure the garment flat.</p>
+      <div class="section-label" id="dim-label-${idx}">GARMENT DIMENSIONS — SMALLEST SIZE (cm)</div>
+      <p style="font-size:12px;color:#7A7A7A;margin-bottom:14px;line-height:1.7">Enter the actual garment measurements in centimetres for your smallest stocked size. We use these to calculate customer fit scores. Measure the garment flat.</p>
 
       <div class="field-row-4" style="margin-bottom:8px">
         <div class="field-group" style="margin-bottom:0">
@@ -433,7 +450,21 @@ function toggleSize(idx, size, el) {
   const i = sizes.indexOf(size);
   if (i > -1) sizes.splice(i, 1);
   else sizes.push(size);
+  updateDimLabel(idx);
   updateProgress();
+}
+
+function updateDimLabel(idx) {
+  const order = ['XS','S','M','L','XL','XXL','XXXL'];
+  const sizes = productData[idx].sizes;
+  const label = document.getElementById('dim-label-' + idx);
+  if (!label) return;
+  if (sizes.length === 0) {
+    label.textContent = 'GARMENT DIMENSIONS — SMALLEST SIZE (cm)';
+    return;
+  }
+  const smallest = order.find(s => sizes.includes(s));
+  label.textContent = 'GARMENT DIMENSIONS — SIZE ' + smallest + ' (cm)';
 }
 
 function updateProgress() {
@@ -523,7 +554,16 @@ async function uploadToImgbb(file) {
 // SUBMIT
 async function submitForm() {
   if (!validate()) return;
+  await attemptSubmit();
+}
 
+async function retrySubmit() {
+  document.getElementById('error-state').style.display = 'none';
+  document.getElementById('form-state').style.display = 'block';
+  await attemptSubmit();
+}
+
+async function attemptSubmit() {
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.textContent = 'UPLOADING PHOTOS...';
@@ -533,12 +573,14 @@ async function submitForm() {
   // Collect all product data
   const products = [];
   const cards = document.querySelectorAll('.product-card');
+  let uploadFailures = [];
 
   for (const card of cards) {
     const id = card.id.replace('product-', '');
     btn.textContent = `UPLOADING PRODUCT ${id} OF ${cards.length}...`;
 
     let frontUrl = '', backUrl = '';
+    const pname = document.getElementById('pname-' + id)?.value || ('Product ' + id);
 
     // Upload photos to imgbb
     try {
@@ -550,10 +592,17 @@ async function submitForm() {
       }
     } catch (e) {
       console.warn('Photo upload error:', e);
+      uploadFailures.push(pname);
+      // Don't continue building a payload with a missing required photo —
+      // bail out to the honest error screen instead of submitting incomplete data.
+      showError(`We couldn't upload the photo for "${pname}". Please check your connection and try again — your entries are still here.`);
+      btn.disabled = false;
+      btn.textContent = 'SUBMIT ALL PRODUCTS →';
+      return;
     }
 
     products.push({
-      name: document.getElementById('pname-' + id)?.value || '',
+      name: pname,
       category: document.getElementById('pcat-' + id)?.value || '',
       price: document.getElementById('pprice-' + id)?.value || '',
       sku: document.getElementById('psku-' + id)?.value || '',
@@ -582,19 +631,32 @@ async function submitForm() {
   };
 
   try {
-    await fetch(FORMSPREE, {
+    const resp = await fetch(FORMSPREE, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload),
     });
+    if (!resp.ok) throw new Error('Formspree returned ' + resp.status);
   } catch (e) {
     console.warn('Formspree error:', e);
+    showError("We couldn't send your submission to our team. Your products and details are still filled in below — please try again in a moment.");
+    btn.disabled = false;
+    btn.textContent = 'SUBMIT ALL PRODUCTS →';
+    return;
   }
 
-  // Show success regardless
+  // Only reached if everything actually succeeded
   document.getElementById('form-state').style.display = 'none';
+  document.getElementById('error-state').style.display = 'none';
   document.getElementById('success-state').style.display = 'block';
   document.getElementById('success-ref').textContent = 'Reference: ' + ref;
+  window.scrollTo(0, 0);
+}
+
+function showError(message) {
+  document.getElementById('form-state').style.display = 'none';
+  document.getElementById('error-state').style.display = 'block';
+  document.getElementById('error-detail-text').textContent = message;
   window.scrollTo(0, 0);
 }
 </script>
