@@ -102,6 +102,12 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
 .success-icon{width:52px;height:52px;border:1px solid #7BAEC8;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;color:#7BAEC8;font-size:20px}
 .success-h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:#1C1C1C;margin-bottom:10px}
 .success-body{font-size:13px;color:#7A7A7A;line-height:1.8;max-width:300px;margin:0 auto 20px}
+.error-screen{display:none;text-align:center;padding:60px 32px}
+.error-icon{width:52px;height:52px;border:1px solid #D4A898;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;color:#8A6A5C;font-size:20px}
+.error-h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:#1C1C1C;margin-bottom:10px}
+.error-body{font-size:13px;color:#7A7A7A;line-height:1.8;max-width:340px;margin:0 auto 20px}
+.retry-btn{display:inline-block;background:#1C1C1C;color:#fff;text-decoration:none;border:none;padding:13px 26px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.1em;font-weight:500;cursor:pointer;border-radius:4px;margin-bottom:14px}
+.retry-btn:hover{background:#4A4A4A}
 .success-ref{font-family:'DM Mono',monospace;font-size:11px;color:#ABABAB;letter-spacing:.1em;margin-bottom:20px;display:block}
 .reply-box{background:rgba(123,174,200,.07);border:.5px solid rgba(123,174,200,.25);border-radius:8px;padding:16px 18px;text-align:left;margin-bottom:20px}
 .reply-box-label{font-size:9px;letter-spacing:.2em;color:#7BAEC8;margin-bottom:8px}
@@ -342,6 +348,15 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
       <a href="/" class="back-link">← Back to Mirr</a>
     </div>
 
+    <!-- ERROR -->
+    <div class="error-screen" id="error-state">
+      <div class="error-icon">!</div>
+      <h2 class="error-h2">Submission didn't go through.</h2>
+      <p class="error-body">Something went wrong on our end sending your details. Nothing has been submitted yet — your information is still filled in below.</p>
+      <button type="button" class="retry-btn" onclick="retrySubmit()">TRY AGAIN →</button>
+      <p class="success-body">Still not working? Email us directly at <a href="mailto:hello@trymirr.com" style="color:#7BAEC8;text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">hello@trymirr.com</a></p>
+    </div>
+
   </div>
 </div>
 
@@ -436,9 +451,17 @@ function getReply(brandName, premium, ref) {
 document.getElementById('brand-form').addEventListener('submit', function(e) {
   e.preventDefault();
   e.stopPropagation();
-
   if (!validate()) return;
+  attemptSubmit();
+});
 
+function retrySubmit() {
+  document.getElementById('error-state').style.display = 'none';
+  document.getElementById('form-state').style.display = 'block';
+  attemptSubmit();
+}
+
+function attemptSubmit() {
   var btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.textContent = 'SENDING...';
@@ -475,12 +498,18 @@ document.getElementById('brand-form').addEventListener('submit', function(e) {
     body: JSON.stringify(payload)
   })
   .then(function(res) {
+    if (!res.ok) throw new Error('Formspree returned ' + res.status);
     showSuccess(brandName, brandEmail, premiumVal, ref);
   })
-  .catch(function() {
-    showSuccess(brandName, brandEmail, premiumVal, ref);
+  .catch(function(err) {
+    console.warn('Submit error:', err.message);
+    document.getElementById('form-state').style.display = 'none';
+    document.getElementById('error-state').style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'SEND YOUR DETAILS →';
+    window.scrollTo(0, 0);
   });
-});
+}
 
 function showSuccess(brandName, brandEmail, premiumVal, ref) {
   // Hide form, show success
