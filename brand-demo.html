@@ -786,7 +786,7 @@ function runTryOn() {
   var procTitle = document.querySelector('.proc-title');
   var procSub = document.querySelector('.proc-sub');
   if (procTitle) procTitle.textContent = 'Fitting garment to your photo...';
-  if (procSub) procSub.textContent = 'This takes 15-30 seconds. Please wait.';
+  if (procSub) procSub.textContent = 'This can take up to 2 minutes. Please wait.';
 
   ['ps1','ps2','ps3','ps4'].forEach(function(id) {
     document.getElementById(id).classList.remove('done','active');
@@ -832,7 +832,7 @@ function runTryOn() {
     // STEP 2: Poll /status every 3 seconds until completed
     var jobId = data.job_id;
     var pollCount = 0;
-    var maxPolls = 30; // 30 × 3s = 90 seconds max
+    var maxPolls = 60; // 60 × 3s = 180 seconds max — PixelAPI jobs have been observed taking 90-120s+
 
     var pollInterval = setInterval(function() {
       pollCount++;
