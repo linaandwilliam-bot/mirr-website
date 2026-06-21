@@ -54,6 +54,21 @@ nav{position:sticky;top:0;z-index:200;background:rgba(253,252,250,.96);backdrop-
 .nav-cta{font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.05em;font-weight:400;color:#fff;background:var(--sky);border:none;padding:10px 22px;cursor:pointer;text-decoration:none;transition:background .2s;display:inline-block}
 .nav-cta:hover{background:var(--sky-lt)}
 
+/* ── MOBILE NAV ── */
+.nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:32px;height:32px;background:none;border:none;cursor:pointer;padding:0;z-index:210}
+.nav-burger span{display:block;width:22px;height:1.5px;background:var(--ink);transition:transform .25s,opacity .25s}
+.nav-burger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-burger.open span:nth-child(2){opacity:0}
+.nav-burger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.nav-mobile-panel{display:none;position:fixed;top:62px;left:0;right:0;bottom:0;background:var(--page);z-index:199;overflow-y:auto;padding:8px 24px 40px;flex-direction:column}
+.nav-mobile-panel.open{display:flex}
+.nav-mobile-panel a{font-size:16px;color:var(--ink);text-decoration:none;padding:16px 0;border-bottom:1px solid var(--line)}
+.nav-mobile-panel a.nav-mobile-cta{color:#fff;background:var(--sky);text-align:center;border-bottom:none;border-radius:2px;padding:14px 0;margin-top:20px;font-size:13px;letter-spacing:.08em;font-weight:500}
+@media(max-width:960px){
+  .nav-mid,.nav-end{display:none}
+  .nav-burger{display:flex}
+}
+
 /* ── HERO ── */
 .hero{display:grid;grid-template-columns:1fr 1fr;min-height:90vh;border-bottom:1px solid var(--line)}
 
@@ -272,7 +287,6 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 /* ── RESPONSIVE ── */
 @media(max-width:960px){
   .nav-inner{padding:0 24px}
-  .nav-mid{display:none}
   .hero{grid-template-columns:1fr;min-height:auto}
   .hero-left{padding:52px 24px 40px}
   .hero-right{min-height:340px}
@@ -569,8 +583,36 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
       <a href="/submit-products" class="nav-link">Submit products</a>
       <a href="/list-your-brand" style="font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.05em;font-weight:300;color:#fff;background:#7BAEC8;text-decoration:none;padding:8px 18px;display:inline-block;transition:background .2s" onmouseover="this.style.background='#A8C5D8'" onmouseout="this.style.background='#7BAEC8'">List your brand</a>
     </div>
+    <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile-panel" id="nav-mobile-panel">
+    <a href="#how" onclick="closeMobileNav()">How it works</a>
+    <a href="#brands" onclick="closeMobileNav()">For brands</a>
+    <a href="#fitting" onclick="closeMobileNav()">Fitting room</a>
+    <a href="#faq" onclick="closeMobileNav()">FAQ</a>
+    <a href="/brand-demo" onclick="closeMobileNav()">Live demo</a>
+    <a href="/submit-products" onclick="closeMobileNav()">Submit products</a>
+    <a href="/list-your-brand" class="nav-mobile-cta" onclick="closeMobileNav()">List your brand →</a>
   </div>
 </nav>
+<script>
+function toggleMobileNav(){
+  var panel = document.getElementById('nav-mobile-panel');
+  var burger = document.getElementById('nav-burger');
+  var isOpen = panel.classList.toggle('open');
+  burger.classList.toggle('open', isOpen);
+  burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+function closeMobileNav(){
+  document.getElementById('nav-mobile-panel').classList.remove('open');
+  document.getElementById('nav-burger').classList.remove('open');
+  document.getElementById('nav-burger').setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+</script>
 
 <!-- HERO -->
 <section class="hero">
@@ -787,7 +829,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
       <div class="how-step-num">01</div>
       <div class="how-step-tag">FOR BRANDS</div>
       <div class="how-step-title">Create your free brand account</div>
-      <div class="how-step-desc">Sign up in under 2 minutes. No credit card. Your brand reviewed and live within 24 hours.</div>
+      <div class="how-step-desc">Sign up in under 2 minutes. No credit card. Your brand reviewed and live within 72 hours.</div>
     </div>
     <div class="how-step">
       <div class="how-step-num">02</div>
@@ -920,7 +962,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
       </div>
       <div class="process-step">
         <div class="ps-line"><div class="ps-num">03</div><div class="ps-conn"></div></div>
-        <div class="ps-body"><div class="ps-tag">GOING LIVE</div><div class="ps-title">Your products appear on Mirr</div><div class="ps-desc">Within 24 hours of approval, your items are visible to all Mirr shoppers. You're notified for every sale.</div></div>
+        <div class="ps-body"><div class="ps-tag">GOING LIVE</div><div class="ps-title">Your products appear on Mirr</div><div class="ps-desc">Within 72 hours of approval, your items are visible to all Mirr shoppers. You're notified for every sale.</div></div>
       </div>
       <div class="process-step">
         <div class="ps-line"><div class="ps-num">04</div></div>
@@ -1037,7 +1079,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
       <div class="faq-item"><button class="faq-q" onclick="tfaq(this)">Does listing on Mirr replace my own website?<span class="faq-ic">+</span></button><div class="faq-a">No. Mirr is an additional sales channel — like listing on a marketplace. Your own store stays exactly as it is. Mirr brings you customers who want to try before they buy.</div></div>
       <div class="faq-item"><button class="faq-q" onclick="tfaq(this)">How does shipping work?<span class="faq-ic">+</span></button><div class="faq-a">You ship directly to the customer. When a sale is made you receive the order details and shipping address. You fulfil exactly as you would from your own store. Mirr handles payment and commission.</div></div>
       <div class="faq-item"><button class="faq-q" onclick="tfaq(this)">What about returns?<span class="faq-ic">+</span></button><div class="faq-a">Returns are handled between you and the customer per your policy. If a return results in a refund, the commission on that transaction is reversed automatically. The goal of Mirr is to significantly reduce returns — customers who try on before buying are far more confident.</div></div>
-      <div class="faq-item"><button class="faq-q" onclick="tfaq(this)">How quickly can my brand go live?<span class="faq-ic">+</span></button><div class="faq-a">Within 24 hours of submitting your product photos and dimensions. Once approved your products are visible to all Mirr shoppers immediately.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="tfaq(this)">How quickly can my brand go live?<span class="faq-ic">+</span></button><div class="faq-a">Within 72 hours of submitting your product photos and dimensions. Once approved your products are visible to all Mirr shoppers immediately.</div></div>
       <div class="faq-item"><button class="faq-q" onclick="tfaq(this)">Is there a minimum number of products?<span class="faq-ic">+</span></button><div class="faq-a">No minimum. Start with one product. Most founding brands start with 3–5 best-sellers to test performance before uploading their full catalogue.</div></div>
     </div>
   </div>
