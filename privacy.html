@@ -57,6 +57,8 @@ footer{padding:32px 24px;text-align:center;border-top:1px solid #E8E4DF}
   nav{padding:0 20px}
   .page{padding:40px 18px 60px}
   table,th,td{font-size:12px}
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:18px 0 24px;border:1px solid #E8E4DF;border-radius:6px}
+  .table-scroll table{margin:0;min-width:480px}
 }
 </style>
 </head>
@@ -119,14 +121,14 @@ footer{padding:32px 24px;text-align:center;border-top:1px solid #E8E4DF}
 
   <h2 id="why">2. Why we collect it</h2>
   <p>We only collect information that's actually needed to make Mirr work. Specifically:</p>
-  <table>
+  <div class="table-scroll"><table>
     <tr><th>Information</th><th>Why we collect it</th></tr>
     <tr><td>Photos and measurements</td><td>To generate your virtual try-on result and calculate fit scores for the products you're viewing</td></tr>
     <tr><td>Account and contact details</td><td>To manage your account, send order updates, and respond to enquiries</td></tr>
     <tr><td>Order and payment information</td><td>To process and fulfil your purchases, and to pay brands correctly via Stripe Connect</td></tr>
     <tr><td>Usage data</td><td>To understand how people use Mirr and to fix bugs or improve the experience</td></tr>
     <tr><td>Brand product data</td><td>To list products accurately and enable virtual try-on and fit scoring for that product</td></tr>
-  </table>
+  </table></div>
 
   <h2 id="photos">3. Your photos and virtual try-on</h2>
   <div class="highlight-box">
@@ -143,14 +145,14 @@ footer{padding:32px 24px;text-align:center;border-top:1px solid #E8E4DF}
 
   <h2 id="sharing">4. Who we share information with</h2>
   <p>We share information only where it's necessary to provide the Mirr service. We do not sell personal information to third parties for advertising or marketing purposes.</p>
-  <table>
+  <div class="table-scroll"><table>
     <tr><th>Who</th><th>What's shared</th><th>Why</th></tr>
     <tr><td>PixelAPI</td><td>Your uploaded photo, the garment image</td><td>To generate your virtual try-on result</td></tr>
     <tr><td>Stripe / Stripe Connect</td><td>Payment details, order amount, payout details for brands</td><td>To process payments and pay brands</td></tr>
     <tr><td>The brand you purchase from</td><td>Your name, delivery address, order details</td><td>So the brand can fulfil and ship your order</td></tr>
     <tr><td>imgbb (image hosting)</td><td>Product photos uploaded by brands</td><td>To host product images shown on Mirr</td></tr>
     <tr><td>Formspree (form processing)</td><td>Information submitted via brand interest or product forms</td><td>To route brand submissions to the Mirr team</td></tr>
-  </table>
+  </table></div>
   <p>We may also disclose information if required by law, to protect the rights or safety of Mirr, our brands, or our customers, or in connection with a future sale or transfer of the Mirr business (in which case you would be notified).</p>
 
   <h2 id="storage">5. How long we keep your information</h2>
