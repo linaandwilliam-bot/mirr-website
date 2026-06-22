@@ -976,6 +976,8 @@ function showFallbackResult(hadError) {
     }
     msg.textContent = 'Upload your photo in Step 1 to see yourself here';
     document.getElementById('tryon-note').textContent = 'Go back to Step 1 and upload a photo.';
+    document.getElementById('result-state').style.display = 'block';
+    return; // no photo, no fit score — don't show a verdict with nothing behind it
   }
 
   document.getElementById('r-img').src = IMGS[curProd];
