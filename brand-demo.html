@@ -623,7 +623,7 @@ body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight
             <div><div class="rovl">OVERALL FIT</div><div class="rovs" id="rov-sub">Based on your measurements</div></div>
             <div class="rovn" id="rov-score">—</div>
           </div>
-          <div class="rverd"><div class="rvico">✓</div><div class="rvt" id="rv-t">Good fit</div><div class="rvb" id="rv-b">This item matches your measurements well.</div></div>
+          <div class="rverd" id="rverd" style="display:none"><div class="rvico" id="rvico">✓</div><div class="rvt" id="rv-t"></div><div class="rvb" id="rv-b"></div></div>
           <div class="snv">
             <button class="sbk2" onclick="goStep(2)">← Adjust</button>
             <button class="snxt" onclick="scrollToBuy()">BUY NOW →</button>
@@ -1014,6 +1014,7 @@ function calcFit() {
   const avg = cnt > 0 ? Math.round(tot / cnt) : 0;
   setTimeout(() => {
     document.getElementById('rov-score').textContent = avg + '%';
+    document.getElementById('rverd').style.display = 'block';
     if (avg >= 90) {
       document.getElementById('rv-t').textContent = '✓ Excellent fit for your body';
       document.getElementById('rv-b').textContent = 'This item matches your measurements very well. Order your selected size with confidence.';
