@@ -35,7 +35,7 @@
 
 html{scroll-behavior:smooth;color-scheme:light only}
 body{background:var(--page);color:var(--ink);font-family:'Inter',sans-serif;font-weight:300;overflow-x:hidden;line-height:1.55}
-@media(prefers-color-scheme:dark){html,body,body *{background-color:inherit !important;color:inherit !important}html{background:#FDFCFA !important;color:#1C1C1C !important}body{background:#FDFCFA !important;color:#1C1C1C !important}}
+@media(prefers-color-scheme:dark){html{background:#FDFCFA !important;color:#1C1C1C !important}body{background:#FDFCFA !important;color:#1C1C1C !important}}
 
 /* ── ANNOUNCEMENT ── */
 .band{background:var(--sky);color:#fff;text-align:center;padding:11px 24px;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:.12em;font-weight:400}
@@ -53,17 +53,15 @@ nav{position:sticky;top:0;z-index:200;background:rgba(253,252,250,.96);backdrop-
 .nav-end{display:flex;align-items:center;gap:16px}
 .nav-cta{font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.05em;font-weight:400;color:#fff;background:var(--sky);border:none;padding:10px 22px;cursor:pointer;text-decoration:none;transition:background .2s;display:inline-block}
 .nav-cta:hover{background:var(--sky-lt)}
-
-/* ── MOBILE NAV ── */
 .nav-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:32px;height:32px;background:none;border:none;cursor:pointer;padding:0;z-index:210}
-.nav-burger span{display:block;width:22px;height:1.5px;background:var(--ink);transition:transform .25s,opacity .25s}
+.nav-burger span{display:block;width:22px;height:1.5px;background:var(--ink);transition:transform .2s,opacity .2s}
 .nav-burger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
 .nav-burger.open span:nth-child(2){opacity:0}
 .nav-burger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
-.nav-mobile-panel{display:none;position:fixed;top:62px;left:0;right:0;bottom:0;background:var(--page);z-index:199;overflow-y:auto;padding:8px 24px 40px;flex-direction:column}
+.nav-mobile-panel{display:none;position:fixed;top:62px;left:0;right:0;bottom:0;background:#FDFCFA;z-index:199;overflow-y:auto;padding:24px 24px 40px;flex-direction:column;gap:4px}
 .nav-mobile-panel.open{display:flex}
-.nav-mobile-panel a{font-size:16px;color:var(--ink);text-decoration:none;padding:16px 0;border-bottom:1px solid var(--line)}
-.nav-mobile-panel a.nav-mobile-cta{color:#fff;background:var(--sky);text-align:center;border-bottom:none;border-radius:2px;padding:14px 0;margin-top:20px;font-size:13px;letter-spacing:.08em;font-weight:500}
+.nav-mobile-panel a{font-size:16px;color:var(--ink2);text-decoration:none;padding:16px 4px;border-bottom:1px solid var(--line)}
+.nav-mobile-panel a.nav-mobile-cta{color:#fff;background:var(--sky);text-align:center;border-radius:4px;border-bottom:none;margin-top:16px;font-size:14px;letter-spacing:.05em;font-weight:500;padding:16px}
 @media(max-width:960px){
   .nav-mid,.nav-end{display:none}
   .nav-burger{display:flex}
@@ -313,6 +311,15 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
   body { background: #FDFCFA !important; color: #1C1C1C !important; }
   .band { background: #7BAEC8 !important; color: #ffffff !important; }
   nav, .nav-inner { background: rgba(253,252,250,0.96) !important; }
+  .nav-cta { background: #7BAEC8 !important; color: #ffffff !important; }
+  .nav-end a[href="/list-your-brand"] { background: #7BAEC8 !important; color: #ffffff !important; }
+  .nav-mobile-cta { background: #7BAEC8 !important; color: #ffffff !important; }
+  .btn-dark { background: #7BAEC8 !important; color: #ffffff !important; }
+  .btn-soft { background: transparent !important; color: #1C1C1C !important; border-color: #E8E4DF !important; }
+  .perks-footer a { color: #ffffff !important; }
+  .perks-footer a[href="/brand-demo"] { background: #7BAEC8 !important; }
+  .perks-footer a.btn-dark { background: #7BAEC8 !important; }
+  .perks-footer a[href="/submit-products"] { background: transparent !important; color: #7BAEC8 !important; }
   .logo-word, .nav-link, .faq-q { color: #1C1C1C !important; }
   .hero-left { background: #FDFCFA !important; color: #1C1C1C !important; }
   .hero-eyebrow { color: #ABABAB !important; }
