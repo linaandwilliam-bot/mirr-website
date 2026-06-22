@@ -25,7 +25,7 @@ nav{border-bottom:1px solid #E8E4DF;padding:0 48px;position:sticky;top:0;backgro
 .hero-sub{font-size:15px;color:#7A7A7A;line-height:1.85;max-width:540px;margin:0 auto}
 
 /* PROGRESS TRACKER */
-.progress-section{max-width:680px;margin:0 auto 64px;padding:0 24px}
+.progress-section{max-width:680px;margin:0 auto;padding:0 24px 40px}
 .progress-card{background:#F7F4F0;border:1px solid #E8E4DF;border-radius:10px;padding:32px}
 .progress-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
 .progress-num{font-family:'Playfair Display',serif;font-size:38px;font-weight:500;color:#7BAEC8;line-height:1}
@@ -41,12 +41,12 @@ nav{border-bottom:1px solid #E8E4DF;padding:0 48px;position:sticky;top:0;backgro
 .s-label::before{content:"";width:16px;height:.5px;background:#7BAEC8}
 
 .slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:32px}
-.slot{aspect-ratio:1;border:1.5px dashed #E8E4DF;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#fff;position:relative}
+.slot{aspect-ratio:1.5;border:1.5px dashed #E8E4DF;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#fff;position:relative}
 .slot-filled{border-style:solid;border-color:#7BAEC8;background:rgba(123,174,200,.06)}
 .slot-num{font-family:'DM Mono',monospace;font-size:11px;color:#ABABAB}
 .slot-filled .slot-num{color:#7BAEC8}
 
-.empty-state{text-align:center;padding:48px 24px;background:#fff;border:1px solid #E8E4DF;border-radius:10px;margin-bottom:32px}
+.empty-state{text-align:center;padding:48px 32px;background:#fff;border:1px solid #E8E4DF;border-radius:10px;margin-bottom:32px}
 .empty-icon{font-size:32px;margin-bottom:16px;opacity:.4}
 .empty-title{font-family:'Playfair Display',serif;font-size:21px;font-weight:500;margin-bottom:10px}
 .empty-body{font-size:14px;color:#7A7A7A;line-height:1.8;max-width:420px;margin:0 auto 24px}
@@ -96,45 +96,23 @@ footer{padding:32px 24px;text-align:center}
 <div class="progress-section">
   <div class="progress-card">
     <div class="progress-head">
-      <div class="progress-num">0<span> / 20</span></div>
+      <div class="progress-num" id="progressNum">0<span> / 20</span></div>
       <div class="progress-label">FOUNDING SPOTS FILLED</div>
     </div>
-    <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
-    <div class="progress-note">Mirr has just launched — these 20 spots are open now. Once filled, new brands join at the standard 12% rate.</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-note" id="progressNote">Mirr has just launched — these 20 spots are open now. Once filled, new brands join at the standard 12% rate.</div>
   </div>
 </div>
 
 <div class="section">
-
   <div class="s-label">FOUNDING SLOTS</div>
-  <div class="slots-grid">
-    <div class="slot"><div class="slot-num">01</div></div>
-    <div class="slot"><div class="slot-num">02</div></div>
-    <div class="slot"><div class="slot-num">03</div></div>
-    <div class="slot"><div class="slot-num">04</div></div>
-    <div class="slot"><div class="slot-num">05</div></div>
-    <div class="slot"><div class="slot-num">06</div></div>
-    <div class="slot"><div class="slot-num">07</div></div>
-    <div class="slot"><div class="slot-num">08</div></div>
-    <div class="slot"><div class="slot-num">09</div></div>
-    <div class="slot"><div class="slot-num">10</div></div>
-    <div class="slot"><div class="slot-num">11</div></div>
-    <div class="slot"><div class="slot-num">12</div></div>
-    <div class="slot"><div class="slot-num">13</div></div>
-    <div class="slot"><div class="slot-num">14</div></div>
-    <div class="slot"><div class="slot-num">15</div></div>
-    <div class="slot"><div class="slot-num">16</div></div>
-    <div class="slot"><div class="slot-num">17</div></div>
-    <div class="slot"><div class="slot-num">18</div></div>
-    <div class="slot"><div class="slot-num">19</div></div>
-    <div class="slot"><div class="slot-num">20</div></div>
-  </div>
+  <div class="slots-grid" id="slotsGrid"></div>
 
-  <div class="empty-state">
+  <div class="empty-state" id="emptyState">
     <div class="empty-icon">✦</div>
-    <div class="empty-title">Be the first name here.</div>
-    <div class="empty-body">Mirr is brand new, and every founding spot is genuinely open. The brands who join now get permanent founding status and the lowest commission rate Mirr will ever offer.</div>
-    <a href="/list-your-brand" class="empty-cta">CLAIM A FOUNDING SPOT →</a>
+    <div class="empty-title" id="emptyTitle">Be the first name here.</div>
+    <div class="empty-body" id="emptyBody">Mirr is brand new, and every founding spot is genuinely open. The brands who join now get permanent founding status and the lowest commission rate Mirr will ever offer.</div>
+    <a href="/list-your-brand" class="empty-cta" id="emptyCta">CLAIM A FOUNDING SPOT →</a>
   </div>
 
   <div class="s-label">WHAT FOUNDING BRAND STATUS MEANS</div>
@@ -168,7 +146,6 @@ footer{padding:32px 24px;text-align:center}
       </div>
     </div>
   </div>
-
 </div>
 
 <div class="cta-section">
@@ -180,6 +157,88 @@ footer{padding:32px 24px;text-align:center}
 <footer>
   <div class="footer-note">Questions? <a href="/contact">Get in touch</a> — or email <a href="mailto:hello@trymirr.com">hello@trymirr.com</a></div>
 </footer>
+
+<script>
+(function () {
+  var TOTAL_FALLBACK = 20;
+
+  function renderSlots(filled, total) {
+    var grid = document.getElementById('slotsGrid');
+    grid.innerHTML = '';
+    for (var i = 1; i <= total; i++) {
+      var slot = document.createElement('div');
+      slot.className = 'slot' + (i <= filled ? ' slot-filled' : '');
+      var num = document.createElement('div');
+      num.className = 'slot-num';
+      num.textContent = i < 10 ? '0' + i : String(i);
+      slot.appendChild(num);
+      grid.appendChild(slot);
+    }
+  }
+
+  function renderProgress(filled, total) {
+    var pct = total > 0 ? Math.min(100, Math.round((filled / total) * 100)) : 0;
+    document.getElementById('progressNum').innerHTML = filled + '<span> / ' + total + '</span>';
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    var note = document.getElementById('progressNote');
+    var remaining = total - filled;
+    if (filled <= 0) {
+      note.textContent = 'Mirr has just launched — these ' + total + ' spots are open now. Once filled, new brands join at the standard 12% rate.';
+    } else if (remaining > 0) {
+      note.textContent = remaining + ' founding spot' + (remaining === 1 ? '' : 's') + ' left at the 8% rate. Once filled, new brands join at the standard 12% rate.';
+    } else {
+      note.textContent = 'All founding spots are filled. New brands now join at the standard 12% rate.';
+    }
+  }
+
+  function renderEmptyState(filled, total) {
+    var emptyState = document.getElementById('emptyState');
+    var title = document.getElementById('emptyTitle');
+    var body = document.getElementById('emptyBody');
+    var cta = document.getElementById('emptyCta');
+    var remaining = total - filled;
+
+    if (remaining <= 0) {
+      title.textContent = 'All founding spots are filled.';
+      body.textContent = 'Mirr\u2019s 20 founding spots are taken. New brands join at the standard 12% rate \u2014 still zero monthly fee, zero setup cost.';
+      cta.textContent = 'LIST YOUR BRAND \u2192';
+    } else if (filled === 0) {
+      title.textContent = 'Be the first name here.';
+      body.textContent = 'Mirr is brand new, and every founding spot is genuinely open. The brands who join now get permanent founding status and the lowest commission rate Mirr will ever offer.';
+      cta.textContent = 'CLAIM A FOUNDING SPOT \u2192';
+    } else {
+      title.textContent = remaining + ' founding spot' + (remaining === 1 ? '' : 's') + ' left.';
+      body.textContent = 'Join now to lock in the 8% founding rate and permanent founding status before the remaining spots are gone.';
+      cta.textContent = 'CLAIM A FOUNDING SPOT \u2192';
+    }
+    emptyState.style.display = '';
+  }
+
+  function render(filled, total) {
+    filled = Math.max(0, Math.min(filled, total));
+    renderProgress(filled, total);
+    renderSlots(filled, total);
+    renderEmptyState(filled, total);
+  }
+
+  fetch('/founding-count.json', { cache: 'no-store' })
+    .then(function (res) {
+      if (!res.ok) throw new Error('founding-count.json not found');
+      return res.json();
+    })
+    .then(function (data) {
+      var total = typeof data.total === 'number' && data.total > 0 ? data.total : TOTAL_FALLBACK;
+      var filled = typeof data.filled === 'number' ? data.filled : 0;
+      render(filled, total);
+    })
+    .catch(function () {
+      // If the data file is missing or fails to load, fall back to the
+      // safe default (0 filled) rather than leaving the page broken.
+      render(0, TOTAL_FALLBACK);
+    });
+})();
+</script>
 
 </body>
 </html>
