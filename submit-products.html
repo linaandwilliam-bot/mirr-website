@@ -390,6 +390,7 @@ function addProduct() {
         </div>
       </div>
       <p class="sizes-note" style="margin-bottom:18px">Inseam only required for bottoms. Leave blank if not applicable.</p>
+      <p class="field-err" id="dim-note-${idx}" style="margin-top:-12px;margin-bottom:18px">Please enter at least one dimension — fit scores can't be calculated for customers without it.</p>
 
       <div class="divider"></div>
       <div class="section-label">AVAILABLE SIZES</div>
@@ -432,6 +433,18 @@ function triggerUpload(inputId) {
 function handlePhoto(input, side, idx) {
   if (!input.files || !input.files[0]) return;
   const file = input.files[0];
+
+  // imgbb's hard limit is 32MB; phone camera photos can exceed this, and even
+  // well under it, large files make the base64 upload step slow on mobile.
+  // Catch it here with a clear message rather than letting it fail silently
+  // during the actual submission later.
+  const MAX_MB = 20;
+  if (file.size > MAX_MB * 1024 * 1024) {
+    alert(`That photo is ${(file.size / 1024 / 1024).toFixed(1)}MB — please use one under ${MAX_MB}MB. Most phone cameras let you pick a smaller size, or you can compress it first.`);
+    input.value = '';
+    return;
+  }
+
   const reader = new FileReader();
   reader.onload = function(e) {
     const slotId = side + '-slot-' + idx;
@@ -471,19 +484,38 @@ function updateDimLabel(idx) {
 function updateProgress() {
   const cards = document.querySelectorAll('.product-card');
   let filled = 0;
-  const total = cards.length * 3; // name + front photo + category
+  // Tracks every field validate() actually requires, so 100% only shows
+  // once a submission would genuinely pass: name + category + price + front photo.
+  const total = cards.length * 4;
   cards.forEach(card => {
     const id = card.id.replace('product-', '');
     if (document.getElementById('pname-' + id)?.value.trim()) filled++;
     if (productData[id]?.frontFile) filled++;
     if (document.getElementById('pcat-' + id)?.value) filled++;
+    if (document.getElementById('pprice-' + id)?.value) filled++;
   });
-  const brand = document.getElementById('brand-name')?.value.trim() ? 1 : 0;
-  const pct = Math.min(100, Math.round((filled + brand) / (total + 1) * 100));
+  const brand = (document.getElementById('brand-name')?.value.trim() ? 1 : 0)
+    + (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('brand-email')?.value.trim() || '') ? 1 : 0);
+  const pct = Math.min(100, Math.round((filled + brand) / (total + 2) * 100));
   document.getElementById('progress-fill').style.width = pct + '%';
 }
 
 document.addEventListener('input', updateProgress);
+
+// Warn before losing in-progress work — this form can hold several products'
+// worth of typed fields and uploaded photos, so an accidental tab close or
+// back-button tap should never be silent.
+let formSubmitted = false;
+window.addEventListener('beforeunload', (e) => {
+  if (formSubmitted) return;
+  const started = document.getElementById('brand-name')?.value.trim()
+    || document.getElementById('brand-email')?.value.trim()
+    || Object.values(productData).some(p => p.frontFile || p.backFile || p.sizes.length);
+  if (started) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 
 // VALIDATION
 function setErr(id, show) {
@@ -525,6 +557,20 @@ function validate() {
       const slot = document.getElementById('front-slot-' + id);
       if (slot) { slot.style.borderColor = '#D4A898'; slot.style.borderStyle = 'solid'; }
       ok = false;
+    }
+
+    // Require at least one dimension — a product with none would go live
+    // with virtual try-on but no fit score, breaking the core promise
+    // ("see it on you, know it fits") shown to customers elsewhere on Mirr.
+    const dims = ['dim-chest-', 'dim-waist-', 'dim-length-', 'dim-inseam-'];
+    const hasDim = dims.some(prefix => document.getElementById(prefix + id)?.value);
+    const dimNote = document.getElementById('dim-note-' + id);
+    if (!hasDim) {
+      if (dimNote) { dimNote.style.display = 'block'; dimNote.classList.add('err'); }
+      ok = false;
+    } else if (dimNote) {
+      dimNote.style.display = 'none';
+      dimNote.classList.remove('err');
     }
   });
 
@@ -667,6 +713,7 @@ async function attemptSubmit() {
   }
 
   // Only reached if the catalog submission actually succeeded
+  formSubmitted = true;
   document.getElementById('form-state').style.display = 'none';
   document.getElementById('error-state').style.display = 'none';
   document.getElementById('success-state').style.display = 'block';
