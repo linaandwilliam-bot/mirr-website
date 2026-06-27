@@ -125,6 +125,25 @@ nav{position:sticky;top:0;z-index:200;background:rgba(253,252,250,.96);backdrop-
 .trust-pill{font-size:11px;letter-spacing:.1em;color:var(--ink3);display:flex;align-items:center;gap:8px}
 .trust-pill::before{content:'';width:4px;height:4px;background:var(--sky);border-radius:50%;flex:none}
 
+/* CATEGORY RETURN RATES */
+.cat-returns{padding:64px 48px;border-bottom:1px solid var(--line)}
+.cat-returns-head{max-width:560px;margin-bottom:40px}
+.cat-returns-title{font-family:'Playfair Display',serif;font-size:clamp(26px,3vw,34px);font-weight:500;color:var(--ink);margin:10px 0 12px;line-height:1.25}
+.cat-returns-sub{font-size:15px;color:var(--ink3);line-height:1.6}
+.cat-returns-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.cat-return-cell{background:var(--white);padding:32px 28px;transition:background .3s}
+.cat-return-cell:hover{background:var(--paper)}
+.cat-return-num{font-family:'Playfair Display',serif;font-size:clamp(36px,4vw,52px);font-weight:500;color:var(--sky);line-height:1;margin-bottom:8px}
+.cat-return-name{font-size:11px;letter-spacing:.14em;color:var(--ink);font-weight:600;margin-bottom:10px}
+.cat-return-why{font-size:13px;color:var(--ink3);line-height:1.55}
+.cat-returns-source{font-size:11px;color:var(--ink4);margin-top:18px;line-height:1.5}
+@media(max-width:860px){
+  .cat-returns{padding:48px 24px}
+  .cat-returns-grid{grid-template-columns:1fr;border:none}
+  .cat-return-cell{border-bottom:1px solid var(--line)}
+  .cat-return-cell:last-child{border-bottom:none}
+}
+
 /* ── SECTION UTIL ── */
 .section-eyebrow{font-size:10px;letter-spacing:.26em;color:var(--ink4);margin-bottom:20px;display:flex;align-items:center;gap:10px}
 .section-eyebrow::before{content:'';width:20px;height:.5px;background:var(--sky)}
@@ -338,6 +357,14 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
   .stat-num { color: #7BAEC8 !important; }
   .stat-desc { color: #ABABAB !important; }
   .stat-note { color: #7A7A7A !important; }
+  .cat-returns { background: #FDFCFA !important; }
+  .cat-returns-title { color: #1C1C1C !important; }
+  .cat-returns-sub { color: #7A7A7A !important; }
+  .cat-return-cell { background: #FDFCFA !important; }
+  .cat-return-num { color: #7BAEC8 !important; }
+  .cat-return-name { color: #1C1C1C !important; }
+  .cat-return-why { color: #7A7A7A !important; }
+  .cat-returns-source { color: #ABABAB !important; }
   .trust { background: #F7F4F0 !important; }
   .trust-pill { color: #7A7A7A !important; }
   .how { background: #FDFCFA !important; }
@@ -803,24 +830,42 @@ function closeMobileNav(){
   </div>
 </div>
 
-<!-- STATS -->
-<div class="stats">
-  <div class="stat-cell rv">
-    <div class="stat-num" data-count="30" data-suffix="%">0%</div>
-    <div class="stat-desc">AVERAGE RETURN RATE FOR ONLINE CLOTHING</div>
-    <div class="stat-note">We built Mirr specifically to solve this.</div>
+<!-- CATEGORY RETURN RATES — replaces the old repeated 30%/$65/8% block.
+     Real industry data (NRF 2025 Retail Returns Landscape; cited blended figures
+     from category-level return studies), tied directly to the category marquee
+     above. Ties the brand pitch to the shopper's actual category instead of a
+     single blended average. Source note included for credibility + so this is
+     easy to update if better data comes in. -->
+<section class="cat-returns rv">
+  <div class="cat-returns-head">
+    <div class="section-eyebrow">BY CATEGORY</div>
+    <h3 class="cat-returns-title">Fit-driven returns aren't evenly spread.</h3>
+    <p class="cat-returns-sub">Some categories lose far more to fit guesswork than others — which is exactly where Mirr does the most work.</p>
   </div>
-  <div class="stat-cell rv">
-    <div class="stat-num" data-prefix="$" data-count="65">$0</div>
-    <div class="stat-desc">AVERAGE COST TO PROCESS A SINGLE RETURN</div>
-    <div class="stat-note">One saved return pays for many sales through Mirr.</div>
+  <div class="cat-returns-grid">
+    <div class="cat-return-cell">
+      <div class="cat-return-num" data-count="25" data-suffix="%">0%</div>
+      <div class="cat-return-name">DENIM</div>
+      <div class="cat-return-why">Inconsistent sizing across cuts — skinny, bootcut, straight all fit differently at the same size.</div>
+    </div>
+    <div class="cat-return-cell">
+      <div class="cat-return-num" data-count="25" data-suffix="%">0%</div>
+      <div class="cat-return-name">ACTIVEWEAR</div>
+      <div class="cat-return-why">Tight-fit preference makes leggings, bras, and compression wear especially size-sensitive.</div>
+    </div>
+    <div class="cat-return-cell">
+      <div class="cat-return-num" data-count="30" data-suffix="%">0%</div>
+      <div class="cat-return-name">OUTERWEAR</div>
+      <div class="cat-return-why">Hard to judge warmth, weight, and layering room without trying it on first.</div>
+    </div>
+    <div class="cat-return-cell">
+      <div class="cat-return-num" data-count="30" data-suffix="%">0%</div>
+      <div class="cat-return-name">FORMALWEAR</div>
+      <div class="cat-return-why">Dresses, suits, and gowns need precision fit — the hardest category to get right online.</div>
+    </div>
   </div>
-  <div class="stat-cell rv">
-    <div class="stat-num" data-count="8" data-suffix="%">0%</div>
-    <div class="stat-desc">FOUNDING BRAND COMMISSION — ONLY ON SALES WE DRIVE</div>
-    <div class="stat-note">You only pay us when we deliver.</div>
-  </div>
-</div>
+  <div class="cat-returns-source">Source: NRF 2025 Retail Returns Landscape; category return-rate research, 2025–26. Figures are blended industry ranges, not Mirr-measured data.</div>
+</section>
 
 <!-- TRUST -->
 <div class="trust rv">
