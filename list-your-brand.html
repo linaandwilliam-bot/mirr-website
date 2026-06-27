@@ -152,7 +152,7 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
     <div class="left-bottom">
       <div class="left-stat-row">
         <div><div class="left-stat-num">$0</div><div class="left-stat-label">TO LIST<br>YOUR BRAND</div></div>
-        <div><div class="left-stat-num">24h</div><div class="left-stat-label">TO GO<br>LIVE</div></div>
+        <div><div class="left-stat-num">24h</div><div class="left-stat-label">ACCOUNT<br>VERIFIED</div></div>
         <div><div class="left-stat-num">8%</div><div class="left-stat-label">FOUNDING<br>RATE</div></div>
       </div>
     </div>
@@ -475,6 +475,14 @@ function attemptSubmit() {
   var cats = [];
   document.querySelectorAll('input[name="categories"]:checked').forEach(function(c) { cats.push(c.value); });
 
+  // Build the ready-to-send reply now, so it travels with the notification
+  // email Formspree sends — previously this was only ever built for a
+  // mailto link on the success screen that stayed hidden (display:none)
+  // and was never actually surfaced anywhere. Including it directly in
+  // the payload means the polished, tier-specific reply is sitting right
+  // in the lead notification, ready to copy-paste, with no extra click-through.
+  var reply = getReply(brandName, premiumVal, ref);
+
   var payload = {
     brand_name: brandName,
     contact_name: document.getElementById('contact-name').value,
@@ -489,6 +497,8 @@ function attemptSubmit() {
     premium_placement: premiumVal,
     reference_number: ref,
     submitted_at: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' }),
+    suggested_reply_subject: reply.subject,
+    suggested_reply_body: reply.body,
     _subject: 'New Brand Enquiry — ' + brandName + ' (' + ref + ')'
   };
 
