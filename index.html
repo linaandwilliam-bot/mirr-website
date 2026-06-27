@@ -271,6 +271,8 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 .footer-links{display:flex;flex-direction:column;gap:10px}
 .footer-links a{font-size:13px;color:var(--ink3);text-decoration:none;transition:color .2s}
 .footer-links a:hover{color:var(--ink)}
+.footer-link-disabled{font-size:13px;color:var(--ink4);cursor:default}
+.footer-soon{font-size:11px;color:var(--ink4);opacity:.7}
 .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:20px;flex-wrap:wrap;gap:10px}
 .footer-copy{font-size:11px;color:var(--ink4)}
 .footer-legal{display:flex;gap:20px}
@@ -651,7 +653,7 @@ function closeMobileNav(){
       </div>
       <div class="hero-stat">
         <div class="hero-stat-num">24h</div>
-        <div class="hero-stat-label">TO GO<br>LIVE</div>
+        <div class="hero-stat-label">ACCOUNT<br>VERIFIED</div>
       </div>
     </div>
   </div>
@@ -839,7 +841,7 @@ function closeMobileNav(){
       <div class="how-step-num">01</div>
       <div class="how-step-tag">FOR BRANDS</div>
       <div class="how-step-title">Create your free brand account</div>
-      <div class="how-step-desc">Sign up in under 2 minutes. No credit card. Your brand reviewed and live within 72 hours.</div>
+      <div class="how-step-desc">Sign up in under 2 minutes. No credit card. Your account verified within 24 hours.</div>
     </div>
     <div class="how-step">
       <div class="how-step-num">02</div>
@@ -945,7 +947,7 @@ function closeMobileNav(){
         <div class="model-stat"><div class="model-stat-num">92%</div><div class="model-stat-label">OF EVERY SALE YOURS</div></div>
       </div>
       <div class="model-grid2">
-        <div class="model-stat"><div class="model-stat-num">24h</div><div class="model-stat-label">FROM SUBMISSION TO LIVE</div></div>
+        <div class="model-stat"><div class="model-stat-num">72h</div><div class="model-stat-label">FROM SUBMISSION TO LIVE</div></div>
         <div class="model-stat"><div class="model-stat-num">2bd</div><div class="model-stat-label" style="color:var(--ink4)">STRIPE PAYOUT</div></div>
       </div>
       <div class="model-promise">
@@ -972,7 +974,7 @@ function closeMobileNav(){
       </div>
       <div class="process-step">
         <div class="ps-line"><div class="ps-num">03</div><div class="ps-conn"></div></div>
-        <div class="ps-body"><div class="ps-tag">GOING LIVE</div><div class="ps-title">Your products appear on Mirr</div><div class="ps-desc">Within 72 hours of approval, your items are visible to all Mirr shoppers. You're notified for every sale.</div></div>
+        <div class="ps-body"><div class="ps-tag">GOING LIVE</div><div class="ps-title">Your products appear on Mirr</div><div class="ps-desc">Within 72 hours of submitting your product photos and dimensions, your items are visible to all Mirr shoppers. You're notified for every sale.</div></div>
       </div>
       <div class="process-step">
         <div class="ps-line"><div class="ps-num">04</div></div>
@@ -1131,16 +1133,14 @@ function closeMobileNav(){
       <div class="footer-links">
         <a href="/about">About Mirr</a>
         <a href="/founding-brands">Founding brands</a>
-        <a href="#">Press</a>
-        <a href="#">Careers</a>
+        <span class="footer-link-disabled" title="Coming soon">Press <span class="footer-soon">(soon)</span></span>
+        <span class="footer-link-disabled" title="Coming soon">Careers <span class="footer-soon">(soon)</span></span>
       </div>
     </div>
     <div>
       <div class="footer-col-head">CONTACT</div>
       <div class="footer-links">
         <a href="/contact">hello@trymirr.com</a>
-        <a href="#">Instagram</a>
-        <a href="#">TikTok</a>
         <a href="#faq">FAQ</a>
       </div>
     </div>
