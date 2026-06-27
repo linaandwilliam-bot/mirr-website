@@ -190,6 +190,8 @@ nav{position:sticky;top:0;z-index:200;background:rgba(253,252,250,.96);backdrop-
 .model-row{display:flex;justify-content:space-between;align-items:center;padding:14px 28px;border-bottom:1px solid var(--line2);font-size:13px}
 .model-row:last-child{border-bottom:none}
 .model-k{color:var(--ink3)}.model-v{color:var(--ink);font-weight:400}
+.model-tip{display:inline-block;margin-left:4px;color:var(--ink4);cursor:help;font-size:11px;border:1px solid var(--ink4);border-radius:50%;width:14px;height:14px;line-height:13px;text-align:center}
+.model-tip:hover{color:var(--sky);border-color:var(--sky)}
 .model-v.sky{color:var(--sky);font-weight:500}
 .model-note{margin:20px 28px;padding:16px 18px;background:var(--sky-bg);border-left:2px solid var(--sky);font-size:12px;color:var(--ink3);line-height:1.8;font-style:italic}
 .model-right{display:flex;flex-direction:column;gap:1px}
@@ -980,10 +982,11 @@ function closeMobileNav(){
         <div class="model-row"><span class="model-k">Contract required</span><span class="model-v">None</span></div>
         <div class="model-row"><span class="model-k">Founding brand commission</span><span class="model-v sky">8% — locked 12 months</span></div>
         <div class="model-row"><span class="model-k">Standard brand commission</span><span class="model-v sky">12%</span></div>
-        <div class="model-row"><span class="model-k">Premium placement</span><span class="model-v sky">15%</span></div>
+        <div class="model-row"><span class="model-k">Premium placement <span class="model-tip" title="Homepage hero positioning, Featured Brand badge, priority search ranking, and the weekly Mirr Pick editorial spotlight — on top of everything in Standard Listing.">ⓘ</span></span><span class="model-v sky">15%</span></div>
         <div class="model-row"><span class="model-k">You receive (founding)</span><span class="model-v sky">92%</span></div>
         <div class="model-row"><span class="model-k">Payout timeline</span><span class="model-v">2 business days</span></div>
         <div class="model-note">A founding brand doing $20,000/month pays $1,600 in commission. The industry average across online fashion marketplaces is 10–20%. At 8% you're well below market — with virtual try-on built in. A single prevented return saves $10–$65. The maths heavily favour you.</div>
+        <div class="model-note" style="margin-top:10px"><strong>Premium placement</strong> is optional, not required — it adds homepage hero positioning, a Featured Brand badge, priority search ranking, and the weekly Mirr Pick editorial spotlight on top of your standard listing. Most founding brands start on the standard rate and can add it later.</div>
       </div>
     </div>
     <div class="rv" style="padding-top:8px">
