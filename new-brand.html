@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="robots" content="noindex, nofollow">
+<title>New brand setup — internal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight:300;line-height:1.6}
+@media(prefers-color-scheme:dark){html,body{background:#FDFCFA!important;color:#1C1C1C!important}}
+
+.banner{background:#1C1C1C;color:#fff;text-align:center;padding:8px 16px;font-size:11px;letter-spacing:.08em}
+
+.page{max-width:640px;margin:0 auto;padding:48px 24px 80px}
+.eyebrow{font-size:10px;letter-spacing:.24em;color:#ABABAB;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:16px;height:.5px;background:#7BAEC8;display:inline-block}
+.title{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,34px);font-weight:500;margin-bottom:10px;line-height:1.15}
+.sub{font-size:13.5px;color:#7A7A7A;line-height:1.8;margin-bottom:36px;max-width:520px}
+
+.card{background:#fff;border:1px solid #E8E4DF;border-radius:8px;padding:24px;margin-bottom:24px}
+.card-label{font-size:10px;letter-spacing:.18em;color:#ABABAB;margin-bottom:16px}
+
+label{display:block;font-size:11px;letter-spacing:.1em;color:#7A7A7A;margin-bottom:7px}
+label .req{color:#D4A898;margin-left:2px}
+input[type=text],input[type=email],select{
+  width:100%;background:#fff;border:1px solid #E8E4DF;padding:11px 14px;
+  font-family:'Inter',sans-serif;font-size:13px;color:#1C1C1C;outline:none;
+  transition:border-color .2s,box-shadow .2s;border-radius:0;margin-bottom:18px;
+  -webkit-appearance:none;appearance:none
+}
+input:focus,select:focus{border-color:#7BAEC8;box-shadow:0 0 0 3px rgba(123,174,200,.08)}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ABABAB' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+
+.btn{display:inline-flex;align-items:center;gap:10px;background:#1C1C1C;color:#fff;text-decoration:none;border:none;padding:14px 24px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px;transition:background .2s}
+.btn:hover{background:#4A4A4A}
+.btn-secondary{background:transparent;color:#1C1C1C;border:1px solid #E8E4DF}
+.btn-secondary:hover{background:#F7F4F0}
+
+.result{display:none}
+.result-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #F0EDE8}
+.result-row:last-child{border-bottom:none}
+.result-label{font-size:11px;letter-spacing:.06em;color:#ABABAB}
+.result-value{font-family:'DM Mono',monospace;font-size:13px;color:#1C1C1C;text-align:right;word-break:break-all}
+.copy-btn{font-size:10px;color:#7BAEC8;background:none;border:none;cursor:pointer;padding:4px 8px;letter-spacing:.04em;flex:none}
+.copy-btn:hover{text-decoration:underline}
+
+.snippet-box{background:#1C1C1C;color:#D8E8F0;border-radius:6px;padding:16px 18px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.7;margin-top:8px;overflow-x:auto;white-space:pre}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+
+.note{font-size:12px;color:#ABABAB;line-height:1.7;margin-top:8px}
+.note strong{color:#7A7A7A}
+
+.divider{height:1px;background:#E8E4DF;margin:32px 0}
+</style>
+</head>
+<body>
+
+<div class="banner">INTERNAL TOOL — NOT PART OF THE PUBLIC SITE — DO NOT LINK</div>
+
+<div class="page">
+
+  <div class="eyebrow">BRAND ONBOARDING</div>
+  <h1 class="title">Set up a new brand.</h1>
+  <p class="sub">Use this once a brand has signed their Brand Agreement. It generates their access code and a ready-to-send welcome email — and the exact line to add to submit-products.html's allowlist.</p>
+
+  <!-- FORM -->
+  <div class="card" id="form-card">
+    <div class="card-label">BRAND DETAILS</div>
+
+    <label for="brand-name">Brand name <span class="req">*</span></label>
+    <input type="text" id="brand-name" placeholder="e.g. Active Truth">
+
+    <label for="brand-email">Brand contact email <span class="req">*</span></label>
+    <input type="email" id="brand-email" placeholder="hello@activetruth.com.au">
+
+    <label for="brand-tier">Brand tier <span class="req">*</span></label>
+    <select id="brand-tier">
+      <option value="Founding" selected>Founding (8% commission, locked 12 months)</option>
+      <option value="Standard">Standard (12% commission)</option>
+    </select>
+
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:18px">
+      <input type="checkbox" id="brand-premium" style="width:auto;margin:0">
+      <span style="font-size:12px;letter-spacing:0;color:#1C1C1C;text-transform:none">Add Premium placement (15% commission instead of the base rate — homepage hero, Featured Brand badge, priority search, weekly Mirr Pick)</span>
+    </label>
+
+    <button class="btn" onclick="generate()">GENERATE CODE + EMAIL →</button>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result" id="result">
+
+    <div class="card">
+      <div class="card-label">GENERATED ACCESS</div>
+      <div class="result-row">
+        <span class="result-label">BRAND EMAIL</span>
+        <span class="result-value" id="out-email"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">TIER</span>
+        <span class="result-value" id="out-tier"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">ACCESS CODE</span>
+        <span class="result-value" id="out-code"></span>
+        <button class="copy-btn" onclick="copyText('out-code', false, this)">COPY</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">ADD TO ALLOWLIST</div>
+      <p class="note" id="allowlist-status" style="margin-bottom:14px">Commits the new brand directly to submit-products.html on GitHub. Cloudflare will redeploy automatically after — give it a minute or two before the brand tries their code.</p>
+      <div class="actions">
+        <button class="btn" id="allowlist-btn" onclick="commitAllowlist()">ADD TO GITHUB →</button>
+      </div>
+      <div id="allowlist-fallback" style="display:none;margin-top:18px">
+        <p class="note" style="margin-bottom:10px"><strong>Manual fallback</strong> — if the automatic commit isn't working, open submit-products.html, find <strong>BRAND_ALLOWLIST</strong> near the top of the &lt;script&gt; block, add this line inside it, and re-upload to GitHub yourself:</p>
+        <div class="snippet-box" id="out-snippet"></div>
+        <div class="actions" style="margin-top:10px">
+          <button class="btn btn-secondary" onclick="copyText('out-snippet', false, this)">COPY SNIPPET</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">WELCOME EMAIL</div>
+      <p class="note" style="margin-bottom:14px">Preview below before sending. Sending goes through Formspree — same pipeline the rest of the site uses — and nothing goes out until you click confirm.</p>
+      <div class="snippet-box" id="email-preview" style="white-space:pre-wrap;margin-bottom:16px"></div>
+      <div class="actions" id="email-actions">
+        <button class="btn" id="send-email-btn" onclick="confirmSendEmail()">SEND THIS EMAIL →</button>
+        <a class="btn btn-secondary" id="mailto-link" href="#">OR OPEN IN MY MAIL APP</a>
+        <button class="btn btn-secondary" onclick="copyText('out-email-body', true, this)">COPY EMAIL TEXT</button>
+      </div>
+      <textarea id="out-email-body" style="display:none"></textarea>
+    </div>
+
+    <div class="divider"></div>
+    <button class="btn btn-secondary" onclick="resetForm()">SET UP ANOTHER BRAND</button>
+  </div>
+
+</div>
+
+<script>
+function generateCode(brandName) {
+  // Short, memorable, not sequential or guessable from brand name alone —
+  // brand-name prefix for readability, random suffix so codes can't be
+  // predicted brand-to-brand even by someone who's seen one before.
+  const prefix = brandName.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 8) || 'BRAND';
+  const suffix = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `${prefix}-${suffix}`;
+}
+
+function buildEmail(brandName, code, tier, premium) {
+  let commissionLine;
+  if (premium) {
+    commissionLine = tier === 'Founding'
+      ? "You're on our founding tier with Premium placement — 15% commission, with your founding status locked in for 12 months. Premium gets you homepage hero positioning, a Featured Brand badge, priority search ranking, and the weekly Mirr Pick editorial spotlight."
+      : "You're on our standard tier with Premium placement — 15% commission. Premium gets you homepage hero positioning, a Featured Brand badge, priority search ranking, and the weekly Mirr Pick editorial spotlight.";
+  } else {
+    commissionLine = tier === 'Founding'
+      ? "You're locked in at our founding rate — 8% commission for 12 months, zero monthly fee."
+      : "You're on our standard rate — 12% commission, zero monthly fee.";
+  }
+
+  const subject = `Welcome to Mirr, ${brandName} — your access code inside`;
+
+  const body = `Hi ${brandName} team,
+
+Welcome to Mirr — your Brand Agreement is signed and you're ready to start listing products.
+
+${commissionLine}
+
+YOUR ACCESS CODE: ${code}
+
+Head to trymirr.com/submit-products and enter your brand email plus the code above to get started. From there you can add your products — photos, pricing, garment dimensions, and available sizes — and our team will review and have them live within 72 hours.
+
+A few things that'll help your first submission go smoothly:
+- Front and back flat-lay photos on a white or light background (no models)
+- Garment dimensions in centimetres for your smallest stocked size — these power the fit score customers see before they buy
+- Minimum 800 × 1000px, JPEG or PNG
+
+If you get stuck or your code doesn't work, just reply to this email and we'll sort it out.
+
+Glad to have you on board.
+
+The Mirr Team
+hello@trymirr.com`;
+
+  return { subject, body };
+}
+
+// Holds the data for whatever brand was most recently generated, so the
+// send-email and commit-to-github actions (triggered by separate button
+// clicks) have access to it without re-reading the form.
+let currentBrand = null;
+
+function generate() {
+  const name = document.getElementById('brand-name').value.trim();
+  const email = document.getElementById('brand-email').value.trim().toLowerCase();
+  const tier = document.getElementById('brand-tier').value;
+  const premium = document.getElementById('brand-premium').checked;
+
+  if (!name || !email) {
+    alert('Enter both brand name and email first.');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert('That email address doesn\'t look valid — double check it.');
+    return;
+  }
+
+  const code = generateCode(name);
+  const { subject, body } = buildEmail(name, code, tier, premium);
+  const tierLabel = tier + (premium ? ' + Premium (15%)' : ` (${tier === 'Founding' ? '8%' : '12%'})`);
+
+  currentBrand = { name, email, tier, premium, code, subject, body, emailSent: false, allowlistAdded: false };
+
+  document.getElementById('out-email').textContent = email;
+  document.getElementById('out-tier').textContent = tierLabel;
+  document.getElementById('out-code').textContent = code;
+  document.getElementById('out-snippet').textContent = `'${email}': '${code}',`;
+  document.getElementById('out-email-body').value = body;
+  document.getElementById('email-preview').textContent = `To: ${email}\nSubject: ${subject}\n\n${body}`;
+
+  // Reset button/status states from any previous generation in this session
+  document.getElementById('send-email-btn').disabled = false;
+  document.getElementById('send-email-btn').textContent = 'SEND THIS EMAIL →';
+  document.getElementById('allowlist-btn').disabled = false;
+  document.getElementById('allowlist-btn').textContent = 'ADD TO GITHUB →';
+  document.getElementById('allowlist-fallback').style.display = 'none';
+  document.getElementById('allowlist-status').textContent = 'Commits the new brand directly to submit-products.html on GitHub. Cloudflare will redeploy automatically after — give it a minute or two before the brand tries their code.';
+
+  const mailto = 'mailto:' + encodeURIComponent(email)
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(body);
+  document.getElementById('mailto-link').href = mailto;
+
+  document.getElementById('form-card').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+// ── Send the welcome email via Formspree, after a confirm step ──
+// Formspree doesn't send arbitrary emails to arbitrary addresses on its own
+// (that would be an open mail relay) — it sends a notification to YOUR
+// configured Formspree inbox (hello@trymirr.com) containing the brand's
+// email and the message, same as every other form on the site. This is not
+// a "deliver to the brand automatically" send; it's "submit this to the
+// same pipeline as the other forms," consistent with how Mirr has no
+// transactional email backend. Read this as: it removes the manual
+// copy/paste and mail-client step, not as a fully automated send-to-brand.
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvznvrdo';
+
+function confirmSendEmail() {
+  if (!currentBrand) return;
+  if (currentBrand.emailSent) {
+    alert('Already sent for this brand. Generate again if you need to resend.');
+    return;
+  }
+  const ok = confirm(`Send this welcome email to ${currentBrand.email}?\n\nThis submits it to the Mirr Formspree pipeline (same as the rest of the site) — review the preview above before confirming.`);
+  if (!ok) return;
+  sendEmail();
+}
+
+async function sendEmail() {
+  const btn = document.getElementById('send-email-btn');
+  btn.disabled = true;
+  btn.textContent = 'SENDING...';
+
+  try {
+    const resp = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        brand_name: currentBrand.name,
+        brand_email: currentBrand.email,
+        _replyto: currentBrand.email,
+        _subject: currentBrand.subject,
+        message: currentBrand.body,
+        _type: 'brand_welcome_email',
+        access_code: currentBrand.code,
+      }),
+    });
+    if (!resp.ok) throw new Error('Formspree returned ' + resp.status);
+
+    currentBrand.emailSent = true;
+    btn.textContent = 'SENT ✓';
+  } catch (e) {
+    console.warn('Welcome email send failed:', e);
+    btn.disabled = false;
+    btn.textContent = 'SEND THIS EMAIL →';
+    alert("That didn't go through. Use \"Open in my mail app\" or \"Copy email text\" below to send it yourself instead.");
+  }
+}
+
+// ── Commit the brand to submit-products.html's allowlist via the Worker ──
+// Set this to your deployed mirr-brand-setup-worker URL once it's live.
+const BRAND_SETUP_WORKER = 'https://mirr-brand-setup-worker.linaandwilliam.workers.dev';
+
+async function commitAllowlist() {
+  if (!currentBrand) return;
+  if (currentBrand.allowlistAdded) {
+    alert('Already added for this brand.');
+    return;
+  }
+  if (!BRAND_SETUP_WORKER) {
+    document.getElementById('allowlist-status').textContent = 'The GitHub auto-commit isn\'t configured yet — use the manual fallback below.';
+    document.getElementById('allowlist-fallback').style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('allowlist-btn');
+  btn.disabled = true;
+  btn.textContent = 'COMMITTING...';
+
+  try {
+    const resp = await fetch(BRAND_SETUP_WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: currentBrand.email, code: currentBrand.code, brandName: currentBrand.name }),
+    });
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) throw new Error(data.error || ('Worker returned ' + resp.status));
+
+    currentBrand.allowlistAdded = true;
+    btn.textContent = 'ADDED ✓';
+    document.getElementById('allowlist-status').textContent = data.message || 'Added — give Cloudflare a minute to redeploy before the brand tries their code.';
+  } catch (e) {
+    console.warn('Allowlist commit failed:', e);
+    btn.disabled = false;
+    btn.textContent = 'ADD TO GITHUB →';
+    document.getElementById('allowlist-status').textContent = 'Automatic commit failed: ' + (e.message || 'unknown error') + '. Use the manual fallback below instead.';
+    document.getElementById('allowlist-fallback').style.display = 'block';
+  }
+}
+
+function copyText(id, isTextarea, btn) {
+  const el = document.getElementById(id);
+  const text = isTextarea ? el.value : el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    if (!btn) return;
+    const original = btn.textContent;
+    btn.textContent = 'COPIED';
+    setTimeout(() => { btn.textContent = original; }, 1500);
+  }).catch(() => {
+    alert('Could not copy automatically — select the text manually.');
+  });
+}
+
+function resetForm() {
+  document.getElementById('brand-name').value = '';
+  document.getElementById('brand-email').value = '';
+  document.getElementById('brand-tier').value = 'Founding';
+  document.getElementById('brand-premium').checked = false;
+  currentBrand = null;
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('form-card').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+</script>
+
+</body>
+</html>
