@@ -168,8 +168,30 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 
 <div class="page">
 
+  <!-- ACCESS GATE -->
+  <div id="gate-state">
+    <div class="page-eyebrow">BRAND PRODUCT SUBMISSION</div>
+    <h1 class="page-title">Submit your products.</h1>
+    <p class="page-sub">This form is for brands who've signed a Mirr Brand Agreement. Enter the email and access code from your welcome email to continue.</p>
+
+    <div class="brand-strip" style="max-width:420px">
+      <div class="strip-label">VERIFY YOUR BRAND</div>
+      <div class="field-group">
+        <label for="gate-email">Your brand email <span class="req">*</span></label>
+        <input type="email" id="gate-email" placeholder="you@yourbrand.com">
+      </div>
+      <div class="field-group" style="margin-bottom:0">
+        <label for="gate-code">Access code <span class="req">*</span></label>
+        <input type="text" id="gate-code" placeholder="From your welcome email" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')checkGate()">
+      </div>
+      <p class="field-err" id="gate-err" style="display:none;margin-top:12px">That email and code don't match what we have on file. Double check your welcome email, or contact us if you're stuck.</p>
+      <button class="submit-btn" id="gate-submit-btn" onclick="checkGate()" style="margin-top:18px">CONTINUE →</button>
+      <p class="submit-note">Not a Mirr brand yet? <a href="/list-your-brand" style="color:#7BAEC8;text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">List your brand first</a> — or email <a href="mailto:hello@trymirr.com" style="color:#7BAEC8;text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">hello@trymirr.com</a> if you've lost your code.</p>
+    </div>
+  </div>
+
   <!-- FORM STATE -->
-  <div id="form-state">
+  <div id="form-state" style="display:none">
 
     <div class="page-eyebrow">BRAND PRODUCT SUBMISSION</div>
     <h1 class="page-title">Submit your products.</h1>
@@ -209,7 +231,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="brand-email">Your email <span class="req">*</span></label>
-          <input type="email" id="brand-email" placeholder="you@yourbrand.com">
+          <input type="email" id="brand-email" placeholder="you@yourbrand.com" readonly style="background:#F7F4F0;cursor:not-allowed">
           <div class="field-err" id="err-brand-email">Enter a valid email</div>
         </div>
       </div>
@@ -266,11 +288,43 @@ const IMGBB_KEY = '24f6f02af06d8592eda20babf7a1fc1b';
 const FORMSPREE = 'https://formspree.io/f/xvznvrdo';
 const CATALOG_WORKER = 'https://mirr-catalog-worker.linaandwilliam.workers.dev';
 
+// ── Brand access allowlist ──
+// Add one entry per brand once they've signed their Brand Agreement.
+// NOTE: this check runs entirely in the browser, so it's a "keep honest
+// people out" gate, not real security — anyone who reads this script can
+// see the codes. It stops drive-by/bot submissions and keeps every
+// submission tied to a brand we've actually approved, but it is not a
+// substitute for server-side validation. Move this check into the Catalog
+// Worker once that's prioritised.
+const BRAND_ALLOWLIST = {
+  // 'brand@example.com': 'ACCESSCODE',
+};
+
+function checkGate() {
+  const email = document.getElementById('gate-email').value.trim().toLowerCase();
+  const code = document.getElementById('gate-code').value.trim().toUpperCase();
+  const err = document.getElementById('gate-err');
+
+  const expected = BRAND_ALLOWLIST[email];
+  if (!expected || expected.toUpperCase() !== code) {
+    err.style.display = 'block';
+    return;
+  }
+
+  err.style.display = 'none';
+  document.getElementById('gate-state').style.display = 'none';
+  document.getElementById('form-state').style.display = 'block';
+
+  // Pre-fill and lock the brand email field — it's already verified, no need to ask twice
+  document.getElementById('brand-email').value = email;
+
+  // Now safe to build the first product card
+  addProduct();
+  window.scrollTo(0, 0);
+}
+
 let productCount = 0;
 const productData = {};
-
-// Add first product on load
-addProduct();
 
 function addProduct() {
   productCount++;
