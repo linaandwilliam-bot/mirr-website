@@ -301,6 +301,19 @@ async function sendEmail() {
 // Set this to your deployed mirr-brand-setup-worker URL once it's live.
 const BRAND_SETUP_WORKER = 'https://mirr-brand-setup-worker.linaandwilliam.workers.dev';
 
+// The Worker requires a shared admin key (its ADMIN_KEY secret) on every
+// request — CORS alone doesn't stop non-browser callers from hitting an
+// endpoint that writes to the repo. The key is asked for once and kept in
+// this browser's localStorage. It is never embedded in this file.
+function getAdminKey() {
+  let key = (localStorage.getItem('mirr_admin_key') || '').trim();
+  if (!key) {
+    key = (prompt('Enter the Mirr admin key (the ADMIN_KEY secret set on mirr-brand-setup-worker):') || '').trim();
+    if (key) localStorage.setItem('mirr_admin_key', key);
+  }
+  return key;
+}
+
 async function commitAllowlist() {
   if (!currentBrand) return;
   if (currentBrand.allowlistAdded) {
@@ -313,6 +326,12 @@ async function commitAllowlist() {
     return;
   }
 
+  const adminKey = getAdminKey();
+  if (!adminKey) {
+    document.getElementById('allowlist-status').textContent = 'Admin key required — click ADD TO GITHUB and enter it when prompted.';
+    return;
+  }
+
   const btn = document.getElementById('allowlist-btn');
   btn.disabled = true;
   btn.textContent = 'COMMITTING...';
@@ -320,10 +339,15 @@ async function commitAllowlist() {
   try {
     const resp = await fetch(BRAND_SETUP_WORKER, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey },
       body: JSON.stringify({ email: currentBrand.email, code: currentBrand.code, brandName: currentBrand.name }),
     });
     const data = await resp.json();
+    if (resp.status === 401) {
+      // Wrong or rotated key — forget it so the next click re-prompts.
+      localStorage.removeItem('mirr_admin_key');
+      throw new Error('Admin key rejected — click ADD TO GITHUB again and re-enter it.');
+    }
     if (!resp.ok || !data.ok) throw new Error(data.error || ('Worker returned ' + resp.status));
 
     currentBrand.allowlistAdded = true;
