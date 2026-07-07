@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light only">
-<title>Submit your products â Mirr</title>
+<title>Submit your products — Mirr</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -113,7 +113,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 /* ADD PRODUCT BUTTON */
 .add-product-btn{width:100%;background:#fff;border:1.5px dashed #E8E4DF;padding:16px;font-family:'Inter',sans-serif;font-size:13px;color:#7BAEC8;cursor:pointer;border-radius:8px;margin-bottom:32px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.04em}
 .add-product-btn:hover{border-color:#7BAEC8;background:rgba(123,174,200,.04)}
-.add-product-btn::before{content:"ï¼";font-size:16px}
+.add-product-btn::before{content:"＋";font-size:16px}
 
 /* SUBMIT */
 .submit-section{background:#F7F4F0;border-radius:8px;padding:24px;margin-top:8px}
@@ -144,7 +144,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 .success-next{background:#F7F4F0;border-radius:8px;padding:20px 24px;text-align:left;max-width:480px;margin:0 auto 24px}
 .success-next-title{font-size:10px;letter-spacing:.2em;color:#ABABAB;margin-bottom:12px}
 .success-next-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#4A4A4A;line-height:1.6;margin-bottom:8px}
-.success-next-item::before{content:"â";color:#7BAEC8;flex:none}
+.success-next-item::before{content:"→";color:#7BAEC8;flex:none}
 .back-link{font-size:12px;color:#7BAEC8;text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3);padding-bottom:2px}
 
 @media(max-width:640px){
@@ -162,7 +162,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 <nav>
   <div class="nav-inner">
     <a href="/" class="logo"><span class="logo-word">MIR<span class="logo-flip">R</span></span></a>
-    <a href="/" class="nav-back">â Go back</a>
+    <a href="/" class="nav-back">← Go back</a>
   </div>
 </nav>
 
@@ -185,8 +185,8 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
         <input type="text" id="gate-code" placeholder="From your welcome email" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')checkGate()">
       </div>
       <p class="field-err" id="gate-err" style="display:none;margin-top:12px">That email and code don't match what we have on file. Double check your welcome email, or contact us if you're stuck.</p>
-      <button class="submit-btn" id="gate-submit-btn" onclick="checkGate()" style="margin-top:18px">CONTINUE â</button>
-      <p class="submit-note">Not a Mirr brand yet? <a href="/list-your-brand" style="color:#7BAEC8;text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">List your brand first</a> â or email <a href="mailto:hello@trymirr.com" style="color:#7BAEC8;text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">hello@trymirr.com</a> if you've lost your code.</p>
+      <button class="submit-btn" id="gate-submit-btn" onclick="checkGate()" style="margin-top:18px">CONTINUE →</button>
+      <p class="submit-note">Not a Mirr brand yet? <a href="/list-your-brand" style="color:#7BAEC8;text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">List your brand first</a> — or email <a href="mailto:hello@trymirr.com" style="color:#7BAEC8;text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">hello@trymirr.com</a> if you've lost your code.</p>
     </div>
   </div>
 
@@ -201,9 +201,9 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
       <div class="info-box">
         <div class="info-box-label">WHAT WE NEED</div>
         <div class="info-box-body">
-          <strong>Front flat-lay photo</strong> â garment on white background, no model<br>
-          <strong>Back flat-lay photo</strong> â same conditions, rear of garment<br>
-          <strong>Garment dimensions</strong> â per size in centimetres<br>
+          <strong>Front flat-lay photo</strong> — garment on white background, no model<br>
+          <strong>Back flat-lay photo</strong> — same conditions, rear of garment<br>
+          <strong>Garment dimensions</strong> — per size in centimetres<br>
           <strong>Price and category</strong>
         </div>
       </div>
@@ -213,7 +213,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
           Plain <strong>white or light background</strong><br>
           Garment laid <strong>flat and centred</strong><br>
           No models, no props, no shadows<br>
-          JPEG or PNG, minimum <strong>800 Ã 1000px</strong>
+          JPEG or PNG, minimum <strong>800 × 1000px</strong>
         </div>
       </div>
     </div>
@@ -249,7 +249,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
     <div class="submit-section">
       <div class="submit-section-title">READY TO SUBMIT</div>
       <div class="submit-section-body">Once you submit, our team will review your products and have them live on Mirr within 72 hours. We'll email you to confirm when each product is available.</div>
-      <button class="submit-btn" id="submit-btn" onclick="submitForm()">SUBMIT ALL PRODUCTS â</button>
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">SUBMIT ALL PRODUCTS →</button>
       <p class="submit-note">Your photos are uploaded securely. We'll contact you if we need anything adjusted.</p>
     </div>
 
@@ -257,7 +257,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 
   <!-- SUCCESS STATE -->
   <div class="success-screen" id="success-state">
-    <div class="success-icon">â</div>
+    <div class="success-icon">✓</div>
     <h2 class="success-h2">Products received.</h2>
     <p class="success-body">We've received your product submissions and will have them live on Mirr within 72 hours.</p>
     <span class="success-ref" id="success-ref"></span>
@@ -268,16 +268,16 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
       <div class="success-next-item">You receive a confirmation email when products are live</div>
       <div class="success-next-item">Customers can start trying on and purchasing immediately</div>
     </div>
-    <a href="/" class="back-link">â Back to Mirr</a>
+    <a href="/" class="back-link">← Back to Mirr</a>
   </div>
 
   <!-- ERROR STATE -->
   <div class="error-screen" id="error-state">
     <div class="error-icon">!</div>
     <h2 class="error-h2">Submission didn't go through.</h2>
-    <p class="error-body">Something went wrong sending your products â this is on our end, not yours. Your details haven't been lost; nothing has been submitted yet.</p>
+    <p class="error-body">Something went wrong sending your products — this is on our end, not yours. Your details haven't been lost; nothing has been submitted yet.</p>
     <div class="error-detail" id="error-detail-text">We couldn't reach our submission service. Please check your connection and try again.</div>
-    <button class="retry-btn" onclick="retrySubmit()">TRY AGAIN â</button>
+    <button class="retry-btn" onclick="retrySubmit()">TRY AGAIN →</button>
     <p class="success-body" style="margin-bottom:0">Still not working? Email your details directly to <a href="mailto:hello@trymirr.com" style="color:#7BAEC8;text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">hello@trymirr.com</a> and we'll get it sorted.</p>
   </div>
 
@@ -288,16 +288,15 @@ const IMGBB_KEY = '24f6f02af06d8592eda20babf7a1fc1b';
 const FORMSPREE = 'https://formspree.io/f/xvznvrdo';
 const CATALOG_WORKER = 'https://mirr-catalog-worker.linaandwilliam.workers.dev';
 
-// ââ Brand access allowlist ââ
+// ── Brand access allowlist ──
 // Add one entry per brand once they've signed their Brand Agreement.
 // NOTE: this check runs entirely in the browser, so it's a "keep honest
-// people out" gate, not real security â anyone who reads this script can
+// people out" gate, not real security — anyone who reads this script can
 // see the codes. It stops drive-by/bot submissions and keeps every
 // submission tied to a brand we've actually approved, but it is not a
 // substitute for server-side validation. Move this check into the Catalog
 // Worker once that's prioritised.
 const BRAND_ALLOWLIST = {
-  'probe@example.com': 'PROBE-0000',
   // 'brand@example.com': 'ACCESSCODE',
 };
 
@@ -316,7 +315,7 @@ function checkGate() {
   document.getElementById('gate-state').style.display = 'none';
   document.getElementById('form-state').style.display = 'block';
 
-  // Pre-fill and lock the brand email field â it's already verified, no need to ask twice
+  // Pre-fill and lock the brand email field — it's already verified, no need to ask twice
   document.getElementById('brand-email').value = email;
 
   // Now safe to build the first product card
@@ -389,10 +388,10 @@ function addProduct() {
       <div class="photo-tips">
         <div class="photo-tips-title">PHOTO REQUIREMENTS</div>
         <div class="photo-tips-list">
-          <div class="photo-tip-item"><div class="photo-tip-dot"></div>White or very light background â no coloured surfaces</div>
-          <div class="photo-tip-item"><div class="photo-tip-dot"></div>Garment laid flat and centred â no models, no mannequins</div>
-          <div class="photo-tip-item"><div class="photo-tip-dot"></div>No creases, no shadows â iron the garment before photographing</div>
-          <div class="photo-tip-item"><div class="photo-tip-dot"></div>Minimum 800 Ã 1000px â JPEG or PNG</div>
+          <div class="photo-tip-item"><div class="photo-tip-dot"></div>White or very light background — no coloured surfaces</div>
+          <div class="photo-tip-item"><div class="photo-tip-dot"></div>Garment laid flat and centred — no models, no mannequins</div>
+          <div class="photo-tip-item"><div class="photo-tip-dot"></div>No creases, no shadows — iron the garment before photographing</div>
+          <div class="photo-tip-item"><div class="photo-tip-dot"></div>Minimum 800 × 1000px — JPEG or PNG</div>
         </div>
       </div>
 
@@ -402,9 +401,9 @@ function addProduct() {
           <input type="file" id="front-input-${idx}" accept="image/jpeg,image/png,image/webp"
             onchange="handlePhoto(this,'front',${idx})">
           <img class="preview-img" id="front-preview-${idx}" src="" alt="">
-          <div class="photo-slot-tick">â</div>
+          <div class="photo-slot-tick">✓</div>
           <div class="photo-slot-inner">
-            <div class="photo-slot-icon">ð·</div>
+            <div class="photo-slot-icon">📷</div>
             <div class="photo-slot-label">FRONT VIEW</div>
             <div class="photo-slot-sub">Required for try-on</div>
           </div>
@@ -413,9 +412,9 @@ function addProduct() {
           <input type="file" id="back-input-${idx}" accept="image/jpeg,image/png,image/webp"
             onchange="handlePhoto(this,'back',${idx})">
           <img class="preview-img" id="back-preview-${idx}" src="" alt="">
-          <div class="photo-slot-tick">â</div>
+          <div class="photo-slot-tick">✓</div>
           <div class="photo-slot-inner">
-            <div class="photo-slot-icon">ð·</div>
+            <div class="photo-slot-icon">📷</div>
             <div class="photo-slot-label">BACK VIEW</div>
             <div class="photo-slot-sub">Recommended</div>
           </div>
@@ -423,7 +422,7 @@ function addProduct() {
       </div>
 
       <div class="divider"></div>
-      <div class="section-label" id="dim-label-${idx}">GARMENT DIMENSIONS â SMALLEST SIZE (cm)</div>
+      <div class="section-label" id="dim-label-${idx}">GARMENT DIMENSIONS — SMALLEST SIZE (cm)</div>
       <p style="font-size:12px;color:#7A7A7A;margin-bottom:14px;line-height:1.7">Enter the actual garment measurements in centimetres for your smallest stocked size. We use these to calculate customer fit scores. Measure the garment flat.</p>
 
       <div class="field-row-4" style="margin-bottom:8px">
@@ -445,7 +444,7 @@ function addProduct() {
         </div>
       </div>
       <p class="sizes-note" style="margin-bottom:18px">Inseam only required for bottoms. Leave blank if not applicable.</p>
-      <p class="field-err" id="dim-note-${idx}" style="margin-top:-12px;margin-bottom:18px">Please enter at least one dimension â fit scores can't be calculated for customers without it.</p>
+      <p class="field-err" id="dim-note-${idx}" style="margin-top:-12px;margin-bottom:18px">Please enter at least one dimension — fit scores can't be calculated for customers without it.</p>
 
       <div class="divider"></div>
       <div class="section-label">AVAILABLE SIZES</div>
@@ -459,7 +458,7 @@ function addProduct() {
       <div class="divider"></div>
       <div class="field-group" style="margin-bottom:0">
         <label>Product description</label>
-        <textarea id="pdesc-${idx}" placeholder="Brief description for customers â fabric, fit, key features..." rows="3"></textarea>
+        <textarea id="pdesc-${idx}" placeholder="Brief description for customers — fabric, fit, key features..." rows="3"></textarea>
       </div>
 
     </div>
@@ -495,7 +494,7 @@ function handlePhoto(input, side, idx) {
   // during the actual submission later.
   const MAX_MB = 20;
   if (file.size > MAX_MB * 1024 * 1024) {
-    alert(`That photo is ${(file.size / 1024 / 1024).toFixed(1)}MB â please use one under ${MAX_MB}MB. Most phone cameras let you pick a smaller size, or you can compress it first.`);
+    alert(`That photo is ${(file.size / 1024 / 1024).toFixed(1)}MB — please use one under ${MAX_MB}MB. Most phone cameras let you pick a smaller size, or you can compress it first.`);
     input.value = '';
     return;
   }
@@ -529,11 +528,11 @@ function updateDimLabel(idx) {
   const label = document.getElementById('dim-label-' + idx);
   if (!label) return;
   if (sizes.length === 0) {
-    label.textContent = 'GARMENT DIMENSIONS â SMALLEST SIZE (cm)';
+    label.textContent = 'GARMENT DIMENSIONS — SMALLEST SIZE (cm)';
     return;
   }
   const smallest = order.find(s => sizes.includes(s));
-  label.textContent = 'GARMENT DIMENSIONS â SIZE ' + smallest + ' (cm)';
+  label.textContent = 'GARMENT DIMENSIONS — SIZE ' + smallest + ' (cm)';
 }
 
 function updateProgress() {
@@ -557,7 +556,7 @@ function updateProgress() {
 
 document.addEventListener('input', updateProgress);
 
-// Warn before losing in-progress work â this form can hold several products'
+// Warn before losing in-progress work — this form can hold several products'
 // worth of typed fields and uploaded photos, so an accidental tab close or
 // back-button tap should never be silent.
 let formSubmitted = false;
@@ -614,7 +613,7 @@ function validate() {
       ok = false;
     }
 
-    // Require at least one dimension â a product with none would go live
+    // Require at least one dimension — a product with none would go live
     // with virtual try-on but no fit score, breaking the core promise
     // ("see it on you, know it fits") shown to customers elsewhere on Mirr.
     const dims = ['dim-chest-', 'dim-waist-', 'dim-length-', 'dim-inseam-'];
@@ -693,11 +692,11 @@ async function attemptSubmit() {
     } catch (e) {
       console.warn('Photo upload error:', e);
       uploadFailures.push(pname);
-      // Don't continue building a payload with a missing required photo â
+      // Don't continue building a payload with a missing required photo —
       // bail out to the honest error screen instead of submitting incomplete data.
-      showError(`We couldn't upload the photo for "${pname}". Please check your connection and try again â your entries are still here.`);
+      showError(`We couldn't upload the photo for "${pname}". Please check your connection and try again — your entries are still here.`);
       btn.disabled = false;
-      btn.textContent = 'SUBMIT ALL PRODUCTS â';
+      btn.textContent = 'SUBMIT ALL PRODUCTS →';
       return;
     }
 
@@ -723,8 +722,8 @@ async function attemptSubmit() {
   const brandName = document.getElementById('brand-name').value;
   const brandEmail = document.getElementById('brand-email').value;
 
-  // ââ Catalog Worker is the authoritative pipeline record ââ
-  // This is what actually tracks submitted â reviewing â live, and what
+  // ── Catalog Worker is the authoritative pipeline record ──
+  // This is what actually tracks submitted → reviewing → live, and what
   // triggers the automated confirmation email once a brand reviewer marks
   // a submission live. If this call fails, the submission genuinely has
   // not entered the pipeline, so we show the honest error state.
@@ -740,13 +739,13 @@ async function attemptSubmit() {
     ref = data.ref;
   } catch (e) {
     console.warn('Catalog worker submit error:', e);
-    showError("We couldn't register your submission in our system. Your products and details are still filled in below â please try again in a moment.");
+    showError("We couldn't register your submission in our system. Your products and details are still filled in below — please try again in a moment.");
     btn.disabled = false;
-    btn.textContent = 'SUBMIT ALL PRODUCTS â';
+    btn.textContent = 'SUBMIT ALL PRODUCTS →';
     return;
   }
 
-  // ââ Formspree: secondary, non-blocking notification ââ
+  // ── Formspree: secondary, non-blocking notification ──
   // This just gives an inbox heads-up; it is no longer the source of truth
   // for the pipeline, so its failure does not block the submission.
   try {
@@ -760,7 +759,7 @@ async function attemptSubmit() {
         product_count: products.length,
         products: JSON.stringify(products, null, 2),
         submitted_at: new Date().toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' }),
-        _subject: `Product Submission â ${brandName} (${products.length} products) (${ref})`,
+        _subject: `Product Submission — ${brandName} (${products.length} products) (${ref})`,
       }),
     });
   } catch (e) {
