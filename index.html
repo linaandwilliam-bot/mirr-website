@@ -776,14 +776,12 @@ function closeMobileNav(){
               <div class="hero-result-photo-tag">YOUR PHOTO</div>
             </div>
             <div class="hero-result-photo" style="position:relative;overflow:hidden">
-              <!-- FIXED: was two stacked images (a stock photo + a separate jacket
-                   photo blended on top at 75% opacity) which looked like the garment
-                   was floating/reflecting rather than actually being worn. Replaced
-                   with a single real PixelAPI try-on result generated from this exact
-                   photo + this exact jacket. NOTE: this URL is hosted on PixelAPI's
-                   own domain — move it to a local /assets path before relying on it
-                   long-term, since file retention on their side isn't confirmed. -->
-              <img src="https://api.pixelapi.dev/outputs/vton/2026/06/26/56a5e262aba54c03afb720abe2a6f739.png"
+              <!-- Real PixelAPI try-on result (this exact photo + this exact jacket),
+                   hosted in this repo as /hero-tryon.png. The previous version
+                   hot-linked PixelAPI's ephemeral output URL, which they purged —
+                   breaking the hero. Regenerate and re-commit if the demo changes. -->
+              <img src="/hero-tryon.png"
+                onerror="this.onerror=null;this.style.display='none'"
                 alt="You wearing the jacket"
                 style="width:100%;height:100%;object-fit:cover;display:block">
               <div class="hero-result-photo-tag" style="background:rgba(123,174,200,.8)">YOU IN THIS</div>
