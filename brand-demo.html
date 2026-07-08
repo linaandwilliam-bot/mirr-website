@@ -819,7 +819,21 @@ function runTryOn() {
     }),
   })
   .then(function(res) {
-    if (!res.ok) throw new Error('Submit failed: ' + res.status);
+    if (!res.ok) {
+      return res.json().then(function(errData) {
+        var detail = errData.detail || '';
+        var parsed = {};
+        try { parsed = JSON.parse(detail).detail || {}; } catch(e) {}
+        var pixelErr = parsed.error || '';
+        var pixelMsg = parsed.message || errData.error || ('Submit failed: ' + res.status);
+        var err = new Error(pixelMsg);
+        err.pixelCode = pixelErr;
+        throw err;
+      }).catch(function(e) {
+        if (e.pixelCode !== undefined) throw e;
+        throw new Error('Submit failed: ' + res.status);
+      });
+    }
     return res.json();
   })
   .then(function(data) {
@@ -840,7 +854,7 @@ function runTryOn() {
         clearInterval(pollInterval);
         clearInterval(stepLoop);
         completeSteps();
-        showFallbackResult(true);
+        showFallbackResult(true, 'timeout');
         return;
       }
 
@@ -881,8 +895,8 @@ function runTryOn() {
   .catch(function(err) {
     clearInterval(stepLoop);
     completeSteps();
-    console.warn('Submit error:', err.message);
-    showFallbackResult(true);
+    console.warn('Submit error:', err.message, 'code:', err.pixelCode);
+    showFallbackResult(true, err.message, err.pixelCode);
   });
 }
 
@@ -1008,7 +1022,7 @@ function showRealResult(resultSrc) {
   calcFit();
 }
 
-function showFallbackResult(hadError) {
+function showFallbackResult(hadError, errMsg, pixelCode) {
   stopLoadingUX(false);
   document.getElementById('proc-state').style.display = 'none';
 
@@ -1016,12 +1030,25 @@ function showFallbackResult(hadError) {
   var prevSrc = document.getElementById('prev-img').src;
   var hasPhoto = prevSrc && prevSrc.length > 200 && prevSrc.startsWith('data:image');
 
+  function buildErrorNote(code, msg) {
+    if (!hadError) return '✓ When live, these merge into one image of you wearing the garment.';
+    if (msg === 'timeout') return '⏱ This is taking longer than expected. Please try again in a moment.';
+    if (code === 'person_image_insufficient_framing' || code === 'person_image_not_found') {
+      return '📷 Photo issue: please use a half-body or full-body photo that clearly shows your upper body — not a close-up selfie. Tap ← Back to try a different photo.';
+    }
+    if (code && code.startsWith('person_image_')) {
+      return '📷 ' + (msg || 'There was a problem with your photo. Tap ← Back and try a different full-body photo.');
+    }
+    if (code === 'garment_image_insufficient_framing') {
+      return '⚠ Garment image issue — showing side-by-side preview instead.';
+    }
+    return '⚠ Try-on unavailable right now. Showing side-by-side preview.';
+  }
+
   if (hasPhoto) {
     userPhotoEl.src = prevSrc;
     userPhotoEl.style.display = 'block';
-    document.getElementById('tryon-note').textContent = hadError
-      ? '⚠ Try-on processing unavailable right now. Showing side-by-side preview.'
-      : '✓ When live, these merge into one image of you wearing the garment.';
+    document.getElementById('tryon-note').textContent = buildErrorNote(pixelCode, errMsg);
   } else {
     userPhotoEl.style.display = 'none';
     var wrap = userPhotoEl.parentElement;
