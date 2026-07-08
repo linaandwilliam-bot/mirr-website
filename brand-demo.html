@@ -355,6 +355,10 @@ body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight
 .ps-dot{width:6px;height:6px;border-radius:50%;background:var(--line);flex:none;transition:background .3s}
 .proc-step.done .ps-dot{background:var(--brand)}
 .proc-step.active .ps-dot{background:var(--sky);animation:blk 1s infinite}
+.proc-bar-wrap{height:3px;background:var(--line);border-radius:999px;margin:14px auto 0;max-width:200px;overflow:hidden}
+.proc-bar{height:100%;width:0;background:var(--sky);border-radius:999px;transition:width .6s ease-out}
+.proc-timer{font-size:10px;color:var(--ink4);letter-spacing:.06em;margin-top:8px;font-family:'DM Mono',monospace,monospace}
+.proc-msg{font-size:12px;color:var(--sky);margin:10px 0 14px;min-height:1.4em;transition:opacity .4s;font-style:italic}
 
 /* ── TRY-ON RESULT ── */
 .tryon-label{font-size:9px;letter-spacing:.18em;color:var(--sky);margin-bottom:10px;display:flex;align-items:center;gap:8px}
@@ -565,12 +569,14 @@ body{background:#FDFCFA;color:#1C1C1C;font-family:'Inter',sans-serif;font-weight
         <div id="proc-state">
           <div class="proc-wrap">
             <div class="proc-spinner"></div>
-            <div class="proc-title">Fitting garment to your photo...</div>
-            <div class="proc-sub">Our technology is placing the item on your body using your measurements.</div>
+            <div class="proc-title">Generating your try-on...</div>
+            <div class="proc-bar-wrap"><div class="proc-bar" id="proc-bar"></div></div>
+            <div class="proc-timer" id="proc-timer">0:00</div>
+            <div class="proc-msg" id="proc-msg">Analysing your photo...</div>
             <div class="proc-steps">
-              <div class="proc-step" id="ps1"><div class="ps-dot"></div>Analysing your photo</div>
+              <div class="proc-step" id="ps1"><div class="ps-dot"></div>Analysing photo</div>
               <div class="proc-step" id="ps2"><div class="ps-dot"></div>Mapping body dimensions</div>
-              <div class="proc-step" id="ps3"><div class="ps-dot"></div>Fitting garment to your shape</div>
+              <div class="proc-step" id="ps3"><div class="ps-dot"></div>Fitting garment</div>
               <div class="proc-step" id="ps4"><div class="ps-dot"></div>Calculating fit scores</div>
             </div>
           </div>
@@ -779,9 +785,8 @@ function runTryOn() {
   document.getElementById('result-state').style.display = 'none';
 
   var procTitle = document.querySelector('.proc-title');
-  var procSub = document.querySelector('.proc-sub');
-  if (procTitle) procTitle.textContent = 'Fitting garment to your photo...';
-  if (procSub) procSub.textContent = 'This can take up to 2 minutes. Please wait.';
+  if (procTitle) procTitle.textContent = 'Generating your try-on...';
+  startLoadingUX();
 
   ['ps1','ps2','ps3','ps4'].forEach(function(id) {
     document.getElementById(id).classList.remove('done','active');
@@ -881,6 +886,64 @@ function runTryOn() {
   });
 }
 
+var _loadProgress = null;
+var PROC_MSGS = [
+  'Analysing your photo and body dimensions...',
+  'Placing the garment on your silhouette...',
+  'Rendering fabric texture and drape...',
+  'Calculating how the garment fits your shape...',
+  'Generating your personalised result...',
+  'Adding the finishing touches...',
+  'Almost there — AI is doing detailed work...',
+  'Hang tight — complex fits take a little longer...',
+];
+
+function startLoadingUX() {
+  var startTime = Date.now();
+  var barEl  = document.getElementById('proc-bar');
+  var timeEl = document.getElementById('proc-timer');
+  var msgEl  = document.getElementById('proc-msg');
+  var msgIdx = 0;
+
+  if (barEl)  barEl.style.width = '0%';
+  if (msgEl)  { msgEl.style.opacity = '1'; msgEl.textContent = PROC_MSGS[0]; }
+  if (timeEl) timeEl.textContent = '0:00';
+
+  _loadProgress = setInterval(function() {
+    var elapsed = (Date.now() - startTime) / 1000;
+    var pct = 94 * (1 - Math.exp(-elapsed / 75));
+    if (barEl)  barEl.style.width = pct.toFixed(1) + '%';
+    var m = Math.floor(elapsed / 60);
+    var s = Math.floor(elapsed % 60);
+    if (timeEl) timeEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    if (elapsed > 0 && Math.floor(elapsed) % 12 === 0 && Math.floor(elapsed) !== Math.floor((elapsed - 0.5))) {
+      msgIdx = Math.min(msgIdx + 1, PROC_MSGS.length - 1);
+      if (msgEl) {
+        msgEl.style.opacity = '0';
+        setTimeout(function() {
+          if (msgEl) { msgEl.textContent = PROC_MSGS[msgIdx]; msgEl.style.opacity = '1'; }
+        }, 400);
+      }
+    }
+  }, 500);
+}
+
+function stopLoadingUX(success) {
+  if (_loadProgress) { clearInterval(_loadProgress); _loadProgress = null; }
+  var barEl  = document.getElementById('proc-bar');
+  var msgEl  = document.getElementById('proc-msg');
+  if (success && barEl) {
+    barEl.style.transition = 'width .3s ease-out';
+    barEl.style.width = '100%';
+  }
+  if (msgEl) {
+    msgEl.style.opacity = '0';
+    setTimeout(function() {
+      if (msgEl) { msgEl.textContent = success ? '✓ Your try-on is ready.' : ''; msgEl.style.opacity = success ? '1' : '0'; }
+    }, 300);
+  }
+}
+
 function startStepLoop() {
   var step = 0;
   var ids = ['ps1','ps2','ps3','ps4'];
@@ -920,6 +983,7 @@ function completeSteps() {
 }
 
 function showRealResult(resultSrc) {
+  stopLoadingUX(true);
   document.getElementById('proc-state').style.display = 'none';
 
   var userPhotoEl = document.getElementById('user-photo');
@@ -945,6 +1009,7 @@ function showRealResult(resultSrc) {
 }
 
 function showFallbackResult(hadError) {
+  stopLoadingUX(false);
   document.getElementById('proc-state').style.display = 'none';
 
   var userPhotoEl = document.getElementById('user-photo');
