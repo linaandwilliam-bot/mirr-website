@@ -618,27 +618,8 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 
 <div class="band">Now accepting founding brands — <em>8% commission locked 12 months</em>, zero monthly fee</div>
 
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="logo">
-      <span class="logo-word">MIR<span class="logo-flip">R</span></span>
-    </a>
-    <div class="nav-mid">
-      <a href="#how" class="nav-link">How it works</a>
-      <a href="#brands" class="nav-link">For brands</a>
-      <a href="#fitting" class="nav-link">Fitting room</a>
-      <a href="#faq" class="nav-link">FAQ</a>
-    </div>
-    <div class="nav-end">
-      <a href="/brand-demo" class="nav-link">Live demo</a>
-      <a href="/submit-products" class="nav-link">Submit products</a>
-      <a href="/list-your-brand" style="font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.05em;font-weight:300;color:#fff;background:#7BAEC8;text-decoration:none;padding:8px 18px;display:inline-block;transition:background .2s" onmouseover="this.style.background='#A8C5D8'" onmouseout="this.style.background='#7BAEC8'">List your brand</a>
-    </div>
-    <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileNav()">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
+<div id="nav" data-variant="home"></div>
+<script src="/nav.js"></script>
 <div class="nav-mobile-panel" id="nav-mobile-panel">
   <button class="nav-mobile-close" aria-label="Close menu" onclick="closeMobileNav()">✕</button>
   <a href="#how" onclick="closeMobileNav()">How it works</a>
