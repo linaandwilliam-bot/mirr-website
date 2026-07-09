@@ -913,25 +913,31 @@ var PROC_MSGS = [
 ];
 
 function startLoadingUX() {
+  // Clear any previous run — prevents two intervals racing each other if
+  // the user hits MIRROR IT more than once.
+  if (_loadProgress) { clearInterval(_loadProgress); _loadProgress = null; }
+
   var startTime = Date.now();
   var barEl  = document.getElementById('proc-bar');
   var timeEl = document.getElementById('proc-timer');
   var msgEl  = document.getElementById('proc-msg');
   var msgIdx = 0;
 
-  if (barEl)  barEl.style.width = '0%';
+  if (barEl)  { barEl.style.transition = 'none'; barEl.style.width = '0%'; }
   if (msgEl)  { msgEl.style.opacity = '1'; msgEl.textContent = PROC_MSGS[0]; }
   if (timeEl) timeEl.textContent = '0:00';
 
   _loadProgress = setInterval(function() {
     var elapsed = (Date.now() - startTime) / 1000;
     var pct = 94 * (1 - Math.exp(-elapsed / 75));
-    if (barEl)  barEl.style.width = pct.toFixed(1) + '%';
+    if (barEl)  { barEl.style.transition = 'none'; barEl.style.width = pct.toFixed(1) + '%'; }
     var m = Math.floor(elapsed / 60);
     var s = Math.floor(elapsed % 60);
     if (timeEl) timeEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
-    if (elapsed > 0 && Math.floor(elapsed) % 12 === 0 && Math.floor(elapsed) !== Math.floor((elapsed - 0.5))) {
-      msgIdx = Math.min(msgIdx + 1, PROC_MSGS.length - 1);
+    // Simple index — one step per 12 s, no floating-point edge cases
+    var targetIdx = Math.min(Math.floor(elapsed / 12), PROC_MSGS.length - 1);
+    if (targetIdx > msgIdx) {
+      msgIdx = targetIdx;
       if (msgEl) {
         msgEl.style.opacity = '0';
         setTimeout(function() {
@@ -1036,8 +1042,11 @@ function showFallbackResult(hadError, errMsg, pixelCode) {
     if (code === 'person_image_insufficient_framing' || code === 'person_image_not_found') {
       return '📷 Photo issue: please use a half-body or full-body photo that clearly shows your upper body — not a close-up selfie. Tap ← Back to try a different photo.';
     }
+    if (code === 'person_image_social_ui') {
+      return '📷 Photo rejected: the AI detected a screen or UI in your photo background (e.g. a TV or phone screen). Retake in front of a plain wall with no screens visible, or crop them out, then try again. No credits charged.';
+    }
     if (code && code.startsWith('person_image_')) {
-      return '📷 ' + (msg || 'There was a problem with your photo. Tap ← Back and try a different full-body photo.');
+      return '📷 There was a problem with your photo — ' + (msg ? msg.split('.')[0] + '. Tap ← Back to try a different photo.' : 'please tap ← Back and try a different full-body photo.');
     }
     if (code === 'garment_image_insufficient_framing') {
       return '⚠ Garment image issue — showing side-by-side preview instead.';
