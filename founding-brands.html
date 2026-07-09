@@ -89,6 +89,34 @@ footer{padding:32px 24px;text-align:center}
   .hero{padding:48px 20px 32px}
   .slots-grid{grid-template-columns:repeat(4,1fr);gap:8px}
 }
+.compare-section{max-width:680px;margin:0 auto;padding:0 24px 48px}
+.compare-wrap{display:grid;grid-template-columns:1fr 1fr;border:1px solid #E8E4DF;border-radius:10px;overflow:hidden}
+.compare-col{padding:28px 24px}
+.compare-founding{background:#F7F4F0}
+.compare-standard{background:#fff}
+.compare-tag{font-size:9px;letter-spacing:.2em;font-weight:500;margin-bottom:12px}
+.compare-founding .compare-tag{color:#7BAEC8}
+.compare-standard .compare-tag{color:#ABABAB}
+.compare-rate{font-family:'Playfair Display',serif;font-size:42px;font-weight:500;line-height:1;margin-bottom:4px}
+.compare-founding .compare-rate{color:#7BAEC8}
+.compare-standard .compare-rate{color:#ABABAB}
+.compare-period{font-size:11px;color:#ABABAB;margin-bottom:18px}
+.compare-items{display:flex;flex-direction:column;gap:8px}
+.compare-item{font-size:13px;line-height:1.5;display:flex;align-items:flex-start;gap:8px}
+.compare-founding .compare-item{color:#1C1C1C}
+.compare-standard .compare-item{color:#ABABAB}
+.compare-standard .compare-item.keep{color:#ABABAB}
+.compare-lock{font-size:10px;letter-spacing:.08em;font-weight:500;color:#7BAEC8;margin-top:16px;display:inline-block;background:rgba(123,174,200,.1);padding:4px 10px;border-radius:4px}
+.faq-section{max-width:680px;margin:0 auto;padding:0 24px 64px}
+.faq-list{display:flex;flex-direction:column;gap:2px}
+.faq-item{border:1px solid #E8E4DF;border-radius:8px;overflow:hidden;background:#fff;margin-bottom:2px}
+.faq-item summary{list-style:none;cursor:pointer;padding:18px 20px;font-size:14px;color:#1C1C1C;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:'+';font-size:18px;color:#ABABAB;flex:none;transition:transform .2s}
+.faq-item[open] summary::after{transform:rotate(45deg)}
+.faq-item[open] summary{border-bottom:1px solid #E8E4DF}
+.faq-body{padding:16px 20px;font-size:13px;color:#7A7A7A;line-height:1.85}
+@media(max-width:480px){.compare-wrap{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -107,6 +135,37 @@ footer{padding:32px 24px;text-align:center}
   <div class="eyebrow">FOUNDING BRANDS</div>
   <h1 class="hero-title">The first 20 brands<br>on Mirr <em>shape what<br>comes next.</em></h1>
   <p class="hero-sub">Founding brands lock in an 8% commission rate for 12 months, help define the early Mirr experience, and get permanent recognition as the brands who joined first.</p>
+</div>
+
+
+<div class="compare-section">
+  <div class="compare-wrap">
+    <div class="compare-col compare-founding">
+      <div class="compare-tag">FOUNDING BRAND — NOW</div>
+      <div class="compare-rate">8%</div>
+      <div class="compare-period">commission, locked 12 months</div>
+      <div class="compare-items">
+        <div class="compare-item"><span>✓</span> Commission fixed for 12 months</div>
+        <div class="compare-item"><span>✓</span> Permanent founding badge</div>
+        <div class="compare-item"><span>✓</span> First access to new features</div>
+        <div class="compare-item"><span>✓</span> Zero monthly fee</div>
+        <div class="compare-item"><span>✓</span> Direct line to the Mirr team</div>
+      </div>
+      <div class="compare-lock">LOCKED IN FOREVER ↑</div>
+    </div>
+    <div class="compare-col compare-standard">
+      <div class="compare-tag">STANDARD — AFTER SPOTS FILL</div>
+      <div class="compare-rate">12%</div>
+      <div class="compare-period">commission, no lock-in</div>
+      <div class="compare-items">
+        <div class="compare-item"><span>—</span> Rate subject to change</div>
+        <div class="compare-item"><span>—</span> No founding badge</div>
+        <div class="compare-item"><span>—</span> Standard feature rollout</div>
+        <div class="compare-item keep"><span>✓</span> Zero monthly fee</div>
+        <div class="compare-item keep"><span>✓</span> Same platform access</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="progress-section">
@@ -161,6 +220,19 @@ footer{padding:32px 24px;text-align:center}
         <div class="perk-desc">Applies to every brand on Mirr, founding or not — but worth repeating. Mirr earns only when you do.</div>
       </div>
     </div>
+  </div>
+</div>
+
+
+<div class="faq-section">
+  <div class="s-label">COMMON QUESTIONS</div>
+  <div class="faq-list">
+    <details class="faq-item"><summary>What does 8% commission actually mean for my business?</summary><div class="faq-body">For every sale that comes through Mirr, we take 8¢ in the dollar — you keep 92¢. There are no monthly platform fees, no setup costs, and no charges for virtual try-ons. Mirr only earns when you do.</div></details>
+    <details class="faq-item"><summary>How does the virtual try-on work for my products?</summary><div class="faq-body">You upload photos of your garments. When a shopper visits your listing, they upload a photo of themselves and our AI composites the garment onto their body in about a minute. The shopper sees themselves wearing your piece before they buy. We handle all the AI infrastructure.</div></details>
+    <details class="faq-item"><summary>What do you need from me to get started?</summary><div class="faq-body">Product photos (front-facing, plain background), pricing, and a short brand description. We’ll walk you through the product upload process after you submit — it usually takes less than an hour to get your first products live.</div></details>
+    <details class="faq-item"><summary>When and how do I get paid?</summary><div class="faq-body">Payouts go directly to your bank account via Stripe. We’re finalising the payment schedule now — founding brands will be the first to know, and will have direct input on what works for them.</div></details>
+    <details class="faq-item"><summary>Can I leave if it’s not working?</summary><div class="faq-body">Yes. There’s no lock-in contract and no exit fee. The 12-month founding rate is a benefit, not a commitment — you can pause or close your listing at any time.</div></details>
+    <details class="faq-item"><summary>Is Mirr only for Australian brands?</summary><div class="faq-body">For now, yes — we’re launching with Australian DTC brands and Australian shoppers. Once we’ve proven the model locally, we’ll expand. Founding brands will be front-of-queue as we open new markets.</div></details>
   </div>
 </div>
 
