@@ -6,33 +6,22 @@
 //   <div id="nav"></div>                         ← back nav (default)
 //   <div id="nav" data-variant="home"></div>     ← full marketing nav
 // Immediately followed by: <script src="/nav.js"></script>
-//
-// No async/defer — executes synchronously during HTML parsing so the nav
-// is in the DOM before the first paint.
 
 (function () {
   'use strict';
 
-  // Inject CTA button styles once into <head>.
-  // Doing this here avoids duplicate CSS across 8 pages, and the hover
-  // state works without inline onmouseover/onmouseout handlers.
-  if (!document.getElementById('nav-js-styles')) {
-    var style = document.createElement('style');
-    style.id = 'nav-js-styles';
-    style.textContent = '.nav-cta{font-family:Inter,sans-serif;font-size:12px;letter-spacing:.05em;font-weight:300;color:#fff;background:#7BAEC8;text-decoration:none;padding:8px 18px;display:inline-block;transition:background .2s}.nav-cta:hover{background:#A8C5D8}';
-    document.head.appendChild(style);
-  }
-
   var LOGO = '<a href="/" class="logo"><span class="logo-word">MIR<span class="logo-flip">R</span></span></a>';
+
+  // CTA button styles — injected once into <head> so no duplicate CSS across pages.
+  var CTA_CSS = '.nav-cta{font-family:Inter,sans-serif;font-size:12px;letter-spacing:.05em;font-weight:300;color:#fff;background:#7BAEC8;text-decoration:none;padding:8px 18px;display:inline-block;transition:background .2s}.nav-cta:hover{background:#A8C5D8}';
 
   var NAVS = {
 
-    // Back nav — used by: about, contact, privacy, terms, 404, submit-products, list-your-brand
+    // Back nav — about, contact, privacy, terms, 404, submit-products, list-your-brand
     back: '<nav><div class="nav-inner">' + LOGO + '<a href="/" class="nav-back">← Go back</a></div></nav>',
 
-    // Home nav — used by: index.html only.
-    // #nav-mobile-panel and toggleMobileNav() stay in index.html because they
-    // reference page-specific markup outside the <nav> element.
+    // Home nav — index.html only.
+    // #nav-mobile-panel and toggleMobileNav() stay in index.html.
     home: '<nav><div class="nav-inner">' + LOGO +
       '<div class="nav-mid">' +
         '<a href="#how" class="nav-link">How it works</a>' +
@@ -53,8 +42,24 @@
 
   };
 
-  var el = document.getElementById('nav');
-  if (!el) return;
-  el.outerHTML = NAVS[el.getAttribute('data-variant') || 'back'];
+  function injectNav() {
+    var el = document.getElementById('nav');
+    if (!el) return;
+    if (!document.getElementById('nav-js-styles')) {
+      var st = document.createElement('style');
+      st.id = 'nav-js-styles';
+      st.textContent = CTA_CSS;
+      document.head.appendChild(st);
+    }
+    var html = NAVS[el.getAttribute('data-variant') || 'back'];
+    el.insertAdjacentHTML('afterend', html);
+    el.parentNode.removeChild(el);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectNav);
+  } else {
+    injectNav();
+  }
 
 }());
