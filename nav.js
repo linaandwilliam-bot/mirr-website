@@ -13,7 +13,7 @@
   var LOGO = '<a href="/" class="logo"><span class="logo-word">MIR<span class="logo-flip">R</span></span></a>';
 
   // CTA button styles — injected once into <head> so no duplicate CSS across pages.
-  var CTA_CSS = '.nav-cta{font-family:Inter,sans-serif;font-size:12px;letter-spacing:.05em;font-weight:300;color:#fff;background:#7BAEC8;text-decoration:none;padding:8px 18px;display:inline-block;transition:background .2s}.nav-cta:hover{background:#A8C5D8}';
+  var CTA_CSS = '.nav-cta{font-family:var(--font-sans);font-size:12px;letter-spacing:.05em;font-weight:300;color:var(--white);background:var(--sky);text-decoration:none;padding:8px 18px;display:inline-block;transition:background .2s}.nav-cta:hover{background:var(--sky-lt)}';
 
   var NAVS = {
 

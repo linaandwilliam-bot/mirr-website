@@ -1,0 +1,35 @@
+/* tokens.css — single source of truth for Mirr's design tokens (colours + font stacks). */
+/* Linked from every page's <head>. Do not redefine these in a page's own <style> block. */
+
+:root{
+  --page:      #FDFCFA;
+  --paper:     #F7F4F0;
+  --cream:     #F0EBE3;
+  --card:      #F2EFE9;
+  --white:     #FFFFFF;
+
+  --ink:       #1C1C1C;
+  --ink2:      #4A4A4A;
+  --ink3:      #7A7A7A;
+  --ink4:      #ABABAB;
+
+  --line:      #E8E4DF;
+  --line2:     #F0EDE8;
+
+  --sky:       #7BAEC8;
+  --sky-lt:    #A8C5D8;
+  --sky-bg:    rgba(123,174,200,0.1);
+  --sky-brd:   rgba(123,174,200,0.25);
+
+  --rose:      #D4A898;
+  --rose-bg:   rgba(212,168,152,0.1);
+  --rose-dark: #8A6A5C;
+
+  --brand:     #2D5A3D;
+  --brand-bg:  rgba(45,90,61,.08);
+  --brand-brd: rgba(45,90,61,.2);
+
+  --font-serif: 'Playfair Display', serif;
+  --font-sans:  'Inter', sans-serif;
+  --font-mono:  'DM Mono', monospace;
+}
