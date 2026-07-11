@@ -274,6 +274,14 @@ nav{position:sticky;top:0;z-index:200;background:rgba(253,252,250,.96);backdrop-
 .cta-btn:hover{background:var(--sky-lt)}
 .cta-note{font-size:11px;color:var(--ink4);letter-spacing:.04em}
 
+/* ── SHOPPER WAITLIST ── */
+.wlist{padding:72px 48px;text-align:center;background:var(--page);border-bottom:1px solid var(--line)}
+.wlist-h{font-family:var(--font-serif);font-size:clamp(24px,3vw,34px);font-weight:500;color:var(--ink);margin-bottom:10px}
+.wlist-sub{font-size:13px;color:var(--ink3);max-width:420px;margin:0 auto 28px;line-height:1.8}
+.wlist-form{display:flex;justify-content:center;max-width:400px;margin:0 auto;flex-wrap:wrap;gap:0}
+.wlist-note{font-size:11px;color:var(--rose);margin-top:10px;min-height:1.2em}
+.wlist-done{display:none;font-family:var(--font-serif);font-style:italic;font-size:17px;color:var(--sky)}
+
 /* ── FOOTER ── */
 footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48px 28px}
 .footer-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid var(--line)}
@@ -1129,6 +1137,19 @@ function closeMobileNav(){
   <p class="cta-note" id="sn">We'll reach out within 24 hours to get your brand listed.</p>
 </section>
 
+<!-- SHOPPER WAITLIST -->
+<section class="wlist">
+  <h2 class="wlist-h">Be first in the fitting room</h2>
+  <p class="wlist-sub">Mirr launches soon — leave your email and try on the first drops before anyone else.</p>
+  <form class="wlist-form" id="wl-form" onsubmit="wlSubmit(event)">
+    <input type="hidden" name="type" value="shopper-waitlist">
+    <input type="email" class="cta-input" name="email" id="wl-email" placeholder="your email" required>
+    <button class="cta-btn" id="wl-btn" type="submit">JOIN THE WAITLIST</button>
+  </form>
+  <p class="wlist-note" id="wl-note"></p>
+  <p class="wlist-done" id="wl-done">You're on the list.</p>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-top">
@@ -1338,6 +1359,29 @@ function sub(){
     if(btn){btn.disabled=false;btn.textContent='GET EARLY ACCESS'}
   });
 }
+
+// Shopper waitlist
+function wlSubmit(ev){
+  ev.preventDefault();
+  const form=document.getElementById('wl-form'),
+        note=document.getElementById('wl-note'),
+        btn=document.getElementById('wl-btn');
+  btn.disabled=true;btn.textContent='JOINING...';
+  fetch('https://formspree.io/f/xvznvrdo',{
+    method:'POST',
+    headers:{'Accept':'application/json'},
+    body:new FormData(form)
+  }).then(function(res){
+    if(!res.ok)throw new Error('Formspree returned '+res.status);
+    form.style.display='none';
+    note.style.display='none';
+    document.getElementById('wl-done').style.display='block';
+  }).catch(function(){
+    note.textContent='Something went wrong — please email hello@trymirr.com directly.';
+    btn.disabled=false;btn.textContent='JOIN THE WAITLIST';
+  });
+}
 </script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6fb28a3de5848c8837eaa3d8495d031"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
