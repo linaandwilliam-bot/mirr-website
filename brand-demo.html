@@ -381,27 +381,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 <!-- ═══ LIST PAGE ═══ -->
 <div id="page-list">
 
-  <div class="bhdr">
-    <div class="btop">
-      <div class="blogo"><div class="blogo-t">AA</div></div>
-      <div>
-        <div class="bname">Apex Active <span class="bdemo-badge">EXAMPLE STORE</span></div>
-        <div class="bloc">MELBOURNE, AUSTRALIA</div>
-      </div>
-    </div>
-    <div class="bstats">
-      <div><div class="bsn">24</div><div class="bsl">PRODUCTS</div></div>
-      <div><div class="bsn">4.8★</div><div class="bsl">RATING</div></div>
-      <div><div class="bsn">312</div><div class="bsl">TRY-ONS</div></div>
-    </div>
-    <div class="bdesc">Performance activewear built for real training. Designed for movement — morning runs, heavy sessions, or all-day comfort. Made from recycled fabrics, fitted in Melbourne.</div>
-    <div class="btags">
-      <div class="btag">ACTIVEWEAR</div>
-      <div class="btag">SUSTAINABLE</div>
-      <div class="btag">UNISEX</div>
-      <div class="btag">MADE IN AU</div>
-    </div>
-  </div>
+  <div class="bhdr" id="bhdr"></div>
 
   <div class="fbar">
     <div class="fpill on" onclick="filterP('all',this)">All</div>
@@ -410,56 +390,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
     <div class="fpill" onclick="filterP('outerwear',this)">Outerwear</div>
   </div>
 
-  <div class="pgrid" id="pgrid">
-    <div class="pcard" data-cat="tops" onclick="showDetail(0)">
-      <div class="pimg-wrap">
-        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80&fit=crop" onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMyRDVBM0QiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThDNUQ4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Gb3Jlc3QgQ29tcHJlc3Npb24gVGVlPC90ZXh0Pjx0ZXh0IHg9IjIwMCIgeT0iNDYwIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBmaWxsPSIjQThDNUQ4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjQiIGxldHRlci1zcGFjaW5nPSIyIj5NSVJSIERFTU88L3RleHQ+PC9zdmc+'" alt="Forest Compression Tee">
-        <div class="pbadge b-best">BESTSELLER</div>
-        <div class="mcchip"><div class="chdot"></div>MIRROR IT</div>
-      </div>
-      <div class="pinfo">
-        <div class="pcat">TOPS</div>
-        <div class="pname">Forest Compression Tee</div>
-        <div class="pfoot"><span class="pprice">$54.99</span><span class="pview">VIEW →</span></div>
-      </div>
-    </div>
-    <div class="pcard" data-cat="bottoms" onclick="showDetail(1)">
-      <div class="pimg-wrap">
-        <img src="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&q=80&fit=crop" onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMxQTM1MjgiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4RDhDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThEOEM4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5UcmFpbmluZyBTaG9ydHM8L3RleHQ+PHRleHQgeD0iMjAwIiB5PSI0NjAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjkiIGZpbGw9IiNBOEQ4QzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNCIgbGV0dGVyLXNwYWNpbmc9IjIiPk1JUlIgREVNTzwvdGV4dD48L3N2Zz4='" alt="Apex Training Shorts">
-        <div class="pbadge b-new">NEW</div>
-        <div class="mcchip"><div class="chdot"></div>MIRROR IT</div>
-      </div>
-      <div class="pinfo">
-        <div class="pcat">BOTTOMS</div>
-        <div class="pname">Apex Training Shorts</div>
-        <div class="pfoot"><span class="pprice">$44.99</span><span class="pview">VIEW →</span></div>
-      </div>
-    </div>
-    <div class="pcard" data-cat="outerwear" onclick="showDetail(2)">
-      <div class="pimg-wrap">
-        <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80&fit=crop" onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMyQTNENUEiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThDNUQ4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Db2JhbHQgWmlwLVVwIEphY2tldDwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg=='" alt="Cobalt Zip-Up Jacket">
-        <div class="pbadge b-sale">SALE</div>
-        <div class="mcchip"><div class="chdot"></div>MIRROR IT</div>
-      </div>
-      <div class="pinfo">
-        <div class="pcat">OUTERWEAR</div>
-        <div class="pname">Cobalt Zip-Up Jacket</div>
-        <div class="pfoot"><span class="pprice">$79.99</span><span class="pprice-old">$109.99</span><span class="pview">VIEW →</span></div>
-      </div>
-    </div>
-    <div class="pcard" data-cat="tops" onclick="showDetail(3)">
-      <div class="pimg-wrap">
-        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80&fit=crop" onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiM1QTMwNTAiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0Q4QThDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjRDhBOEM4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5TY3VscHQgU3BvcnRzIEJyYTwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0Q4QThDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg=='" alt="Sculpt Sports Bra">
-        
-        <div class="mcchip"><div class="chdot"></div>MIRROR IT</div>
-      </div>
-      <div class="pinfo">
-        <div class="pcat">TOPS</div>
-        <div class="pname">Sculpt Sports Bra</div>
-        <div class="pfoot"><span class="pprice">$49.99</span><span class="pview">VIEW →</span></div>
-      </div>
-    </div>
-  </div>
+  <div class="pgrid" id="pgrid"></div>
   <div class="powered">Powered by <a href="/">Mirr</a> — try it on before you buy</div>
 
 </div>
@@ -469,7 +400,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 
   <div class="dpage-nav">
     <button class="dbk" onclick="hideDetail()">Back</button>
-    <div class="dpage-brand">APEX ACTIVE on MIRR</div>
+    <div class="dpage-brand" id="dpage-brand">APEX ACTIVE on MIRR</div>
   </div>
 
   <!-- LEFT: image + info + sizes -->
@@ -622,8 +553,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
     </div>
 
     <div class="bsec" id="buy-sec">
-      <button class="bbtn" onclick="showToast('Opening Apex Active store...')">BUY FROM APEX ACTIVE →</button>
-      <div class="bnote">You will be taken to Apex Active to complete your purchase.</div>
+      <button class="bbtn" id="buy-btn" onclick="buyClick()">BUY FROM APEX ACTIVE →</button>
+      <div class="bnote" id="buy-note">You will be taken to Apex Active to complete your purchase.</div>
       <div class="bmnote">Processed through <span>Mirr</span> — 92% goes directly to the brand.</div>
       <div class="bpolicy">
         <span>↩ Returns per brand policy</span>
@@ -647,10 +578,79 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 <div class="toast" id="toast-el"></div>
 
 <script>
-const PRODS = [{"cat":"TOPS","name":"Forest Compression Tee","price":"$54.99","old":null,"desc":"Built for high-intensity training. Four-way stretch fabric with moisture-wicking technology keeps you dry. Flatlock seams reduce chafing on long sessions.","scores":{"chest":94,"waist":88,"hips":90,"inseam":96},"tryon_cat":"upperbody"},{"cat":"BOTTOMS","name":"Apex Training Shorts","price":"$44.99","old":null,"desc":"7-inch inseam with built-in compression liner. Lightweight recycled fabric with deep side pockets. Perfect for runs, HIIT, and gym sessions.","scores":{"chest":null,"waist":92,"hips":86,"inseam":91},"tryon_cat":"lowerbody"},{"cat":"OUTERWEAR","name":"Cobalt Zip-Up Jacket","price":"$79.99","old":"$109.99","desc":"Lightweight, wind-resistant outer layer with a full-length zip. Packable into its own pocket. Built for pre and post training in any conditions.","scores":{"chest":92,"waist":89,"hips":94,"inseam":88},"tryon_cat":"upperbody"},{"cat":"TOPS","name":"Sculpt Sports Bra","price":"$49.99","old":null,"desc":"Medium-impact support with a longline design. Wide underbust band stays in place during movement. Available in 8 colourways.","scores":{"chest":96,"waist":93,"hips":null,"inseam":null},"tryon_cat":"upperbody"}];
-const REAL_IMGS = ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80&fit=crop", "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&q=80&fit=crop", "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80&fit=crop", "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80&fit=crop"];
-const SVG_IMGS = ["data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMyRDVBM0QiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThDNUQ4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Gb3Jlc3QgQ29tcHJlc3Npb24gVGVlPC90ZXh0Pjx0ZXh0IHg9IjIwMCIgeT0iNDYwIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBmaWxsPSIjQThDNUQ4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjQiIGxldHRlci1zcGFjaW5nPSIyIj5NSVJSIERFTU88L3RleHQ+PC9zdmc+", "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMxQTM1MjgiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4RDhDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThEOEM4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5UcmFpbmluZyBTaG9ydHM8L3RleHQ+PHRleHQgeD0iMjAwIiB5PSI0NjAiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjkiIGZpbGw9IiNBOEQ4QzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuNCIgbGV0dGVyLXNwYWNpbmc9IjIiPk1JUlIgREVNTzwvdGV4dD48L3N2Zz4=", "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMzQTRBMzAiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0M4RDhBOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQzhEOEE4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5QZXJmb3JtYW5jZSBKb2dnZXJzPC90ZXh0Pjx0ZXh0IHg9IjIwMCIgeT0iNDYwIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBmaWxsPSIjQzhEOEE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjQiIGxldHRlci1zcGFjaW5nPSIyIj5NSVJSIERFTU88L3RleHQ+PC9zdmc+", "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMyQTNENUEiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThDNUQ4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Db2JhbHQgWmlwLVVwIEphY2tldDwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg==", "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiM1QTMwNTAiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0Q4QThDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjRDhBOEM4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5TY3VscHQgU3BvcnRzIEJyYTwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0Q4QThDOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg==", "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiM0QTMwMzAiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0Q4QzhBOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjRDhDOEE4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Db3JlIE1hdGNoaW5nIFNldDwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0Q4QzhBOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg=="];
-const IMGS = REAL_IMGS;
+let PRODS = [];
+let REAL_IMGS = [];
+let SVG_IMGS = [];
+let IMGS = [];
+let currentBrand = null;
+
+function productCardHTML(p, idx) {
+  var badgeHtml = p.badge ? '<div class="pbadge ' + p.badge_class + '">' + p.badge + '</div>' : '';
+  var oldHtml = p.old ? '<span class="pprice-old">' + p.old + '</span>' : '';
+  return '<div class="pcard" data-cat="' + p.cat.toLowerCase() + '" onclick="showDetail(' + idx + ')">' +
+      '<div class="pimg-wrap">' +
+        '<img src="' + p.image + '" onerror="this.onerror=null;this.src=\'' + p.fallback_svg + '\'" alt="' + p.name + '">' +
+        badgeHtml +
+        '<div class="mcchip"><div class="chdot"></div>MIRROR IT</div>' +
+      '</div>' +
+      '<div class="pinfo">' +
+        '<div class="pcat">' + p.cat + '</div>' +
+        '<div class="pname">' + p.name + '</div>' +
+        '<div class="pfoot"><span class="pprice">' + p.price + '</span>' + oldHtml + '<span class="pview">VIEW →</span></div>' +
+      '</div>' +
+    '</div>';
+}
+
+function renderBrandHeader(brand) {
+  document.getElementById('bhdr').innerHTML =
+    '<div class="btop">' +
+      '<div class="blogo"><div class="blogo-t">' + brand.initials + '</div></div>' +
+      '<div>' +
+        '<div class="bname">' + brand.name + ' <span class="bdemo-badge">EXAMPLE STORE</span></div>' +
+        '<div class="bloc">' + brand.location + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="bstats">' +
+      '<div><div class="bsn">' + brand.products_count + '</div><div class="bsl">PRODUCTS</div></div>' +
+      '<div><div class="bsn">' + brand.rating + '</div><div class="bsl">RATING</div></div>' +
+      '<div><div class="bsn">' + brand.tryons_count + '</div><div class="bsl">TRY-ONS</div></div>' +
+    '</div>' +
+    '<div class="bdesc">' + brand.description + '</div>' +
+    '<div class="btags">' + brand.tags.map(function(t) { return '<div class="btag">' + t + '</div>'; }).join('') + '</div>';
+}
+
+function buyClick() {
+  showToast('Opening ' + (currentBrand ? currentBrand.name : 'the brand') + ' store...');
+}
+
+async function initBrand() {
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('brand') || 'apex-active';
+  const res = await fetch('/brands.json');
+  const data = await res.json();
+  const brand = data[slug] || data['apex-active'];
+  currentBrand = brand;
+
+  PRODS = brand.products.map(function(p) {
+    return { cat: p.cat, name: p.name, price: p.price, old: p.old, desc: p.desc, scores: p.scores, tryon_cat: p.tryon_cat };
+  });
+  REAL_IMGS = brand.products.map(function(p) { return p.image; });
+  SVG_IMGS = brand.products.map(function(p) { return p.fallback_svg; });
+  IMGS = REAL_IMGS;
+
+  renderBrandHeader(brand);
+  document.getElementById('pgrid').innerHTML = brand.products.map(productCardHTML).join('');
+
+  document.getElementById('dpage-brand').textContent = brand.name.toUpperCase() + ' on MIRR';
+  document.getElementById('buy-btn').textContent = 'BUY FROM ' + brand.name.toUpperCase() + ' →';
+  document.getElementById('buy-note').textContent = 'You will be taken to ' + brand.name + ' to complete your purchase.';
+
+  document.title = brand.name + ' — on Mirr';
+  var ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute('content', brand.name + ' — on Mirr');
+}
+
+initBrand();
 
 let curProd = 0;
 let curUnit = 'cm';
