@@ -159,6 +159,8 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
   .field-row-2,.field-row-3,.field-row-4{grid-template-columns:1fr 1fr}
   .field-row-4{grid-template-columns:1fr 1fr}
 }
+/* Keyboard focus — visible outline for tab navigation (a11y) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -346,13 +348,13 @@ function addProduct() {
 
       <div class="field-row-2" style="margin-bottom:18px">
         <div class="field-group" style="margin-bottom:0">
-          <label>Product name <span class="req">*</span></label>
+          <label for="pname-${idx}">Product name <span class="req">*</span></label>
           <input type="text" id="pname-${idx}" placeholder="e.g. Forest Compression Tee"
             oninput="document.getElementById('pname-display-${idx}').textContent=this.value||'Untitled product'">
           <div class="field-err" id="err-pname-${idx}">Required</div>
         </div>
         <div class="field-group" style="margin-bottom:0">
-          <label>Category <span class="req">*</span></label>
+          <label for="pcat-${idx}">Category <span class="req">*</span></label>
           <select id="pcat-${idx}">
             <option value="" disabled selected>Select category</option>
             <option value="Tops">Tops</option>
@@ -371,16 +373,16 @@ function addProduct() {
 
       <div class="field-row-3" style="margin-bottom:18px">
         <div class="field-group" style="margin-bottom:0">
-          <label>Price (AUD) <span class="req">*</span></label>
+          <label for="pprice-${idx}">Price (AUD) <span class="req">*</span></label>
           <input type="number" id="pprice-${idx}" placeholder="0.00" min="0" step="0.01">
           <div class="field-err" id="err-pprice-${idx}">Required</div>
         </div>
         <div class="field-group" style="margin-bottom:0">
-          <label>SKU / Product code</label>
+          <label for="psku-${idx}">SKU / Product code</label>
           <input type="text" id="psku-${idx}" placeholder="Optional">
         </div>
         <div class="field-group" style="margin-bottom:0">
-          <label>Material</label>
+          <label for="pmaterial-${idx}">Material</label>
           <input type="text" id="pmaterial-${idx}" placeholder="e.g. 80% Polyester">
         </div>
       </div>
@@ -397,10 +399,10 @@ function addProduct() {
 
       <label style="margin-bottom:10px">Product photos <span class="req">*</span></label>
       <div class="photo-upload-area">
-        <div class="photo-slot" id="front-slot-${idx}" onclick="triggerUpload('front-input-${idx}')">
-          <input type="file" id="front-input-${idx}" accept="image/jpeg,image/png,image/webp"
+        <div class="photo-slot" id="front-slot-${idx}" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" aria-label="Upload front photo" onclick="triggerUpload('front-input-${idx}')">
+          <input type="file" id="front-input-${idx}" aria-label="Front product photo" accept="image/jpeg,image/png,image/webp"
             onchange="handlePhoto(this,'front',${idx})">
-          <img class="preview-img" id="front-preview-${idx}" src="" alt="">
+          <img class="preview-img" id="front-preview-${idx}" src="" alt="Front photo preview">
           <div class="photo-slot-tick">✓</div>
           <div class="photo-slot-inner">
             <div class="photo-slot-icon">📷</div>
@@ -408,10 +410,10 @@ function addProduct() {
             <div class="photo-slot-sub">Required for try-on</div>
           </div>
         </div>
-        <div class="photo-slot" id="back-slot-${idx}" onclick="triggerUpload('back-input-${idx}')">
-          <input type="file" id="back-input-${idx}" accept="image/jpeg,image/png,image/webp"
+        <div class="photo-slot" id="back-slot-${idx}" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" aria-label="Upload back photo" onclick="triggerUpload('back-input-${idx}')">
+          <input type="file" id="back-input-${idx}" aria-label="Back product photo" accept="image/jpeg,image/png,image/webp"
             onchange="handlePhoto(this,'back',${idx})">
-          <img class="preview-img" id="back-preview-${idx}" src="" alt="">
+          <img class="preview-img" id="back-preview-${idx}" src="" alt="Back photo preview">
           <div class="photo-slot-tick">✓</div>
           <div class="photo-slot-inner">
             <div class="photo-slot-icon">📷</div>
@@ -427,19 +429,19 @@ function addProduct() {
 
       <div class="field-row-4" style="margin-bottom:8px">
         <div class="field-group" style="margin-bottom:0">
-          <label>Chest (cm)</label>
+          <label for="dim-chest-${idx}">Chest (cm)</label>
           <input type="number" id="dim-chest-${idx}" placeholder="e.g. 48" min="0">
         </div>
         <div class="field-group" style="margin-bottom:0">
-          <label>Waist (cm)</label>
+          <label for="dim-waist-${idx}">Waist (cm)</label>
           <input type="number" id="dim-waist-${idx}" placeholder="e.g. 42" min="0">
         </div>
         <div class="field-group" style="margin-bottom:0">
-          <label>Length (cm)</label>
+          <label for="dim-length-${idx}">Length (cm)</label>
           <input type="number" id="dim-length-${idx}" placeholder="e.g. 70" min="0">
         </div>
         <div class="field-group" style="margin-bottom:0">
-          <label>Inseam (cm)</label>
+          <label for="dim-inseam-${idx}">Inseam (cm)</label>
           <input type="number" id="dim-inseam-${idx}" placeholder="e.g. 80" min="0">
         </div>
       </div>
@@ -450,14 +452,14 @@ function addProduct() {
       <div class="section-label">AVAILABLE SIZES</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px" id="sizes-${idx}">
         ${['XS','S','M','L','XL','XXL','XXXL'].map(s => `
-        <div class="size-check" id="sz-${idx}-${s}" onclick="toggleSize(${idx},'${s}',this)">${s}</div>
+        <div class="size-check" id="sz-${idx}-${s}" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="toggleSize(${idx},'${s}',this)">${s}</div>
         `).join('')}
       </div>
       <p class="sizes-note">Tap to select all sizes you currently have in stock.</p>
 
       <div class="divider"></div>
       <div class="field-group" style="margin-bottom:0">
-        <label>Product description</label>
+        <label for="pdesc-${idx}">Product description</label>
         <textarea id="pdesc-${idx}" placeholder="Brief description for customers — fabric, fit, key features..." rows="3"></textarea>
       </div>
 

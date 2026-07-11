@@ -136,6 +136,8 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
   .field-row{grid-template-columns:1fr}
   nav{padding:0 20px}
 }
+/* Keyboard focus — visible outline for tab navigation (a11y) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -309,21 +311,21 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
           </div>
 
           <div id="premium-options">
-            <div class="prem-card" id="prem-yes" onclick="selectPremium('yes')">
+            <div class="prem-card" id="prem-yes" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selectPremium('yes')">
               <div class="prem-circle" id="circle-yes"></div>
               <div>
                 <span class="prem-card-title">Yes — I am interested</span>
                 <span class="prem-card-sub">Premium Placement at 15% commission</span>
               </div>
             </div>
-            <div class="prem-card" id="prem-more" onclick="selectPremium('tell-me-more')">
+            <div class="prem-card" id="prem-more" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selectPremium('tell-me-more')">
               <div class="prem-circle" id="circle-more"></div>
               <div>
                 <span class="prem-card-title">Tell me more first</span>
                 <span class="prem-card-sub">I would like to discuss it before deciding</span>
               </div>
             </div>
-            <div class="prem-card" id="prem-no" onclick="selectPremium('no')">
+            <div class="prem-card" id="prem-no" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selectPremium('no')">
               <div class="prem-circle" id="circle-no"></div>
               <div>
                 <span class="prem-card-title">Not right now</span>

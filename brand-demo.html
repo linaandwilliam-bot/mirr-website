@@ -370,6 +370,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 .tryon-note{font-size:11px;color:var(--ink3);line-height:1.7;background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:6px;padding:10px 12px;margin-bottom:14px;font-style:italic}
 .fit-scores-head{font-size:9px;letter-spacing:.18em;color:var(--ink4);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
 
+/* Keyboard focus — visible outline for tab navigation (a11y) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -389,10 +391,10 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
   <div class="bhdr" id="bhdr"></div>
 
   <div class="fbar">
-    <div class="fpill on" onclick="filterP('all',this)">All</div>
-    <div class="fpill" onclick="filterP('tops',this)">Tops</div>
-    <div class="fpill" onclick="filterP('bottoms',this)">Bottoms</div>
-    <div class="fpill" onclick="filterP('outerwear',this)">Outerwear</div>
+    <div class="fpill on" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="filterP('all',this)">All</div>
+    <div class="fpill" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="filterP('tops',this)">Tops</div>
+    <div class="fpill" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="filterP('bottoms',this)">Bottoms</div>
+    <div class="fpill" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="filterP('outerwear',this)">Outerwear</div>
   </div>
 
   <div class="pgrid" id="pgrid"></div>
@@ -418,11 +420,11 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
       <div class="ddesc" id="d-desc"></div>
       <div class="slbl">SELECT SIZE</div>
       <div class="sgrid">
-        <div class="sbtn" onclick="selSz(this)">XS</div>
-        <div class="sbtn on" onclick="selSz(this)">S</div>
-        <div class="sbtn" onclick="selSz(this)">M</div>
-        <div class="sbtn" onclick="selSz(this)">L</div>
-        <div class="sbtn" onclick="selSz(this)">XL</div>
+        <div class="sbtn" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selSz(this)">XS</div>
+        <div class="sbtn on" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selSz(this)">S</div>
+        <div class="sbtn" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selSz(this)">M</div>
+        <div class="sbtn" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selSz(this)">L</div>
+        <div class="sbtn" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selSz(this)">XL</div>
         <div class="sbtn sold">XXL</div>
       </div>
       <div class="sdiv"></div>
@@ -448,9 +450,9 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
       <!-- STEP 1 -->
       <div class="mpnl ac" id="pnl1">
         <!-- Hidden file input - triggered by button click for reliability -->
-        <input type="file" id="file-input" accept="image/*" style="display:none;position:absolute;left:-9999px" onchange="handlePhoto(this)">
+        <input type="file" id="file-input" accept="image/*" aria-label="Upload your photo" style="display:none;position:absolute;left:-9999px" onchange="handlePhoto(this)">
 
-        <div class="upzone" id="upzone" onclick="document.getElementById('file-input').click()">
+        <div class="upzone" id="upzone" tabindex="0" role="button" aria-label="Upload your photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="document.getElementById('file-input').click()">
           <div class="upico">📸</div>
           <div class="uptit">Tap to upload your photo</div>
           <div class="upsub">Full-length photo, plain background, fitted clothing. Better photo = better result.</div>
@@ -480,11 +482,11 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
         <div class="unote" id="unote">Centimetres — AU, EU, UK, Asia</div>
         <div class="svdnote">💾 Saved to your Mirr profile — used across every brand.</div>
         <div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Height</div><div class="mht">Floor to top of head</div></div><div class="mrgt"><input type="number" class="minput" id="m-height" value="178" oninput="updM('height',this.value)"><div class="mvu" id="u-height">cm</div></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Chest</div><div class="mht">Fullest part of chest</div></div><div class="mrgt"><input type="number" class="minput" id="m-chest" value="96" oninput="updM('chest',this.value)"><div class="mvu" id="u-chest">cm</div></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Waist</div><div class="mht">Natural waistline</div></div><div class="mrgt"><input type="number" class="minput" id="m-waist" value="82" oninput="updM('waist',this.value)"><div class="mvu" id="u-waist">cm</div></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Hips</div><div class="mht">Widest part of hips</div></div><div class="mrgt"><input type="number" class="minput" id="m-hips" value="100" oninput="updM('hips',this.value)"><div class="mvu" id="u-hips">cm</div></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Inseam</div><div class="mht">Crotch to ankle</div></div><div class="mrgt"><input type="number" class="minput" id="m-inseam" value="81" oninput="updM('inseam',this.value)"><div class="mvu" id="u-inseam">cm</div></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Height</div><div class="mht">Floor to top of head</div></div><div class="mrgt"><input type="number" class="minput" id="m-height" aria-label="Height" value="178" oninput="updM('height',this.value)"><div class="mvu" id="u-height">cm</div></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Chest</div><div class="mht">Fullest part of chest</div></div><div class="mrgt"><input type="number" class="minput" id="m-chest" aria-label="Chest" value="96" oninput="updM('chest',this.value)"><div class="mvu" id="u-chest">cm</div></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Waist</div><div class="mht">Natural waistline</div></div><div class="mrgt"><input type="number" class="minput" id="m-waist" aria-label="Waist" value="82" oninput="updM('waist',this.value)"><div class="mvu" id="u-waist">cm</div></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Hips</div><div class="mht">Widest part of hips</div></div><div class="mrgt"><input type="number" class="minput" id="m-hips" aria-label="Hips" value="100" oninput="updM('hips',this.value)"><div class="mvu" id="u-hips">cm</div></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Inseam</div><div class="mht">Crotch to ankle</div></div><div class="mrgt"><input type="number" class="minput" id="m-inseam" aria-label="Inseam" value="81" oninput="updM('inseam',this.value)"><div class="mvu" id="u-inseam">cm</div></div></div>
         </div>
         <div class="snv">
           <button class="sbk2" onclick="goStep(1)">← Back</button>
@@ -593,9 +595,10 @@ let currentBrand = null;
 function productCardHTML(p, idx) {
   var badgeHtml = p.badge ? '<div class="pbadge ' + p.badge_class + '">' + p.badge + '</div>' : '';
   var oldHtml = p.old ? '<span class="pprice-old">' + p.old + '</span>' : '';
-  return '<div class="pcard" data-cat="' + p.cat.toLowerCase() + '" onclick="showDetail(' + idx + ')">' +
+  var altText = p.name + (currentBrand ? ' — ' + currentBrand.name : '');
+  return '<div class="pcard" data-cat="' + p.cat.toLowerCase() + '" tabindex="0" role="button" aria-label="View ' + p.name + '" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();this.click()}" onclick="showDetail(' + idx + ')">' +
       '<div class="pimg-wrap">' +
-        '<img src="' + p.image + '" onerror="this.onerror=null;this.src=\'' + p.fallback_svg + '\'" alt="' + p.name + '">' +
+        '<img loading="lazy" src="' + p.image + '" onerror="this.onerror=null;this.src=\'' + p.fallback_svg + '\'" alt="' + altText + '">' +
         badgeHtml +
         '<div class="mcchip"><div class="chdot"></div>MIRROR IT</div>' +
       '</div>' +
@@ -750,11 +753,14 @@ function showDetail(idx) {
   const p = PRODS[idx];
 
   // Populate
+  const altText = p.name + (currentBrand ? ' — ' + currentBrand.name : '');
   const dimg = document.getElementById('d-img');
   dimg.src = IMGS[idx];
+  dimg.alt = altText;
   dimg.onerror = function(){ this.onerror=null; this.src=SVG_IMGS[idx]; };
   const rimg = document.getElementById('r-img');
   rimg.src = IMGS[idx];
+  rimg.alt = altText;
   rimg.onerror = function(){ this.onerror=null; this.src=SVG_IMGS[idx]; };
   document.getElementById('d-cat').textContent = p.cat;
   document.getElementById('d-name').textContent = p.name;

@@ -601,6 +601,8 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 .hd-proc-step.done .hd-proc-dot{background:var(--brand)}
 .hd-proc-step.active .hd-proc-dot{background:var(--sky);animation:blk 1s infinite}
 
+/* Keyboard focus — visible outline for tab navigation (a11y) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -681,7 +683,7 @@ function closeMobileNav(){
       <!-- STATE 1: PRODUCT VIEW -->
       <div id="hd-product" class="hd-state">
         <div class="hero-product">
-          <img class="hero-product-img"
+          <img class="hero-product-img" fetchpriority="high"
             src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80&fit=crop"
             onerror="this.onerror=null;this.style.background='var(--cream)'"
             alt="Camel Zip-Up Jacket">
@@ -762,7 +764,7 @@ function closeMobileNav(){
                    hosted in this repo as /hero-tryon.png. The previous version
                    hot-linked PixelAPI's ephemeral output URL, which they purged —
                    breaking the hero. Regenerate and re-commit if the demo changes. -->
-              <img src="/hero-tryon.png"
+              <img src="/hero-tryon.png" width="600" height="750"
                 onerror="this.onerror=null;this.style.display='none'"
                 alt="You wearing the jacket"
                 style="width:100%;height:100%;object-fit:cover;display:block">
@@ -900,7 +902,7 @@ function closeMobileNav(){
   <div class="product-grid rv">
     <div class="product-card">
       <div class="product-img-wrap">
-        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80&fit=crop" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&q=80'" alt="White Performance Tee">
+        <img loading="lazy" src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&q=80&fit=crop" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&q=80'" alt="White Performance Tee">
         <div class="product-tag">BESTSELLER</div>
         <div class="product-mirror-pill"><span class="mirror-pill-label">MIRROR IT</span><span class="mirror-pill-arrow">→</span></div>
       </div>
@@ -912,7 +914,7 @@ function closeMobileNav(){
     </div>
     <div class="product-card">
       <div class="product-img-wrap">
-        <img src="https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=500&q=80&fit=crop" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1539185441755-769473a23570?w=500&q=80'" alt="Olive Performance Joggers">
+        <img loading="lazy" src="https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=500&q=80&fit=crop" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1539185441755-769473a23570?w=500&q=80'" alt="Olive Performance Joggers">
         <div class="product-tag">NEW</div>
         <div class="product-mirror-pill"><span class="mirror-pill-label">MIRROR IT</span><span class="mirror-pill-arrow">→</span></div>
       </div>
@@ -924,7 +926,7 @@ function closeMobileNav(){
     </div>
     <div class="product-card">
       <div class="product-img-wrap">
-        <img src="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&q=80&fit=crop" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80'" alt="Slate Blue Leggings">
+        <img loading="lazy" src="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&q=80&fit=crop" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80'" alt="Slate Blue Leggings">
         <div class="product-mirror-pill"><span class="mirror-pill-label">MIRROR IT</span><span class="mirror-pill-arrow">→</span></div>
       </div>
       <div class="product-info">
@@ -935,7 +937,7 @@ function closeMobileNav(){
     </div>
     <div class="product-card">
       <div class="product-img-wrap">
-        <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&q=80&fit=crop" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1624548140129-74786c5f1279?w=500&q=80'" alt="Camel Zip-Up Jacket">
+        <img loading="lazy" src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&q=80&fit=crop" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1624548140129-74786c5f1279?w=500&q=80'" alt="Camel Zip-Up Jacket">
         <div class="product-tag">TRENDING</div>
         <div class="product-mirror-pill"><span class="mirror-pill-label">MIRROR IT</span><span class="mirror-pill-arrow">→</span></div>
       </div>
@@ -1131,7 +1133,7 @@ function closeMobileNav(){
   <h2 class="cta-h2"><span class="wordmark">MIR<span class="flip">R</span></span> it.<br><span class="sky">Sell more.</span></h2>
   <p class="cta-sub">Join the founding brands on Mirr. No monthly fee. No setup cost. 8% founding rate locked for 12 months.</p>
   <div class="cta-form">
-    <input type="email" class="cta-input" placeholder="your brand email" id="ei">
+    <input type="email" class="cta-input" placeholder="your brand email" id="ei" aria-label="Your brand email">
     <button class="cta-btn" id="sub-btn" onclick="sub()">GET EARLY ACCESS</button>
   </div>
   <p class="cta-note" id="sn">We'll reach out within 24 hours to get your brand listed.</p>
@@ -1143,7 +1145,7 @@ function closeMobileNav(){
   <p class="wlist-sub">Mirr launches soon — leave your email and try on the first drops before anyone else.</p>
   <form class="wlist-form" id="wl-form" onsubmit="wlSubmit(event)">
     <input type="hidden" name="type" value="shopper-waitlist">
-    <input type="email" class="cta-input" name="email" id="wl-email" placeholder="your email" required>
+    <input type="email" class="cta-input" name="email" id="wl-email" placeholder="your email" required aria-label="Your email address">
     <button class="cta-btn" id="wl-btn" type="submit">JOIN THE WAITLIST</button>
   </form>
   <p class="wlist-note" id="wl-note"></p>

@@ -11,6 +11,7 @@ Static HTML site for Mirr, an Australian virtual try-on marketplace at trymirr.c
 There is no build, lint, or test tooling in this repo. Workflow is:
 
 - **Preview locally before committing** — open the HTML file(s) directly in a browser, or serve the directory (e.g. `python -m http.server`) since some pages fetch local JSON (`founding-count.json`) and `fetch()` can behave differently under `file://`.
+- **Check links before every push** — run `node scripts/check-links.mjs`; it verifies every internal href/src in the HTML pages resolves to a real file and exits non-zero listing anything broken.
 - **Deploy** — push to `main`; GitHub Pages publishes within ~1 minute. There is no staging environment, so pushing to `main` is effectively a live deploy.
 
 ## Architecture
