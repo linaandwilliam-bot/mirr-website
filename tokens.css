@@ -10,8 +10,8 @@
 
   --ink:       #1C1C1C;
   --ink2:      #4A4A4A;
-  --ink3:      #7A7A7A;
-  --ink4:      #ABABAB;
+  --ink3:      #6E6E6E;
+  --ink4:      #767676;
 
   --line:      #E8E4DF;
   --line2:     #F0EDE8;
@@ -20,10 +20,12 @@
   --sky-lt:    #A8C5D8;
   --sky-bg:    rgba(123,174,200,0.1);
   --sky-brd:   rgba(123,174,200,0.25);
+  --sky-text:  #4E7E9B; /* accessible sky for textual use (links, prices, body-size text) */
 
   --rose:      #D4A898;
   --rose-bg:   rgba(212,168,152,0.1);
   --rose-dark: #8A6A5C;
+  --rose-text: #B0614A; /* accessible rose for error/warning message text */
 
   --brand:     #2D5A3D;
   --brand-bg:  rgba(45,90,61,.08);

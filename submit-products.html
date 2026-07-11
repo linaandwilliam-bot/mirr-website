@@ -59,7 +59,7 @@ input.err,select.err,textarea.err{border-color:var(--rose)}
 input::placeholder,textarea::placeholder{color:var(--ink4);font-weight:300}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ABABAB' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
 textarea{resize:vertical;min-height:72px;line-height:1.6}
-.field-err{font-size:11px;color:var(--rose);margin-top:5px;display:none}
+.field-err{font-size:11px;color:var(--rose-text);margin-top:5px;display:none}
 .field-group{margin-bottom:18px}
 .field-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
@@ -75,7 +75,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 .product-card-head{background:var(--paper);border-bottom:1px solid var(--line);padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
 .product-card-num{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--sky)}
 .product-card-name{font-size:13px;color:var(--ink);font-weight:400}
-.product-card-remove{font-size:11px;color:var(--rose);cursor:pointer;border:none;background:none;padding:4px 8px;border-radius:4px;transition:background .2s}
+.product-card-remove{font-size:11px;color:var(--rose-text);cursor:pointer;border:none;background:none;padding:4px 8px;border-radius:4px;transition:background .2s}
 .product-card-remove:hover{background:var(--rose-bg)}
 .product-card-body{padding:20px}
 
@@ -115,7 +115,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 .sizes-note{font-size:11px;color:var(--ink4);font-style:italic;margin-top:4px}
 
 /* ADD PRODUCT BUTTON */
-.add-product-btn{width:100%;background:var(--white);border:1.5px dashed var(--line);padding:16px;font-family:var(--font-sans);font-size:13px;color:var(--sky);cursor:pointer;border-radius:8px;margin-bottom:32px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.04em}
+.add-product-btn{width:100%;background:var(--white);border:1.5px dashed var(--line);padding:16px;font-family:var(--font-sans);font-size:13px;color:var(--sky-text);cursor:pointer;border-radius:8px;margin-bottom:32px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.04em}
 .add-product-btn:hover{border-color:var(--sky);background:rgba(123,174,200,.04)}
 .add-product-btn::before{content:"＋";font-size:16px}
 
@@ -149,7 +149,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 .success-next-title{font-size:10px;letter-spacing:.2em;color:var(--ink4);margin-bottom:12px}
 .success-next-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:8px}
 .success-next-item::before{content:"→";color:var(--sky);flex:none}
-.back-link{font-size:12px;color:var(--sky);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3);padding-bottom:2px}
+.back-link{font-size:12px;color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3);padding-bottom:2px}
 
 @media(max-width:640px){
   nav{padding:0 20px}
@@ -188,7 +188,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
       <p class="field-err" id="gate-err" style="display:none;margin-top:12px">That email and code don't match what we have on file. Double check your welcome email, or contact us if you're stuck.</p>
       <button class="submit-btn" id="gate-submit-btn" onclick="checkGate()" style="margin-top:18px">CONTINUE →</button>
-      <p class="submit-note">Not a Mirr brand yet? <a href="/list-your-brand" style="color:var(--sky);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">List your brand first</a> — or email <a href="mailto:hello@trymirr.com" style="color:var(--sky);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">hello@trymirr.com</a> if you've lost your code.</p>
+      <p class="submit-note">Not a Mirr brand yet? <a href="/list-your-brand" style="color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">List your brand first</a> — or email <a href="mailto:hello@trymirr.com" style="color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">hello@trymirr.com</a> if you've lost your code.</p>
     </div>
   </div>
 
@@ -280,7 +280,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <p class="error-body">Something went wrong sending your products — this is on our end, not yours. Your details haven't been lost; nothing has been submitted yet.</p>
     <div class="error-detail" id="error-detail-text">We couldn't reach our submission service. Please check your connection and try again.</div>
     <button class="retry-btn" onclick="retrySubmit()">TRY AGAIN →</button>
-    <p class="success-body" style="margin-bottom:0">Still not working? Email your details directly to <a href="mailto:hello@trymirr.com" style="color:var(--sky);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">hello@trymirr.com</a> and we'll get it sorted.</p>
+    <p class="success-body" style="margin-bottom:0">Still not working? Email your details directly to <a href="mailto:hello@trymirr.com" style="color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">hello@trymirr.com</a> and we'll get it sorted.</p>
   </div>
 
 </div>

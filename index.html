@@ -185,7 +185,7 @@ nav{position:sticky;top:0;z-index:200;background:rgba(253,252,250,.96);backdrop-
 .model-k{color:var(--ink3)}.model-v{color:var(--ink);font-weight:400}
 .model-tip{display:inline-block;margin-left:4px;color:var(--ink4);cursor:help;font-size:11px;border:1px solid var(--ink4);border-radius:50%;width:14px;height:14px;line-height:13px;text-align:center}
 .model-tip:hover{color:var(--sky);border-color:var(--sky)}
-.model-v.sky{color:var(--sky);font-weight:500}
+.model-v.sky{color:var(--sky-text);font-weight:500}
 .model-note{margin:20px 28px;padding:16px 18px;background:var(--sky-bg);border-left:2px solid var(--sky);font-size:12px;color:var(--ink3);line-height:1.8;font-style:italic}
 .model-right{display:flex;flex-direction:column;gap:1px}
 .model-stat{background:var(--white);border:1px solid var(--line);padding:28px;margin-bottom:1px;transition:background .3s}
@@ -242,7 +242,7 @@ nav{position:sticky;top:0;z-index:200;background:rgba(253,252,250,.96);backdrop-
 .fbar-label{color:var(--ink3);width:62px}
 .fbar-track{flex:1;height:2px;background:var(--line);overflow:hidden}
 .fbar-fill{height:100%;background:var(--sky)}
-.fbar-pct{color:var(--sky);width:26px;text-align:right;font-family:var(--font-mono)}
+.fbar-pct{color:var(--sky-text);width:26px;text-align:right;font-family:var(--font-mono)}
 .fit-verdict{padding:0 14px 12px;font-size:11px;color:var(--ink3);font-style:italic;font-family:var(--font-serif)}
 
 /* ── FAQ ── */
@@ -279,8 +279,8 @@ nav{position:sticky;top:0;z-index:200;background:rgba(253,252,250,.96);backdrop-
 .wlist-h{font-family:var(--font-serif);font-size:clamp(24px,3vw,34px);font-weight:500;color:var(--ink);margin-bottom:10px}
 .wlist-sub{font-size:13px;color:var(--ink3);max-width:420px;margin:0 auto 28px;line-height:1.8}
 .wlist-form{display:flex;justify-content:center;max-width:400px;margin:0 auto;flex-wrap:wrap;gap:0}
-.wlist-note{font-size:11px;color:var(--rose);margin-top:10px;min-height:1.2em}
-.wlist-done{display:none;font-family:var(--font-serif);font-style:italic;font-size:17px;color:var(--sky)}
+.wlist-note{font-size:11px;color:var(--rose-text);margin-top:10px;min-height:1.2em}
+.wlist-done{display:none;font-family:var(--font-serif);font-style:italic;font-size:17px;color:var(--sky-text)}
 
 /* ── FOOTER ── */
 footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48px 28px}
@@ -344,7 +344,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
   .perks-footer a { color: var(--white) !important; }
   .perks-footer a[href="/brand-demo"] { background: var(--sky) !important; }
   .perks-footer a.btn-dark { background: var(--sky) !important; }
-  .perks-footer a[href="/submit-products"] { background: transparent !important; color: var(--sky) !important; }
+  .perks-footer a[href="/submit-products"] { background: transparent !important; color: var(--sky-text) !important; }
   .logo-word, .nav-link, .faq-q { color: var(--ink) !important; }
   .hero-left { background: var(--page) !important; color: var(--ink) !important; }
   .hero-eyebrow { color: var(--ink4) !important; }
@@ -563,7 +563,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 .hero-fit-fill{height:100%;border-radius:3px;transition:width 1s ease}
 .hero-fit-fill.g{background:var(--brand)}
 .hero-fit-fill.b{background:var(--sky)}
-.hero-fit-pct{font-family:var(--font-mono);font-size:10px;color:var(--sky);width:32px;text-align:right;flex:none}
+.hero-fit-pct{font-family:var(--font-mono);font-size:10px;color:var(--sky-text);width:32px;text-align:right;flex:none}
 
 /* OVERALL SCORE */
 .hero-score{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--paper);border-radius:5px;margin-top:10px}
@@ -596,7 +596,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 @keyframes spin{to{transform:rotate(360deg)}}
 .hd-proc-step{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink4);padding:3px 0;transition:color .3s}
 .hd-proc-step.done{color:var(--brand)}
-.hd-proc-step.active{color:var(--sky)}
+.hd-proc-step.active{color:var(--sky-text)}
 .hd-proc-dot{width:5px;height:5px;border-radius:50%;background:var(--line);flex:none;transition:background .3s}
 .hd-proc-step.done .hd-proc-dot{background:var(--brand)}
 .hd-proc-step.active .hd-proc-dot{background:var(--sky);animation:blk 1s infinite}
@@ -724,7 +724,7 @@ function closeMobileNav(){
           </div>
           <div style="padding:10px 14px;background:var(--white);border-top:1px solid var(--line)">
             <div class="hd-upload-bar" style="margin-bottom:6px"><div class="hd-upload-fill" id="hd-upload-fill"></div></div>
-            <div style="font-size:10px;color:var(--sky);letter-spacing:.08em" id="hd-upload-txt">Uploading...</div>
+            <div style="font-size:10px;color:var(--sky-text);letter-spacing:.08em" id="hd-upload-txt">Uploading...</div>
           </div>
         </div>
         <div style="display:flex;gap:6px;font-size:10px;color:var(--ink4);align-items:flex-start">
@@ -1000,7 +1000,7 @@ function closeMobileNav(){
       </div>
       <div class="process-step">
         <div class="ps-line"><div class="ps-num">02</div><div class="ps-conn"></div></div>
-        <div class="ps-body"><div class="ps-tag">YOUR PRODUCTS</div><div class="ps-title">Upload products and dimensions</div><div class="ps-desc">Flat-lay photos and garment dimensions — chest, waist, length, inseam. <a href="/submit-products" style="color:var(--sky);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.35)">Our product form</a> guides you through every field in minutes.</div></div>
+        <div class="ps-body"><div class="ps-tag">YOUR PRODUCTS</div><div class="ps-title">Upload products and dimensions</div><div class="ps-desc">Flat-lay photos and garment dimensions — chest, waist, length, inseam. <a href="/submit-products" style="color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.35)">Our product form</a> guides you through every field in minutes.</div></div>
       </div>
       <div class="process-step">
         <div class="ps-line"><div class="ps-num">03</div><div class="ps-conn"></div></div>
@@ -1027,7 +1027,7 @@ function closeMobileNav(){
         <div class="perks-footer">
           <a href="/brand-demo" style="display:block;text-align:center;text-decoration:none;margin-bottom:10px;font-size:12px;letter-spacing:.05em;font-weight:500;color:var(--white);background:var(--sky);padding:14px 18px;border-radius:4px;transition:background .2s" onmouseover="this.style.background='var(--sky-lt)'" onmouseout="this.style.background='var(--sky)'">SEE THE LIVE DEMO →</a>
           <a href="/list-your-brand" class="btn-dark" style="display:block;text-align:center;text-decoration:none;margin-bottom:10px">GET STARTED FOR FREE →</a>
-          <a href="/submit-products" style="display:block;text-align:center;font-size:12px;color:var(--sky);text-decoration:none;letter-spacing:.08em;padding:10px;border:.5px solid rgba(123,174,200,.3);border-radius:4px;transition:background .2s" onmouseover="this.style.background='rgba(123,174,200,.06)'" onmouseout="this.style.background='transparent'">Already listed? Submit your products →</a>
+          <a href="/submit-products" style="display:block;text-align:center;font-size:12px;color:var(--sky-text);text-decoration:none;letter-spacing:.08em;padding:10px;border:.5px solid rgba(123,174,200,.3);border-radius:4px;transition:background .2s" onmouseover="this.style.background='rgba(123,174,200,.06)'" onmouseout="this.style.background='transparent'">Already listed? Submit your products →</a>
         </div>
       </div>
     </div>
@@ -1098,7 +1098,7 @@ function closeMobileNav(){
           </div>
           <div class="fit-verdict">✓ This jacket fits your body well. Chest and shoulders are accurate. Length runs slightly short for your height — consider sizing up.</div>
         </div>
-        <div style="padding:14px 22px;background:var(--sky-bg);border-top:1px solid var(--sky-brd);font-size:12px;color:var(--sky);font-style:italic">
+        <div style="padding:14px 22px;background:var(--sky-bg);border-top:1px solid var(--sky-brd);font-size:12px;color:var(--sky-text);font-style:italic">
           This is what every shopper sees on Mirr before they buy.
         </div>
       </div>
@@ -1339,7 +1339,7 @@ function tfaq(btn){
 // Submit
 function sub(){
   const e=document.getElementById('ei').value,n=document.getElementById('sn'),btn=document.getElementById('sub-btn');
-  if(!e||!e.includes('@')||!e.includes('.')){n.textContent='Please enter a valid email address.';n.style.color='var(--rose)';return}
+  if(!e||!e.includes('@')||!e.includes('.')){n.textContent='Please enter a valid email address.';n.style.color='var(--rose-text)';return}
   if(btn){btn.disabled=true;btn.textContent='SENDING...'}
   fetch('https://formspree.io/f/xvznvrdo',{
     method:'POST',
@@ -1352,12 +1352,12 @@ function sub(){
     })
   }).then(function(){
     n.textContent="✓ You're on the list. We'll be in touch within 24 hours.";
-    n.style.color='var(--sky)';
+    n.style.color='var(--sky-text)';
     document.getElementById('ei').value='';
     if(btn){btn.disabled=false;btn.textContent='GET EARLY ACCESS'}
   }).catch(function(){
     n.textContent='Something went wrong — please email hello@trymirr.com directly.';
-    n.style.color='var(--rose)';
+    n.style.color='var(--rose-text)';
     if(btn){btn.disabled=false;btn.textContent='GET EARLY ACCESS'}
   });
 }
