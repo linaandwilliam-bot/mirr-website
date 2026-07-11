@@ -140,9 +140,14 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 .upprev{display:none;text-align:center;margin-bottom:12px}
 .upprev img{width:90px;height:120px;object-fit:cover;border-radius:6px;border:2px solid var(--sky);margin-bottom:6px}
 .upprev p{font-size:12px;color:var(--sky)}
-.utips{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
-.utip{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink3)}
-.udot{width:4px;height:4px;background:var(--sky);border-radius:50%;flex:none}
+.pv-msg{display:none;font-size:12px;line-height:1.6;border-radius:6px;padding:10px 12px;margin-bottom:12px}
+.pv-msg.err{display:block;background:var(--rose-bg);border:.5px solid var(--rose);color:var(--rose-dark)}
+.pv-msg.warn{display:block;background:var(--rose-bg);border:.5px solid rgba(212,168,152,.35);color:var(--rose-dark)}
+.ptips{display:grid;grid-template-columns:1fr 1fr;gap:7px 14px;background:var(--white);border:.5px solid var(--line);border-radius:6px;padding:12px 14px;margin-bottom:16px}
+.ptip{display:flex;gap:7px;font-size:11px;color:var(--ink3);line-height:1.5;align-items:flex-start}
+.ptip-mark{flex:none;font-family:var(--font-mono);font-weight:500}
+.ptip.ok .ptip-mark{color:var(--sky)}
+.ptip.no .ptip-mark{color:var(--rose)}
 
 /* ── STEP 2 MEASUREMENTS ── */
 .utog{display:flex;background:var(--white);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:10px}
@@ -456,11 +461,12 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
           <p style="font-size:12px;color:var(--sky);text-align:center;margin-bottom:8px">✓ Photo ready</p>
           <button onclick="document.getElementById('file-input').click()" style="display:block;margin:0 auto;background:none;border:.5px solid var(--sky);color:var(--sky);font-size:11px;padding:5px 12px;border-radius:4px;cursor:pointer">Change photo</button>
         </div>
-        <div class="utips">
-          <div class="utip"><div class="udot"></div>Plain light background — white wall works best</div>
-          <div class="utip"><div class="udot"></div>Full body visible — head to feet, arms slightly out from sides</div>
-          <div class="utip"><div class="udot"></div>Wear fitted clothing — avoid baggy or heavily layered outfits</div>
-          <div class="utip"><div class="udot"></div>Even lighting — no harsh shadows, face the light source</div>
+        <div class="pv-msg" id="pv-msg"></div>
+        <div class="ptips">
+          <div class="ptip ok"><span class="ptip-mark">✓</span>Full body, head to feet</div>
+          <div class="ptip ok"><span class="ptip-mark">✓</span>Plain wall behind you</div>
+          <div class="ptip no"><span class="ptip-mark">✗</span>Close-up selfies</div>
+          <div class="ptip no"><span class="ptip-mark">✗</span>TVs, phones or screens in the background</div>
         </div>
         <div class="snv"><button class="snxt" style="flex:1" onclick="goStep(2)">USE MY PHOTO →</button></div>
       </div>
@@ -682,18 +688,57 @@ function setUnit(u) {
 
 const isDesktop = () => window.innerWidth >= 900;
 
+function showPhotoMsg(kind, text) {
+  const el = document.getElementById('pv-msg');
+  el.className = 'pv-msg ' + kind;
+  el.textContent = text;
+}
+
+function clearPhotoMsg() {
+  const el = document.getElementById('pv-msg');
+  el.className = 'pv-msg';
+  el.textContent = '';
+}
+
+// Pre-validation at photo-selection time — catches the cheap PixelAPI
+// rejections (tiny/cropped images) instantly instead of after the 1-3 min
+// try-on wait. Server-side validation remains the second line of defence.
+function validatePhoto(src, done) {
+  const img = new Image();
+  img.onload = function() {
+    if (img.naturalWidth < 400 || img.naturalHeight < 600) {
+      done({ ok: false, msg: 'This photo is too small for try-on — please use a larger photo.' });
+    } else if (img.naturalWidth > img.naturalHeight) {
+      done({ ok: true, warn: 'Full-body photos work best in portrait orientation.' });
+    } else {
+      done({ ok: true });
+    }
+  };
+  img.onerror = function() {
+    done({ ok: false, msg: "That file couldn't be read — please use a JPEG or PNG photo." });
+  };
+  img.src = src;
+}
+
 function handlePhoto(input) {
   if (!input.files || !input.files[0]) return;
   const file = input.files[0];
   const reader = new FileReader();
   reader.onload = function(e) {
     const src = e.target.result;
-    document.getElementById('prev-img').src = src;
-    document.getElementById('upzone').style.display = 'none';
-    document.getElementById('upprev').style.display = 'block';
+    validatePhoto(src, function(res) {
+      if (!res.ok) {
+        showPhotoMsg('err', res.msg);
+        return; // photo rejected — upload zone stays visible
+      }
+      if (res.warn) { showPhotoMsg('warn', '⚠ ' + res.warn); } else { clearPhotoMsg(); }
+      document.getElementById('prev-img').src = src;
+      document.getElementById('upzone').style.display = 'none';
+      document.getElementById('upprev').style.display = 'block';
+    });
   };
   reader.onerror = function() {
-    alert('Could not read photo. Please try a different image.');
+    showPhotoMsg('err', "That file couldn't be read — please use a JPEG or PNG photo.");
   };
   reader.readAsDataURL(file);
   // Reset input so same file can be re-selected if needed
@@ -748,6 +793,7 @@ function hideDetail() {
   // Reset
   document.getElementById('upzone').style.display = 'block';
   document.getElementById('upprev').style.display = 'none';
+  clearPhotoMsg();
 }
 
 function goStep(n) {
