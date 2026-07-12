@@ -748,9 +748,45 @@ function handlePhoto(input) {
   input.value = '';
 }
 
+// Product JSON-LD for the currently viewed product, built from brands.json
+// data. JSON.stringify guarantees valid syntax and escaping.
+function updateProductSchema(p) {
+  var el = document.getElementById('product-jsonld');
+  if (!el) {
+    el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.id = 'product-jsonld';
+    document.head.appendChild(el);
+  }
+  var priceNum = parseFloat(String(p.price).replace(/[^0-9.]/g, '')) || 0;
+  var brandName = currentBrand ? currentBrand.name : 'Mirr';
+  el.textContent = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    'name': p.name,
+    'description': p.desc,
+    'category': p.cat,
+    'image': p.image,
+    'brand': { '@type': 'Brand', 'name': brandName },
+    'offers': {
+      '@type': 'Offer',
+      'price': priceNum.toFixed(2),
+      'priceCurrency': 'AUD',
+      'availability': 'https://schema.org/InStock',
+      'seller': { '@type': 'Organization', 'name': brandName }
+    }
+  });
+}
+
+function removeProductSchema() {
+  var el = document.getElementById('product-jsonld');
+  if (el) el.parentNode.removeChild(el);
+}
+
 function showDetail(idx) {
   curProd = idx;
   const p = PRODS[idx];
+  updateProductSchema(p);
 
   // Populate
   const altText = p.name + (currentBrand ? ' — ' + currentBrand.name : '');
@@ -800,6 +836,7 @@ function hideDetail() {
   document.getElementById('upzone').style.display = 'block';
   document.getElementById('upprev').style.display = 'none';
   clearPhotoMsg();
+  removeProductSchema();
 }
 
 function goStep(n) {
