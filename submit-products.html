@@ -180,11 +180,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="strip-label">VERIFY YOUR BRAND</div>
       <div class="field-group">
         <label for="gate-email">Your brand email <span class="req">*</span></label>
-        <input type="email" id="gate-email" placeholder="you@yourbrand.com">
+        <input type="email" id="gate-email" placeholder="you@yourbrand.com" required pattern="[^\s@]+@[^\s@]+\.[^\s@]+">
       </div>
       <div class="field-group" style="margin-bottom:0">
         <label for="gate-code">Access code <span class="req">*</span></label>
-        <input type="text" id="gate-code" placeholder="From your welcome email" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')checkGate()">
+        <input type="text" id="gate-code" placeholder="From your welcome email" required pattern="[A-Za-z]{1,8}-[A-Za-z0-9]{4}" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')checkGate()">
       </div>
       <p class="field-err" id="gate-err" style="display:none;margin-top:12px">That email and code don't match what we have on file. Double check your welcome email, or contact us if you're stuck.</p>
       <button class="submit-btn" id="gate-submit-btn" onclick="checkGate()" style="margin-top:18px">CONTINUE →</button>
@@ -222,18 +222,20 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
     <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
 
+    <p class="field-err" id="form-err" style="margin:0 0 18px;padding:12px 14px;background:var(--rose-bg);border:.5px solid rgba(212,168,152,.35);border-radius:6px">Some fields need attention — the highlighted fields below are missing or invalid.</p>
+
     <!-- BRAND DETAILS -->
     <div class="brand-strip">
       <div class="strip-label">YOUR BRAND</div>
       <div class="strip-fields">
         <div class="field-group" style="margin-bottom:0">
           <label for="brand-name">Brand name <span class="req">*</span></label>
-          <input type="text" id="brand-name" placeholder="e.g. Apex Active">
+          <input type="text" id="brand-name" placeholder="e.g. Apex Active" required>
           <div class="field-err" id="err-brand-name">Required</div>
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="brand-email">Your email <span class="req">*</span></label>
-          <input type="email" id="brand-email" placeholder="you@yourbrand.com" readonly style="background:var(--paper);cursor:not-allowed">
+          <input type="email" id="brand-email" placeholder="you@yourbrand.com" required pattern="[^\s@]+@[^\s@]+\.[^\s@]+" readonly style="background:var(--paper);cursor:not-allowed">
           <div class="field-err" id="err-brand-email">Enter a valid email</div>
         </div>
       </div>
@@ -302,10 +304,28 @@ const BRAND_ALLOWLIST = {
   // 'brand@example.com': 'ACCESSCODE',
 };
 
+const GATE_ERR_DEFAULT = "That email and code don't match what we have on file. Double check your welcome email, or contact us if you're stuck.";
+
 function checkGate() {
   const email = document.getElementById('gate-email').value.trim().toLowerCase();
   const code = document.getElementById('gate-code').value.trim().toUpperCase();
   const err = document.getElementById('gate-err');
+
+  // Shape checks before the allowlist lookup — catches empty/typo'd input
+  // with a specific message instead of the generic mismatch one.
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    err.textContent = 'Enter a valid brand email address first.';
+    err.style.display = 'block';
+    document.getElementById('gate-email').focus();
+    return;
+  }
+  if (!code || !/^[A-Z]{1,8}-[A-Z0-9]{4}$/.test(code)) {
+    err.textContent = 'Enter your access code exactly as it appears in your welcome email — letters, a dash, then 4 characters (e.g. APEXACTI-7K2M).';
+    err.style.display = 'block';
+    document.getElementById('gate-code').focus();
+    return;
+  }
+  err.textContent = GATE_ERR_DEFAULT;
 
   const expected = BRAND_ALLOWLIST[email];
   if (!expected || expected.toUpperCase() !== code) {
@@ -349,13 +369,13 @@ function addProduct() {
       <div class="field-row-2" style="margin-bottom:18px">
         <div class="field-group" style="margin-bottom:0">
           <label for="pname-${idx}">Product name <span class="req">*</span></label>
-          <input type="text" id="pname-${idx}" placeholder="e.g. Forest Compression Tee"
+          <input type="text" id="pname-${idx}" placeholder="e.g. Forest Compression Tee" required
             oninput="document.getElementById('pname-display-${idx}').textContent=this.value||'Untitled product'">
           <div class="field-err" id="err-pname-${idx}">Required</div>
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="pcat-${idx}">Category <span class="req">*</span></label>
-          <select id="pcat-${idx}">
+          <select id="pcat-${idx}" required>
             <option value="" disabled selected>Select category</option>
             <option value="Tops">Tops</option>
             <option value="Bottoms">Bottoms</option>
@@ -374,8 +394,8 @@ function addProduct() {
       <div class="field-row-3" style="margin-bottom:18px">
         <div class="field-group" style="margin-bottom:0">
           <label for="pprice-${idx}">Price (AUD) <span class="req">*</span></label>
-          <input type="number" id="pprice-${idx}" placeholder="0.00" min="0" step="0.01">
-          <div class="field-err" id="err-pprice-${idx}">Required</div>
+          <input type="number" id="pprice-${idx}" placeholder="0.00" min="0" step="0.01" required>
+          <div class="field-err" id="err-pprice-${idx}">Enter a valid price (0 or more)</div>
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="psku-${idx}">SKU / Product code</label>
@@ -459,8 +479,9 @@ function addProduct() {
 
       <div class="divider"></div>
       <div class="field-group" style="margin-bottom:0">
-        <label for="pdesc-${idx}">Product description</label>
-        <textarea id="pdesc-${idx}" placeholder="Brief description for customers — fabric, fit, key features..." rows="3"></textarea>
+        <label for="pdesc-${idx}">Product description <span class="req">*</span></label>
+        <textarea id="pdesc-${idx}" placeholder="Brief description for customers — fabric, fit, key features..." rows="3" required></textarea>
+        <div class="field-err" id="err-pdesc-${idx}">Required</div>
       </div>
 
     </div>
@@ -605,9 +626,15 @@ function validate() {
     setErr('pcat-' + id, !cat);
     if (!cat) ok = false;
 
-    const price = document.getElementById('pprice-' + id)?.value;
-    setErr('pprice-' + id, !price);
-    if (!price) ok = false;
+    const priceEl = document.getElementById('pprice-' + id);
+    const price = priceEl?.value;
+    const priceOk = price !== '' && price != null && !isNaN(parseFloat(price)) && parseFloat(price) >= 0;
+    setErr('pprice-' + id, !priceOk);
+    if (!priceOk) ok = false;
+
+    const desc = document.getElementById('pdesc-' + id)?.value.trim();
+    setErr('pdesc-' + id, !desc);
+    if (!desc) ok = false;
 
     if (!productData[id]?.frontFile) {
       const slot = document.getElementById('front-slot-' + id);
@@ -630,9 +657,20 @@ function validate() {
     }
   });
 
+  const formErr = document.getElementById('form-err');
+  if (formErr) formErr.style.display = ok ? 'none' : 'block';
+
   if (!ok) {
-    const first = document.querySelector('.err, [style*="D4A898"]');
-    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const firstField = document.querySelector('input.err, select.err, textarea.err');
+    if (firstField) {
+      firstField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstField.focus({ preventScroll: true });
+    } else {
+      // No field carries .err (e.g. only a photo slot or dimensions failed) —
+      // scroll to the first visible error indicator instead.
+      const first = document.querySelector('.field-err.err, .photo-slot[style*="rose"]');
+      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   }
   return ok;
 }

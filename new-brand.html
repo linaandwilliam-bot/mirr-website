@@ -75,13 +75,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="card-label">BRAND DETAILS</div>
 
     <label for="brand-name">Brand name <span class="req">*</span></label>
-    <input type="text" id="brand-name" placeholder="e.g. Active Truth">
+    <input type="text" id="brand-name" placeholder="e.g. Active Truth" required>
 
     <label for="brand-email">Brand contact email <span class="req">*</span></label>
-    <input type="email" id="brand-email" placeholder="hello@activetruth.com.au">
+    <input type="email" id="brand-email" placeholder="hello@activetruth.com.au" required pattern="[^\s@]+@[^\s@]+\.[^\s@]+">
 
     <label for="brand-tier">Brand tier <span class="req">*</span></label>
-    <select id="brand-tier">
+    <select id="brand-tier" required>
       <option value="Founding" selected>Founding (8% commission, locked 12 months)</option>
       <option value="Standard">Standard (12% commission)</option>
     </select>
