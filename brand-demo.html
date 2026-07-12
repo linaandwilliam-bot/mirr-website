@@ -18,6 +18,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Apex Active — on Mirr">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
@@ -659,8 +660,17 @@ async function initBrand() {
   document.getElementById('buy-note').textContent = 'You will be taken to ' + brand.name + ' to complete your purchase.';
 
   document.title = brand.name + ' — on Mirr';
+  // Social share tags follow the loaded brand, same pattern as
+  // updateProductSchema(). og:image stays static (per-brand images are out
+  // of scope); note most social crawlers don't execute JS, so these help
+  // JS-rendering consumers — the static tags remain the crawler fallback.
+  var shareTitle = brand.name + ' — on Mirr';
   var ogTitle = document.querySelector('meta[property="og:title"]');
-  if (ogTitle) ogTitle.setAttribute('content', brand.name + ' — on Mirr');
+  if (ogTitle) ogTitle.setAttribute('content', shareTitle);
+  var ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.setAttribute('content', brand.description);
+  var twTitle = document.querySelector('meta[name="twitter:title"]');
+  if (twTitle) twTitle.setAttribute('content', shareTitle);
 }
 
 initBrand();

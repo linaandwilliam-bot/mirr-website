@@ -12,7 +12,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mirr">
 <meta property="og:title" content="Founding brands — Mirr">
-<meta property="og:description" content="Become a Mirr founding brand: 8% commission locked for 12 months, zero monthly fees, and first access to shoppers who try before they buy.">
+<meta property="og:description" content="20 founding spots at 8% commission, locked for 12 months — zero monthly fees. Once they're filled, new brands join at the standard 12% rate.">
 <meta property="og:url" content="https://www.trymirr.com/founding-brands">
 <meta property="og:image" content="https://www.trymirr.com/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -333,6 +333,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     renderProgress(filled, total);
     renderSlots(filled, total);
     renderEmptyState(filled, total);
+
+    // Keep the share description in step with live availability. Most social
+    // crawlers read only the static tag; this helps JS-rendering consumers.
+    var remaining = total - filled;
+    if (remaining > 0 && remaining < total) {
+      var ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) ogDesc.setAttribute('content',
+        remaining + ' of ' + total + ' founding spots remaining at 8% commission, locked for 12 months — zero monthly fees. Once they\'re filled, new brands join at the standard 12% rate.');
+    }
   }
 
   fetch('/founding-count.json', { cache: 'no-store' })
