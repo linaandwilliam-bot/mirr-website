@@ -641,7 +641,7 @@ async function initBrand() {
   currentBrand = brand;
 
   PRODS = brand.products.map(function(p) {
-    return { cat: p.cat, name: p.name, price: p.price, old: p.old, desc: p.desc, scores: p.scores, tryon_cat: p.tryon_cat };
+    return { cat: p.cat, name: p.name, price: p.price, old: p.old, desc: p.desc, scores: p.scores, tryon_cat: p.tryon_cat, image: p.image };
   });
   REAL_IMGS = brand.products.map(function(p) { return p.image; });
   SVG_IMGS = brand.products.map(function(p) { return p.fallback_svg; });
@@ -649,6 +649,10 @@ async function initBrand() {
 
   renderBrandHeader(brand);
   document.getElementById('pgrid').innerHTML = brand.products.map(productCardHTML).join('');
+
+  // Seed the first product's schema into the initial DOM so crawlers see it
+  // without a click; showDetail() keeps it updated as the shopper browses.
+  if (PRODS.length > 0) updateProductSchema(PRODS[0]);
 
   document.getElementById('dpage-brand').textContent = brand.name.toUpperCase() + ' on MIRR';
   document.getElementById('buy-btn').textContent = 'BUY FROM ' + brand.name.toUpperCase() + ' →';
@@ -778,11 +782,6 @@ function updateProductSchema(p) {
   });
 }
 
-function removeProductSchema() {
-  var el = document.getElementById('product-jsonld');
-  if (el) el.parentNode.removeChild(el);
-}
-
 function showDetail(idx) {
   curProd = idx;
   const p = PRODS[idx];
@@ -836,7 +835,8 @@ function hideDetail() {
   document.getElementById('upzone').style.display = 'block';
   document.getElementById('upprev').style.display = 'none';
   clearPhotoMsg();
-  removeProductSchema();
+  // Back on the list view — reset the schema to match the initial-load state
+  if (PRODS.length > 0) updateProductSchema(PRODS[0]);
 }
 
 function goStep(n) {
