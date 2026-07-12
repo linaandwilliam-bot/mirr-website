@@ -152,7 +152,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div>
       <div class="left-eyebrow">FOR CLOTHING BRANDS</div>
       <h1 class="left-h1">List your brand.<br><em>We handle the rest.</em></h1>
-      <p class="left-body">Tell us about your brand and we'll be in touch within 24 hours — products live on Mirr within 72 hours of approval. No monthly fee — we only earn when you do.</p>
+      <p class="left-body">Tell us about your brand and we'll be in touch within 3 business days — products live on Mirr within 72 hours of approval. No monthly fee — we only earn when you do.</p>
       <div class="left-points">
         <div class="left-point"><div class="left-point-dash"></div>Your products live on Mirr within 72 hours of approval</div>
         <div class="left-point"><div class="left-point-dash"></div>Customers see themselves in your clothing before they buy</div>
@@ -177,7 +177,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div id="form-state">
       <div class="form-eyebrow">YOUR BRAND DETAILS</div>
       <h2 class="form-title">Let's get you listed.</h2>
-      <p class="form-sub">Fill in the details below and we'll reach out within 24 hours.</p>
+      <p class="form-sub">Fill in the details below and we'll reach out within 3 business days.</p>
 
       <div class="tier-box">
         <div class="tier-label">COMMISSION TIERS</div>
@@ -338,7 +338,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
         <div class="submit-area">
           <button type="submit" id="submit-btn" class="submit-btn">SEND YOUR DETAILS →</button>
-          <p class="submit-note">We'll be in touch within 24 hours. No spam — just a conversation about getting your brand listed.</p>
+          <p class="submit-note">We'll be in touch within 3 business days. No spam — just a conversation about getting your brand listed.</p>
         </div>
 
       </form>
@@ -348,7 +348,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="success-screen" id="success-state">
       <div class="success-icon">✓</div>
       <h2 class="success-h2">You're on the list.</h2>
-      <p class="success-body">We've received your brand details and will be in touch within 24 hours.</p>
+      <p class="success-body">We've received your brand details and will be in touch within 3 business days.</p>
       <span class="success-ref" id="success-ref"></span>
 
       <!-- Auto-reply box hidden from brand — internal use only -->
@@ -458,20 +458,20 @@ function getReply(brandName, premium, ref) {
   if (premium === 'yes') {
     return {
       subject: 'Your Mirr listing — next steps (' + ref + ')',
-      body: 'Thank you for submitting your interest in listing on Mirr.\n\nWe have received your details and note that you are interested in Premium Placement. A member of our team will be in contact within 24 hours to confirm your listing and walk you through the onboarding process.\n\nYour reference number is ' + ref + '. Please quote this in any correspondence with us.\n\nABOUT PREMIUM PLACEMENT\n\nPremium Placement gives your brand priority visibility on the Mirr platform:\n\n— Homepage hero positioning — the first products every customer sees on arrival\n— Featured Brand badge across all your product listings\n— Priority ranking in search and category pages\n— Weekly inclusion in the Mirr Pick editorial spotlight\n— First access to new platform features ahead of standard brands\n— Monthly performance report with customer behaviour insights\n\nPremium Placement is available at 15% commission — in line with standard marketplace rates, but with virtual try-on and fit scoring included as standard, which most marketplaces charge extra for or don\'t offer at all.\n\nIn the meantime, you are welcome to view the customer experience at:\ntrymirr.com/brand-demo' + sig
+      body: 'Thank you for submitting your interest in listing on Mirr.\n\nWe have received your details and note that you are interested in Premium Placement. A member of our team will be in contact within 3 business days to confirm your listing and walk you through the onboarding process.\n\nYour reference number is ' + ref + '. Please quote this in any correspondence with us.\n\nABOUT PREMIUM PLACEMENT\n\nPremium Placement gives your brand priority visibility on the Mirr platform:\n\n— Homepage hero positioning — the first products every customer sees on arrival\n— Featured Brand badge across all your product listings\n— Priority ranking in search and category pages\n— Weekly inclusion in the Mirr Pick editorial spotlight\n— First access to new platform features ahead of standard brands\n— Monthly performance report with customer behaviour insights\n\nPremium Placement is available at 15% commission — in line with standard marketplace rates, but with virtual try-on and fit scoring included as standard, which most marketplaces charge extra for or don\'t offer at all.\n\nIn the meantime, you are welcome to view the customer experience at:\ntrymirr.com/brand-demo' + sig
     };
   }
 
   if (premium === 'tell-me-more') {
     return {
       subject: 'Your Mirr listing — next steps (' + ref + ')',
-      body: 'Thank you for submitting your interest in listing on Mirr.\n\nWe have received your details and noted that you would like more information on Premium Placement before making a decision. A member of our team will be in contact within 24 hours to discuss both listing options and answer any questions you have.\n\nYour reference number is ' + ref + '. Please quote this in any correspondence with us.\n\nFOR YOUR REFERENCE — LISTING OPTIONS\n\nFounding Brand (8% — locked 12 months, first ' + SPOT_TOTAL + ' brands only)\nStandard Listing (12%)\nYour products appear across category pages and search results on Mirr. Customers can browse, try on using their own photo, and purchase with full fit scoring. Automatic Stripe payouts within 2 business days.\n\nPremium Placement (15%)\nEverything in Standard Listing, plus homepage hero positioning, Featured Brand badge, priority search ranking, weekly Mirr Pick editorial spotlight, and first access to new features.\n\nBoth options carry zero monthly fee. Commission applies only on sales generated through Mirr.\n\nYou can view the full customer experience at:\ntrymirr.com/brand-demo' + sig
+      body: 'Thank you for submitting your interest in listing on Mirr.\n\nWe have received your details and noted that you would like more information on Premium Placement before making a decision. A member of our team will be in contact within 3 business days to discuss both listing options and answer any questions you have.\n\nYour reference number is ' + ref + '. Please quote this in any correspondence with us.\n\nFOR YOUR REFERENCE — LISTING OPTIONS\n\nFounding Brand (8% — locked 12 months, first ' + SPOT_TOTAL + ' brands only)\nStandard Listing (12%)\nYour products appear across category pages and search results on Mirr. Customers can browse, try on using their own photo, and purchase with full fit scoring. Automatic Stripe payouts within 2 business days.\n\nPremium Placement (15%)\nEverything in Standard Listing, plus homepage hero positioning, Featured Brand badge, priority search ranking, weekly Mirr Pick editorial spotlight, and first access to new features.\n\nBoth options carry zero monthly fee. Commission applies only on sales generated through Mirr.\n\nYou can view the full customer experience at:\ntrymirr.com/brand-demo' + sig
     };
   }
 
   return {
     subject: 'Your Mirr listing — confirmed (' + ref + ')',
-    body: 'Thank you for submitting your brand details.\n\nWe have received your application and will be in contact within 24 hours to begin the onboarding process.\n\nYour reference number is ' + ref + '. Please quote this in any correspondence with us.\n\nYOUR FOUNDING BRAND SUMMARY\n\nAs a founding brand on Mirr, the following applies to your listing:\n\n— 8% commission rate, locked for 12 months from your listing date\n— Zero monthly fee — commission applies on sales generated through Mirr only\n— Virtual try-on applied to all listed products\n— Dimension-based fit scoring per garment\n— Automatic Stripe payouts within 2 business days of each sale\n— Brand dashboard with sales, try-on activity, and earnings data\n— Founding brand status with first access to new features\n\nWHAT TO PREPARE\n\nTo get your products live on Mirr, you will need:\n— Flat-lay product photography (plain background, no models)\n— Garment dimensions per product: chest, waist, length, inseam\n— Product names, categories, and pricing\n\nOur team will guide you through the submission process when we are in contact.\n\nYou can view the customer experience at:\ntrymirr.com/brand-demo' + sig
+    body: 'Thank you for submitting your brand details.\n\nWe have received your application and will be in contact within 3 business days to begin the onboarding process.\n\nYour reference number is ' + ref + '. Please quote this in any correspondence with us.\n\nYOUR FOUNDING BRAND SUMMARY\n\nAs a founding brand on Mirr, the following applies to your listing:\n\n— 8% commission rate, locked for 12 months from your listing date\n— Zero monthly fee — commission applies on sales generated through Mirr only\n— Virtual try-on applied to all listed products\n— Dimension-based fit scoring per garment\n— Automatic Stripe payouts within 2 business days of each sale\n— Brand dashboard with sales, try-on activity, and earnings data\n— Founding brand status with first access to new features\n\nWHAT TO PREPARE\n\nTo get your products live on Mirr, you will need:\n— Flat-lay product photography (plain background, no models)\n— Garment dimensions per product: chest, waist, length, inseam\n— Product names, categories, and pricing\n\nOur team will guide you through the submission process when we are in contact.\n\nYou can view the customer experience at:\ntrymirr.com/brand-demo' + sig
   };
 }
 
