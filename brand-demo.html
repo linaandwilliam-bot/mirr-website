@@ -373,6 +373,22 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 
 /* Keyboard focus — visible outline for tab navigation (a11y) */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+
+/* ── MOBILE TAP TARGETS ──
+   44x44px minimum effective target (Apple HIG / WCAG 2.5.8) on touch-width
+   viewports. Visual size is unchanged — an invisible, centred pseudo-element
+   extends each control's hit area to at least 44px in both dimensions. */
+@media(max-width:899px){
+  .fpill,.mbar-link,.mbar-btn,.mbar-logo,.dbk,.utbtn,.sbk2,.snxt,.bnav-m,.bnav-b,.upprev button{position:relative}
+  .fpill::after,.mbar-link::after,.mbar-btn::after,.mbar-logo::after,.dbk::after,.utbtn::after,.sbk2::after,.snxt::after,.bnav-m::after,.bnav-b::after,.upprev button::after{
+    content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:max(100%,44px);height:max(100%,44px)
+  }
+  .minput{height:44px}
+  /* .utog's overflow:hidden clips the pseudo-element, so the unit toggle
+     gets real height instead. */
+  .utbtn{padding-top:15px;padding-bottom:15px}
+}
 </style>
 </head>
 <body>
