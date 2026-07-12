@@ -687,6 +687,13 @@ async function initBrand() {
   if (ogDesc) ogDesc.setAttribute('content', brand.description);
   var twTitle = document.querySelector('meta[name="twitter:title"]');
   if (twTitle) twTitle.setAttribute('content', shareTitle);
+  // Canonical follows the RESOLVED brand (unknown slugs fall back to
+  // apex-active, so the canonical must too). Same crawler caveat as the
+  // share tags: crawlers that don't execute JS see the static /brand-demo
+  // fallback, which is correct while there's a single brand.
+  var resolvedSlug = data[slug] ? slug : 'apex-active';
+  var canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) canonical.setAttribute('href', 'https://www.trymirr.com/brand-demo?brand=' + encodeURIComponent(resolvedSlug));
 }
 
 initBrand();

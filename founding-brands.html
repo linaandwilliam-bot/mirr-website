@@ -158,7 +158,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 <div class="hero">
   <div class="eyebrow">FOUNDING BRANDS</div>
-  <h1 class="hero-title">The first 20 brands<br>on Mirr <em>shape what<br>comes next.</em></h1>
+  <h1 class="hero-title">The first <span id="spot-total-hero">20</span> brands<br>on Mirr <em>shape what<br>comes next.</em></h1>
   <p class="hero-sub">Founding brands lock in an 8% commission rate for 12 months, help define the early Mirr experience, and get permanent recognition as the brands who joined first.</p>
 </div>
 
@@ -262,7 +262,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 </div>
 
 <div class="cta-section">
-  <div class="cta-title">20 spots. No catch. No fee.</div>
+  <div class="cta-title"><span id="spot-total-cta">20</span> spots. No catch. No fee.</div>
   <p class="cta-sub">Submit your details and we'll be in touch within 24 hours to get your products live on Mirr.</p>
   <a href="/list-your-brand" class="cta-btn">LIST YOUR BRAND →</a>
 </div>
@@ -314,7 +314,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
     if (remaining <= 0) {
       title.textContent = 'All founding spots are filled.';
-      body.textContent = 'Mirr\u2019s 20 founding spots are taken. New brands join at the standard 12% rate \u2014 still zero monthly fee, zero setup cost.';
+      body.textContent = 'Mirr\u2019s ' + total + ' founding spots are taken. New brands join at the standard 12% rate \u2014 still zero monthly fee, zero setup cost.';
       cta.textContent = 'LIST YOUR BRAND \u2192';
     } else if (filled === 0) {
       title.textContent = 'Be the first name here.';
@@ -334,13 +334,37 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     renderSlots(filled, total);
     renderEmptyState(filled, total);
 
-    // Keep the share description in step with live availability. Most social
-    // crawlers read only the static tag; this helps JS-rendering consumers.
+    // Every spot-count mention follows founding-count.json, same source as
+    // the tracker — the hardcoded 20s in the markup are the fetch-failure
+    // fallback. Most social crawlers read only the static meta tags; the
+    // meta/JSON-LD updates below help JS-rendering consumers.
     var remaining = total - filled;
-    if (remaining > 0 && remaining < total) {
-      var ogDesc = document.querySelector('meta[property="og:description"]');
-      if (ogDesc) ogDesc.setAttribute('content',
-        remaining + ' of ' + total + ' founding spots remaining at 8% commission, locked for 12 months — zero monthly fees. Once they\'re filled, new brands join at the standard 12% rate.');
+
+    var heroTotal = document.getElementById('spot-total-hero');
+    if (heroTotal) heroTotal.textContent = total;
+    var ctaTotal = document.getElementById('spot-total-cta');
+    if (ctaTotal) ctaTotal.textContent = total;
+
+    var ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) {
+      var ogCopy;
+      if (remaining <= 0) {
+        ogCopy = 'All ' + total + ' founding spots are filled. New brands join at the standard 12% rate — still zero monthly fees.';
+      } else if (remaining < total) {
+        ogCopy = remaining + ' of ' + total + ' founding spots remaining at 8% commission, locked for 12 months — zero monthly fees. Once they\'re filled, new brands join at the standard 12% rate.';
+      } else {
+        ogCopy = total + ' founding spots at 8% commission, locked for 12 months — zero monthly fees. Once they\'re filled, new brands join at the standard 12% rate.';
+      }
+      ogDesc.setAttribute('content', ogCopy);
+    }
+
+    var ld = document.querySelector('script[type="application/ld+json"]');
+    if (ld) {
+      try {
+        var offer = JSON.parse(ld.textContent);
+        offer.description = 'Become a Mirr founding brand: 8% commission locked for 12 months, zero monthly fees, and first access to shoppers who try before they buy. Limited to ' + total + ' founding spots; standard rate thereafter is 12%.';
+        ld.textContent = JSON.stringify(offer);
+      } catch (e) { /* leave the static block untouched if it ever fails to parse */ }
     }
   }
 
