@@ -580,7 +580,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="bsec" id="buy-sec">
       <button class="bbtn" id="buy-btn" onclick="buyClick()">BUY FROM APEX ACTIVE →</button>
       <div class="bnote" id="buy-note">You will be taken to Apex Active to complete your purchase.</div>
-      <div class="bmnote">Processed through <span>Mirr</span> — 92% goes directly to the brand.</div>
+      <div class="bmnote">Processed through <span>Mirr</span> — <span id="payout-pct">92%</span> goes directly to the brand.</div>
       <div class="bpolicy">
         <span>↩ Returns per brand policy</span>
         <span>📦 Ships direct from brand</span>
@@ -674,6 +674,12 @@ async function initBrand() {
   document.getElementById('dpage-brand').textContent = brand.name.toUpperCase() + ' on MIRR';
   document.getElementById('buy-btn').textContent = 'BUY FROM ' + brand.name.toUpperCase() + ' →';
   document.getElementById('buy-note').textContent = 'You will be taken to ' + brand.name + ' to complete your purchase.';
+
+  // Payout share follows the brand's commission tier (rates as stated
+  // site-wide); founding is the default for brands with no tier set.
+  var TIER_RATES = { founding: 8, standard: 12, premium: 15 };
+  var rate = TIER_RATES[brand.tier] || TIER_RATES.founding;
+  document.getElementById('payout-pct').textContent = (100 - rate) + '%';
 
   document.title = brand.name + ' — on Mirr';
   // Social share tags follow the loaded brand, same pattern as
