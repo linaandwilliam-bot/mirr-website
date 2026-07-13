@@ -269,7 +269,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="success-next-title">WHAT HAPPENS NEXT</div>
       <div class="success-next-item">Our team reviews your photos and dimensions</div>
       <div class="success-next-item">We set up each product with virtual try-on enabled</div>
-      <div class="success-next-item">You receive a confirmation email when products are live</div>
+      <div class="success-next-item">Our team will let you know once your products go live</div>
       <div class="success-next-item">Customers can start trying on and purchasing immediately</div>
     </div>
     <a href="/" class="back-link">← Back to Mirr</a>
@@ -442,6 +442,7 @@ function addProduct() {
           </div>
         </div>
       </div>
+      <p class="field-err" id="err-photo-${idx}" style="margin:-8px 0 18px"></p>
 
       <div class="divider"></div>
       <div class="section-label" id="dim-label-${idx}">GARMENT DIMENSIONS — SMALLEST SIZE (cm)</div>
@@ -524,12 +525,36 @@ function handlePhoto(input, side, idx) {
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    const slotId = side + '-slot-' + idx;
-    const previewId = side + '-preview-' + idx;
-    document.getElementById(previewId).src = e.target.result;
-    document.getElementById(slotId).classList.add('has-photo');
-    productData[idx][side + 'File'] = file;
-    updateProgress();
+    // Enforce the stated 800 × 1000px minimum (same decode-and-check pattern
+    // as brand-demo's validatePhoto) before accepting the photo. The welcome
+    // email and the info boxes both promise this requirement; without the
+    // check, undersized photos sailed through to a degraded try-on.
+    const img = new Image();
+    img.onload = function() {
+      const errEl = document.getElementById('err-photo-' + idx);
+      if (img.naturalWidth < 800 || img.naturalHeight < 1000) {
+        if (errEl) {
+          errEl.textContent = (side === 'front' ? 'Front' : 'Back') + ' photo is ' + img.naturalWidth + ' × ' + img.naturalHeight + 'px — the minimum is 800 × 1000px so the try-on renders cleanly. Please use a larger photo.';
+          errEl.style.display = 'block';
+        }
+        return; // photo rejected — slot stays empty
+      }
+      if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+      const slotId = side + '-slot-' + idx;
+      const previewId = side + '-preview-' + idx;
+      document.getElementById(previewId).src = e.target.result;
+      document.getElementById(slotId).classList.add('has-photo');
+      productData[idx][side + 'File'] = file;
+      updateProgress();
+    };
+    img.onerror = function() {
+      const errEl = document.getElementById('err-photo-' + idx);
+      if (errEl) {
+        errEl.textContent = "That file couldn't be read — please use a JPEG or PNG photo.";
+        errEl.style.display = 'block';
+      }
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
   input.value = '';

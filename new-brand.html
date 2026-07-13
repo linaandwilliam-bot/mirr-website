@@ -141,6 +141,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="snippet-box" id="out-snippet"></div>
         <div class="actions" style="margin-top:10px">
           <button class="btn btn-secondary" onclick="copyText('out-snippet', false, this)">COPY SNIPPET</button>
+          <button class="btn btn-secondary" onclick="markAllowlistManual()">I'VE ADDED IT MANUALLY →</button>
         </div>
       </div>
     </div>
@@ -149,8 +150,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="card-label">WELCOME EMAIL</div>
       <p class="note" style="margin-bottom:14px">Preview below before sending. Sending goes through Formspree — same pipeline the rest of the site uses — and nothing goes out until you click confirm.</p>
       <div class="snippet-box" id="email-preview" style="white-space:pre-wrap;margin-bottom:16px"></div>
+      <p class="note" id="send-gate-note" style="margin-bottom:12px">Sending is locked until the access code is <strong>added to GitHub above</strong> — after adding, give it a minute or two for the site to redeploy before the brand tries their code.</p>
       <div class="actions" id="email-actions">
-        <button class="btn" id="send-email-btn" onclick="confirmSendEmail()">SEND THIS EMAIL →</button>
+        <button class="btn" id="send-email-btn" onclick="confirmSendEmail()" disabled>SEND THIS EMAIL →</button>
         <a class="btn btn-secondary" id="mailto-link" href="#">OR OPEN IN MY MAIL APP</a>
         <button class="btn btn-secondary" onclick="copyText('out-email-body', true, this)">COPY EMAIL TEXT</button>
       </div>
@@ -262,9 +264,12 @@ function generate() {
   document.getElementById('out-email-body').value = body;
   document.getElementById('email-preview').textContent = `To: ${email}\nSubject: ${subject}\n\n${body}`;
 
-  // Reset button/status states from any previous generation in this session
-  document.getElementById('send-email-btn').disabled = false;
+  // Reset button/status states from any previous generation in this session.
+  // Sending starts LOCKED until the code is actually in the allowlist —
+  // otherwise a brand can receive a code that doesn't work yet (or ever).
+  document.getElementById('send-email-btn').disabled = true;
   document.getElementById('send-email-btn').textContent = 'SEND THIS EMAIL →';
+  document.getElementById('send-gate-note').style.display = 'block';
   document.getElementById('allowlist-btn').disabled = false;
   document.getElementById('allowlist-btn').textContent = 'ADD TO GITHUB →';
   document.getElementById('allowlist-fallback').style.display = 'none';
@@ -291,8 +296,28 @@ function generate() {
 // copy/paste and mail-client step, not as a fully automated send-to-brand.
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xvznvrdo';
 
+function unlockSendEmail() {
+  document.getElementById('send-email-btn').disabled = false;
+  document.getElementById('send-gate-note').style.display = 'none';
+}
+
+// Manual-fallback escape hatch: if the automatic commit failed and the
+// operator added the allowlist line by hand, they confirm it here to unlock
+// sending — the gate can't verify a manual commit itself.
+function markAllowlistManual() {
+  if (!currentBrand) return;
+  if (!confirm('Only confirm once the allowlist line is committed on GitHub and the site has redeployed. Unlock sending?')) return;
+  currentBrand.allowlistAdded = true;
+  unlockSendEmail();
+  document.getElementById('allowlist-status').textContent = 'Marked as added manually — sending unlocked.';
+}
+
 function confirmSendEmail() {
   if (!currentBrand) return;
+  if (!currentBrand.allowlistAdded) {
+    alert('Add the access code to GitHub first — the code in this email will not work until it is in the allowlist.');
+    return;
+  }
   if (currentBrand.emailSent) {
     alert('Already sent for this brand. Generate again if you need to resend.');
     return;
@@ -389,6 +414,7 @@ async function commitAllowlist() {
     currentBrand.allowlistAdded = true;
     btn.textContent = 'ADDED ✓';
     document.getElementById('allowlist-status').textContent = data.message || 'Added — give Cloudflare a minute to redeploy before the brand tries their code.';
+    unlockSendEmail();
   } catch (e) {
     console.warn('Allowlist commit failed:', e);
     btn.disabled = false;
