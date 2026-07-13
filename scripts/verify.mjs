@@ -168,6 +168,51 @@ for (const f of htmlFiles) {
   }
 }
 
+// ── Schema guards: brands.json and submissions.json structural shape ──
+// Both files are edited by humans or written by the Catalog Worker; these
+// checks catch a malformed entry before it ships, naming the entry and field.
+{
+  const VALID_TIERS = ['founding', 'standard', 'premium'];
+  try {
+    const brands = JSON.parse(read('brands.json'));
+    for (const [slug, b] of Object.entries(brands)) {
+      if (!b.name || typeof b.name !== 'string') fail(`brands.json: "${slug}" is missing name`);
+      if (!VALID_TIERS.includes(b.tier)) fail(`brands.json: "${slug}" tier must be one of ${VALID_TIERS.join('/')} (got ${JSON.stringify(b.tier)})`);
+      if (!Array.isArray(b.products) || b.products.length === 0) {
+        fail(`brands.json: "${slug}" needs a non-empty products array`);
+      } else if (!b.products.some((p) => p && p.name && p.price)) {
+        fail(`brands.json: "${slug}" needs at least one product with both name and price`);
+      }
+    }
+  } catch { /* parse failure already reported by the earlier brands.json check */ }
+}
+{
+  const VALID_STATUSES = ['submitted', 'reviewing', 'live'];
+  if (!existsSync(join(root, 'submissions.json'))) {
+    fail('submissions.json is missing (Worker-managed — see CLAUDE.md)');
+  } else {
+    try {
+      const subs = JSON.parse(read('submissions.json'));
+      if (!Array.isArray(subs)) {
+        fail('submissions.json: must be an array');
+      } else {
+        subs.forEach((s, i) => {
+          const label = `submissions.json entry ${i} (${(s && s.ref) || 'no ref'})`;
+          for (const field of ['ref', 'brand_name', 'brand_email']) {
+            if (!s || !s[field]) fail(`${label}: missing ${field}`);
+          }
+          if (!s || !VALID_STATUSES.includes(s.status)) {
+            fail(`${label}: status must be one of ${VALID_STATUSES.join('/')} (got ${JSON.stringify(s && s.status)})`);
+          }
+          if (!s || !Array.isArray(s.products)) fail(`${label}: missing products array`);
+        });
+      }
+    } catch (e) {
+      fail(`submissions.json: ${e.message}`);
+    }
+  }
+}
+
 // ── Inline <script> blocks must parse: node --check on each extracted block ──
 // Catches JS syntax errors (e.g. an unescaped apostrophe breaking a string)
 // that would silently kill a page's entire script at runtime. Skips JSON-LD

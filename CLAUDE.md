@@ -12,7 +12,7 @@ There is no build, lint, or test tooling in this repo. Workflow is:
 
 - **Preview locally before committing** — open the HTML file(s) directly in a browser, or serve the directory (e.g. `python -m http.server`) since some pages fetch local JSON (`founding-count.json`) and `fetch()` can behave differently under `file://`.
 - **Check links before every push** — run `node scripts/check-links.mjs`; it verifies every internal href/src in the HTML pages resolves to a real file and exits non-zero listing anything broken.
-- **Verify structure before every push** — run `node scripts/verify.mjs`; it checks the site's structural invariants (design tokens defined, nav variants present, brands.json/founding-count.json valid, tokens.css + analytics beacon on every page, brand-demo's try-on flow anchors, BRAND_ALLOWLIST structure) and exits non-zero listing failures.
+- **Verify structure before every push** — run `node scripts/verify.mjs`; it checks the site's structural invariants (design tokens defined, nav variants present, brands.json/founding-count.json valid, tokens.css + analytics beacon on every page, brand-demo's try-on flow anchors, BRAND_ALLOWLIST structure, commitment-consistency of business-day promises, JS syntax of every inline script block, and the schema shape of brands.json — name/valid tier/products — and submissions.json — ref/brand fields/valid status/products) and exits non-zero listing failures.
 - **Deploy** — push to `main`; GitHub Pages publishes within ~1 minute. There is no staging environment, so pushing to `main` is effectively a live deploy.
 
 ## Architecture
