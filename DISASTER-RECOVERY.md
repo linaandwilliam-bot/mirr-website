@@ -83,10 +83,11 @@ Reconstructed from git history (commits `22518d3`, `ef74f5e`, `0dd26c6`):
   proved Pages wasn't the active host ("old Worker still live", commit `22518d3`,
   7 July 2026).
 - On 10 July 2026 Cloudflare's `cloudflare-workers-and-pages[bot]` pushed two branches
-  that still exist on the remote: **`cloudflare/workers-autoconfig`** and
-  **`cloudflare/workers-autoconfig-2`**, each adding a `wrangler.jsonc` that registers
-  this repo as that Worker. **Never merge these branches** — merging would re-create
-  the incident. They are safe to delete from the remote.
+  — **`cloudflare/workers-autoconfig`** and **`cloudflare/workers-autoconfig-2`** —
+  each adding a `wrangler.jsonc` that registers this repo as that Worker. They were
+  pushed to the remote and have since been deleted. If they, or anything similar, ever
+  reappear: **never merge them** — merging would re-create the incident. (Their
+  commits remain findable in local clones as `ef74f5e`/`0dd26c6`.)
 - Recovery was: remove the `mirr-website` Worker (or its domain binding) in the
   Cloudflare dashboard so the domain fell through to GitHub Pages again, then repair
   the encoding damage on the affected page.
