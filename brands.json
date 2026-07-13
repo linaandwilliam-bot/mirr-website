@@ -96,53 +96,5 @@
         "fallback_svg": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIiB2aWV3Qm94PSIwIDAgNDAwIDUzMyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MzMiIGZpbGw9IiMyQTNENUEiLz48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc3R5bGU9Iml0YWxpYyIgZm9udC1zaXplPSIxMiIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44IiBsZXR0ZXItc3BhY2luZz0iMyI+QVBFWCBBQ1RJVkU8L3RleHQ+PGxpbmUgeDE9IjE1MCIgeTE9IjIyOCIgeDI9IjI1MCIgeTI9IjIyOCIgc3Ryb2tlPSIjQThDNUQ4IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjYyIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIxNSIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44Ij5Db2JhbHQgWmlwLVVwIEphY2tldDwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjQ2MCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iI0E4QzVEOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC40IiBsZXR0ZXItc3BhY2luZz0iMiI+TUlSUiBERU1PPC90ZXh0Pjwvc3ZnPg=="
       }
     ]
-  },
-  "test-brand-internal-qa": {
-    "name": "Test Brand (Internal QA)",
-    "tier": "standard",
-    "verified": true,
-    "_note": "TEMPORARY QA entry (Sprint 25 dry run) — exercises the multi-brand pipeline with a non-founding tier. Remove after verification; not a real listing.",
-    "store_url": "https://example.com",
-    "initials": "QA",
-    "location": "INTERNAL — NOT A REAL BRAND",
-    "rating": "—",
-    "products_count": 2,
-    "tryons_count": 0,
-    "description": "Internal QA brand used to exercise the multi-brand pipeline end to end. Not a real listing — placeholder data only.",
-    "tags": [
-      "INTERNAL",
-      "QA"
-    ],
-    "category": "QA",
-    "products": [
-      {
-        "cat": "TOPS",
-        "name": "QA Placeholder Tee",
-        "buy_url": "https://example.com/products/qa-placeholder-tee",
-        "price": "$10.00",
-        "old": null,
-        "desc": "Placeholder product for internal QA — not a real listing.",
-        "scores": { "chest": 90, "waist": 90, "hips": null, "inseam": null },
-        "tryon_cat": "upperbody",
-        "badge": null,
-        "badge_class": null,
-        "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80&fit=crop",
-        "fallback_svg": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUzMyIgZmlsbD0iIzdBN0E3QSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjY2IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlFBIFBMQUNFSE9MREVSPC90ZXh0Pjwvc3ZnPg=="
-      },
-      {
-        "cat": "BOTTOMS",
-        "name": "QA Placeholder Pants",
-        "buy_url": "https://example.com/products/qa-placeholder-pants",
-        "price": "$20.00",
-        "old": null,
-        "desc": "Placeholder product for internal QA — not a real listing.",
-        "scores": { "chest": null, "waist": 90, "hips": 90, "inseam": 90 },
-        "tryon_cat": "lowerbody",
-        "badge": null,
-        "badge_class": null,
-        "image": "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&q=80&fit=crop",
-        "fallback_svg": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTMzIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUzMyIgZmlsbD0iIzdBN0E3QSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjY2IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlFBIFBMQUNFSE9MREVSPC90ZXh0Pjwvc3ZnPg=="
-      }
-    ]
   }
 }
