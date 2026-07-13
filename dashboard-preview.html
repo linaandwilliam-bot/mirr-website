@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="robots" content="noindex, nofollow">
+<title>Dashboard preview — Mirr</title>
+<meta name="description" content="A preview of the Mirr brand dashboard — example data only.">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-weight:300;line-height:1.6}
+@media(prefers-color-scheme:dark){html,body{background:var(--page)!important;color:var(--ink)!important}}
+
+/* Persistent example banner — impossible to miss, sticky above everything */
+.preview-banner{position:sticky;top:0;z-index:100;background:var(--ink);color:var(--white);text-align:center;padding:10px 20px;font-size:12px;letter-spacing:.06em;line-height:1.5}
+.preview-banner strong{color:var(--sky-lt);font-weight:500}
+
+nav{border-bottom:1px solid var(--line);padding:0 48px;background:var(--page)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{display:flex;align-items:baseline;text-decoration:none}
+.logo-word{font-family:var(--font-mono);font-size:20px;font-weight:500;letter-spacing:3px;color:var(--ink)}
+.logo-flip{display:inline-block;transform:scaleX(-1);color:var(--sky)}
+.nav-back{font-size:12px;color:var(--ink3);text-decoration:none}
+
+.page{max-width:960px;margin:0 auto;padding:40px 24px 80px}
+.eyebrow{font-size:10px;letter-spacing:.24em;color:var(--ink4);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:16px;height:.5px;background:var(--sky)}
+.dash-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.dash-title{font-family:var(--font-serif);font-size:clamp(26px,4vw,34px);font-weight:500;line-height:1.15}
+.dash-brand{font-family:var(--font-mono);font-size:12px;color:var(--ink3);letter-spacing:.06em}
+.dash-period{font-size:12px;color:var(--ink4);margin-bottom:28px}
+
+/* Stat cards */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:18px}
+.stat-label{font-size:9px;letter-spacing:.16em;color:var(--ink4);margin-bottom:8px}
+.stat-value{font-family:var(--font-serif);font-size:28px;font-weight:500;color:var(--ink);line-height:1;margin-bottom:6px}
+.stat-trend{font-size:11px;font-family:var(--font-mono)}
+.stat-trend.up{color:var(--brand)}
+.stat-trend.flat{color:var(--ink4)}
+
+/* Two-column: chart + earnings */
+.dash-row{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;margin-bottom:24px}
+.dash-card{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:20px}
+.dash-card-title{font-size:10px;letter-spacing:.18em;color:var(--sky);margin-bottom:16px;display:flex;justify-content:space-between;align-items:baseline}
+.dash-card-title .trend{font-family:var(--font-mono);font-size:11px;color:var(--brand);letter-spacing:0}
+
+/* Pure-CSS bar chart */
+.chart{display:flex;align-items:flex-end;gap:10px;height:140px;padding-top:8px}
+.chart-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:6px;text-align:center}
+.chart-bar{background:var(--sky);border-radius:3px 3px 0 0;opacity:.85;min-height:4px}
+.chart-col:last-child .chart-bar{background:var(--sky-lt)}
+.chart-day{font-family:var(--font-mono);font-size:9px;color:var(--ink4)}
+
+/* Earnings breakdown */
+.earn-row{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line2);font-size:12px}
+.earn-row:last-child{border-bottom:none}
+.earn-label{color:var(--ink3)}
+.earn-value{font-family:var(--font-mono);color:var(--ink);font-weight:500}
+.earn-row.total .earn-label{color:var(--ink);font-weight:500}
+.earn-row.total .earn-value{color:var(--sky-text);font-size:14px}
+.earn-tiers{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.earn-tiers-title{font-size:9px;letter-spacing:.16em;color:var(--ink4);margin-bottom:8px}
+.earn-tier-row{display:flex;justify-content:space-between;font-size:11px;padding:4px 0}
+.earn-tier-row .t-name{color:var(--ink3)}
+.earn-tier-row .t-val{font-family:var(--font-mono);color:var(--ink2)}
+.earn-tier-row.current .t-name,.earn-tier-row.current .t-val{color:var(--sky-text);font-weight:500}
+
+/* Recent activity */
+.activity-table{width:100%;border-collapse:collapse;font-size:12px}
+.activity-table th{text-align:left;font-size:9px;letter-spacing:.16em;color:var(--ink4);font-weight:400;padding:0 10px 10px 0;border-bottom:1px solid var(--line)}
+.activity-table td{padding:10px 10px 10px 0;border-bottom:1px solid var(--line2);color:var(--ink2);vertical-align:middle}
+.activity-table tr:last-child td{border-bottom:none}
+.act-type{display:inline-block;font-size:9px;letter-spacing:.08em;padding:2px 8px;border-radius:999px}
+.act-type.tryon{color:var(--sky-text);background:var(--sky-bg)}
+.act-type.sale{color:var(--brand);background:var(--brand-bg)}
+.act-time{font-family:var(--font-mono);font-size:10px;color:var(--ink4)}
+
+.dash-note{font-size:11px;color:var(--ink4);text-align:center;margin-top:28px;font-style:italic}
+.dash-cta{text-align:center;margin-top:16px}
+.dash-cta a{display:inline-block;background:var(--sky);color:var(--white);text-decoration:none;padding:13px 26px;border-radius:4px;font-size:12px;letter-spacing:.08em;font-weight:500;transition:opacity .2s}
+.dash-cta a:hover{opacity:.88}
+
+@media(max-width:720px){
+  nav{padding:0 20px}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .dash-row{grid-template-columns:1fr}
+}
+/* Keyboard focus — visible outline for tab navigation (a11y) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="preview-banner"><strong>Example preview</strong> — your real dashboard will show live data once you're listed. All figures below are illustrative.</div>
+
+<div id="nav"></div>
+<script src="/nav.js"></script>
+
+<div class="page">
+
+  <div class="eyebrow">BRAND DASHBOARD — PREVIEW</div>
+  <div class="dash-head">
+    <h1 class="dash-title">Your brand on Mirr.</h1>
+    <span class="dash-brand">EXAMPLE BRAND · FOUNDING TIER (8%)</span>
+  </div>
+  <p class="dash-period">June 2026 · example data</p>
+
+  <!-- STAT CARDS -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">SALES THIS MONTH</div>
+      <div class="stat-value">$4,820</div>
+      <div class="stat-trend up">▲ 18% vs last month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">ORDERS</div>
+      <div class="stat-value">37</div>
+      <div class="stat-trend up">▲ 12%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">TRY-ONS</div>
+      <div class="stat-value">312</div>
+      <div class="stat-trend up">▲ 24%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">TRY-ON → SALE</div>
+      <div class="stat-value">11.8%</div>
+      <div class="stat-trend flat">— steady</div>
+    </div>
+  </div>
+
+  <!-- CHART + EARNINGS -->
+  <div class="dash-row">
+    <div class="dash-card">
+      <div class="dash-card-title">TRY-ONS THIS WEEK <span class="trend">▲ 18% vs last week</span></div>
+      <div class="chart">
+        <div class="chart-col"><div class="chart-bar" style="height:42%"></div><div class="chart-day">MON</div></div>
+        <div class="chart-col"><div class="chart-bar" style="height:58%"></div><div class="chart-day">TUE</div></div>
+        <div class="chart-col"><div class="chart-bar" style="height:47%"></div><div class="chart-day">WED</div></div>
+        <div class="chart-col"><div class="chart-bar" style="height:71%"></div><div class="chart-day">THU</div></div>
+        <div class="chart-col"><div class="chart-bar" style="height:64%"></div><div class="chart-day">FRI</div></div>
+        <div class="chart-col"><div class="chart-bar" style="height:89%"></div><div class="chart-day">SAT</div></div>
+        <div class="chart-col"><div class="chart-bar" style="height:76%"></div><div class="chart-day">SUN</div></div>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card-title">EARNINGS BREAKDOWN</div>
+      <div class="earn-row"><span class="earn-label">Gross sales</span><span class="earn-value">$4,820.00</span></div>
+      <div class="earn-row"><span class="earn-label">Mirr commission (8% founding)</span><span class="earn-value">−$385.60</span></div>
+      <div class="earn-row total"><span class="earn-label">You receive</span><span class="earn-value">$4,434.40</span></div>
+      <div class="earn-tiers">
+        <div class="earn-tiers-title">SAME MONTH AT EACH TIER</div>
+        <div class="earn-tier-row current"><span class="t-name">Founding (8%)</span><span class="t-val">$4,434.40</span></div>
+        <div class="earn-tier-row"><span class="t-name">Standard (12%)</span><span class="t-val">$4,241.60</span></div>
+        <div class="earn-tier-row"><span class="t-name">Premium (15%)</span><span class="t-val">$4,097.00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECENT ACTIVITY -->
+  <div class="dash-card">
+    <div class="dash-card-title">RECENT ACTIVITY</div>
+    <table class="activity-table">
+      <tr><th>EVENT</th><th>PRODUCT</th><th>AMOUNT</th><th>WHEN</th></tr>
+      <tr><td><span class="act-type sale">SALE</span></td><td>Forest Compression Tee</td><td>$54.99</td><td class="act-time">2h ago</td></tr>
+      <tr><td><span class="act-type tryon">TRY-ON</span></td><td>Cobalt Zip-Up Jacket</td><td>—</td><td class="act-time">3h ago</td></tr>
+      <tr><td><span class="act-type tryon">TRY-ON</span></td><td>Sculpt Sports Bra</td><td>—</td><td class="act-time">5h ago</td></tr>
+      <tr><td><span class="act-type sale">SALE</span></td><td>Apex Training Shorts</td><td>$44.99</td><td class="act-time">yesterday</td></tr>
+      <tr><td><span class="act-type tryon">TRY-ON</span></td><td>Forest Compression Tee</td><td>—</td><td class="act-time">yesterday</td></tr>
+    </table>
+  </div>
+
+  <p class="dash-note">Every figure on this page is illustrative. Your real dashboard shows live sales, try-on activity, and earnings once your brand is listed.</p>
+  <div class="dash-cta"><a href="/list-your-brand">LIST YOUR BRAND →</a></div>
+
+</div>
+
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6fb28a3de5848c8837eaa3d8495d031"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
