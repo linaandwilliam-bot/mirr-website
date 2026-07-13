@@ -282,6 +282,17 @@ nav{position:sticky;top:0;z-index:200;background:rgba(253,252,250,.96);backdrop-
 .wlist-note{font-size:11px;color:var(--rose-text);margin-top:10px;min-height:1.2em}
 .wlist-done{display:none;font-family:var(--font-serif);font-style:italic;font-size:17px;color:var(--sky-text)}
 
+/* ── MIRR REWARDS (early-access capture — programme itself not live yet) ── */
+.rwd{padding:64px 48px;background:var(--paper);border-bottom:1px solid var(--line)}
+.rwd-card{max-width:520px;margin:0 auto;text-align:center;background:var(--white);border:1px solid var(--line);border-radius:10px;padding:36px 28px}
+.rwd-eyebrow{font-size:10px;letter-spacing:.22em;color:var(--sky);margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:10px}
+.rwd-eyebrow::before,.rwd-eyebrow::after{content:"";width:16px;height:.5px;background:var(--sky)}
+.rwd-h{font-family:var(--font-serif);font-size:clamp(22px,2.6vw,28px);font-weight:500;color:var(--ink);margin-bottom:10px}
+.rwd-sub{font-size:13px;color:var(--ink3);max-width:400px;margin:0 auto 24px;line-height:1.8}
+.rwd-form{display:flex;justify-content:center;max-width:380px;margin:0 auto;flex-wrap:wrap;gap:0}
+.rwd-note{display:none;font-size:11px;color:var(--rose-text);margin-top:10px}
+.rwd-done{display:none;font-family:var(--font-serif);font-style:italic;font-size:16px;color:var(--sky-text);margin-top:4px}
+
 /* ── FOOTER ── */
 footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48px 28px}
 .footer-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid var(--line)}
@@ -1162,6 +1173,24 @@ function closeMobileNav(){
   <p class="wlist-done" id="wl-done">You're on the list.</p>
 </section>
 
+<!-- MIRR REWARDS — early-access capture only; the points programme itself
+     is not built and cannot be until purchases are detectable (Stripe
+     Connect webhooks). Schema scaffolding lives in /rewards-schema.json. -->
+<section class="rwd">
+  <div class="rwd-card">
+    <div class="rwd-eyebrow">MIRR REWARDS — COMING SOON</div>
+    <h2 class="rwd-h">Get rewarded for shopping through Mirr.</h2>
+    <p class="rwd-sub">A points program for purchases made through Mirr is in the works. Join early and you'll be first to start earning when it launches.</p>
+    <form class="rwd-form" id="rwd-form" onsubmit="rwSubmit(event)">
+      <input type="hidden" name="type" value="rewards-early-access">
+      <input type="email" class="cta-input" name="email" id="rwd-email" placeholder="your email" required aria-label="Your email address">
+      <button class="cta-btn" id="rwd-btn" type="submit">JOIN EARLY</button>
+    </form>
+    <p class="rwd-note" id="rwd-note"></p>
+    <p class="rwd-done" id="rwd-done">You're in — we'll email you when Rewards launches.</p>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-top">
@@ -1391,6 +1420,29 @@ function wlSubmit(ev){
   }).catch(function(){
     note.textContent='Something went wrong — please email hello@trymirr.com directly.';
     btn.disabled=false;btn.textContent='JOIN THE WAITLIST';
+  });
+}
+
+// Mirr Rewards early access — capture only; no points logic exists yet
+function rwSubmit(ev){
+  ev.preventDefault();
+  const form=document.getElementById('rwd-form'),
+        note=document.getElementById('rwd-note'),
+        btn=document.getElementById('rwd-btn');
+  btn.disabled=true;btn.textContent='JOINING...';
+  fetch('https://formspree.io/f/xvznvrdo',{
+    method:'POST',
+    headers:{'Accept':'application/json'},
+    body:new FormData(form)
+  }).then(function(res){
+    if(!res.ok)throw new Error('Formspree returned '+res.status);
+    form.style.display='none';
+    note.style.display='none';
+    document.getElementById('rwd-done').style.display='block';
+  }).catch(function(){
+    note.textContent='Something went wrong — please email hello@trymirr.com directly.';
+    note.style.display='block';
+    btn.disabled=false;btn.textContent='JOIN EARLY';
   });
 }
 </script>

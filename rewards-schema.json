@@ -1,0 +1,37 @@
+{
+  "_readme": [
+    "SCAFFOLDING ONLY — nothing on the site reads this file yet, and no points logic exists.",
+    "This documents the data shapes a future Mirr Rewards points system will need, so the",
+    "build is a fast flip when it's unblocked.",
+    "BLOCKED ON: Stripe Connect webhook integration. Mirr currently has no way to detect",
+    "that a purchase actually completed on a brand's site — shoppers leave via the Buy",
+    "button (see buyClick in brand-demo.html) and never come back with a receipt. Until a",
+    "webhook (e.g. checkout.session.completed / transfer.created on connected accounts)",
+    "reports real purchases, points cannot be awarded for anything.",
+    "The 'Join Mirr Rewards' capture on index.html (type=rewards-early-access in Formspree)",
+    "is live today and builds the launch list; it makes no earning promises."
+  ],
+  "status": "scaffolding-only",
+  "purchase_event": {
+    "_description": "Shape of a single detectable purchase, as a future Stripe Connect webhook handler would record it.",
+    "example": {
+      "event_id": "evt_placeholder",
+      "shopper_email": "shopper@example.com",
+      "brand_slug": "apex-active",
+      "product_name": "Forest Compression Tee",
+      "amount_aud": 54.99,
+      "currency": "AUD",
+      "purchased_at": "2026-07-13T09:30:00+10:00",
+      "source": "stripe_connect_webhook"
+    }
+  },
+  "points_per_dollar": {
+    "value": 1,
+    "_note": "PLACEHOLDER — TBD. Business decision for the founders, not yet set. 1 point per AUD spent is a convention, not a commitment."
+  },
+  "tiers": [
+    { "name": "Member",   "min_points": 0,    "_note": "PLACEHOLDER thresholds and names — TBD." },
+    { "name": "Insider",  "min_points": 500,  "_note": "PLACEHOLDER" },
+    { "name": "Founding", "min_points": 2000, "_note": "PLACEHOLDER — naming may conflict with the brand-side 'founding' tier in brands.json; resolve before launch." }
+  ]
+}
