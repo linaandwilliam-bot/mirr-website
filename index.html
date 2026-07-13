@@ -1393,7 +1393,8 @@ function sub(){
       submitted_at:new Date().toLocaleString('en-AU',{timeZone:'Australia/Melbourne'}),
       _subject:'Early Access Request — '+e
     })
-  }).then(function(){
+  }).then(function(res){
+    if(!res.ok)throw new Error('Formspree returned '+res.status);
     n.textContent="✓ You're on the list. We'll be in touch within 3 business days.";
     n.style.color='var(--sky-text)';
     document.getElementById('ei').value='';
