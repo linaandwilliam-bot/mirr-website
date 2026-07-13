@@ -6,9 +6,11 @@
 //
 // Exits non-zero with a list of failures. Zero dependencies, no network.
 
-import { readdirSync, readFileSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, existsSync, writeFileSync, rmSync, mkdtempSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const failures = [];
@@ -163,6 +165,35 @@ for (const f of htmlFiles) {
         }
       }
     }
+  }
+}
+
+// ── Inline <script> blocks must parse: node --check on each extracted block ──
+// Catches JS syntax errors (e.g. an unescaped apostrophe breaking a string)
+// that would silently kill a page's entire script at runtime. Skips JSON-LD
+// blocks and external src= scripts.
+{
+  const tmp = mkdtempSync(join(tmpdir(), 'mirr-verify-'));
+  try {
+    for (const f of htmlFiles) {
+      const html = read(f);
+      let i = 0;
+      for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+        const attrs = m[1];
+        if (/\bsrc\s*=/.test(attrs) || /application\/ld\+json/.test(attrs)) continue;
+        if (!m[2].trim()) continue;
+        i += 1;
+        const tmpFile = join(tmp, `${f}.${i}.js`);
+        writeFileSync(tmpFile, m[2]);
+        const res = spawnSync(process.execPath, ['--check', tmpFile], { encoding: 'utf8' });
+        if (res.status !== 0) {
+          const errLine = (res.stderr || '').split('\n').find((l) => l.trim()) || 'syntax error';
+          fail(`${f}: inline script block ${i} has a JS syntax error — ${errLine.replace(tmp, '').trim()}`);
+        }
+      }
+    }
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
   }
 }
 
