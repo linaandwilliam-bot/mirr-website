@@ -40,8 +40,12 @@ The live demo flow in `brand-demo.html` posts to a Cloudflare Worker at `https:/
 
 The worker itself lives outside this repo — this file only contains the client-side calling code.
 
-### submit-products.html: BRAND_ALLOWLIST is machine-managed — never hand-edit
-The `BRAND_ALLOWLIST` object (client-side email→access-code gate) is maintained by a Cloudflare Worker, not by hand. Do not manually add/remove/edit entries in that block. This gate is explicitly a "keep honest people out" check (codes are visible in the served JS), not real security — the plan is to move validation into the Catalog Worker (`mirr-catalog-worker.linaandwilliam.workers.dev`) once prioritized. Submission itself posts to Formspree and IMGBB (keys are inline in this page, consistent with the "not real security" model above).
+### submit-products.html: BRAND_ALLOWLIST and submissions.json are machine-managed — never hand-edit
+The `BRAND_ALLOWLIST` object (client-side email→access-code gate) is maintained by a Cloudflare Worker, not by hand. Do not manually add/remove/edit entries in that block. This gate is explicitly a "keep honest people out" check (codes are visible in the served JS), not real security. Submission photos post to IMGBB and a courtesy notification goes to Formspree (keys are inline in this page, consistent with the "not real security" model above).
+
+The authoritative submission pipeline is the deployed Catalog Worker (`mirr-catalog-worker.linaandwilliam.workers.dev`): submit-products.html POSTs to its `/submit` endpoint, which commits the submission into `submissions.json` in this repo. `submissions.json` is Worker-managed data — do not hand-edit its structure, same rule as BRAND_ALLOWLIST.
+
+**Caution for verification work:** do not casually POST real test data to the Worker's `/submit` during checks — every successful call creates a real commit on `main` that needs manual cleanup. Prefer probing with invalid/malformed payloads, which correctly fail validation without writing anything. If a full end-to-end write test is genuinely needed, clean up the resulting `submissions.json` entry in the same session.
 
 ### Custom domain
 `CNAME` pins the Pages deployment to `www.trymirr.com`; `sitemap.xml` and `robots.txt` reference the same host — keep them in sync if the domain or route list changes.
