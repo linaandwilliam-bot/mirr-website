@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="robots" content="noindex, nofollow">
+<title>Submissions review — internal</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-weight:300;line-height:1.6}
+@media(prefers-color-scheme:dark){html,body{background:var(--page)!important;color:var(--ink)!important}}
+
+.banner{background:var(--ink);color:var(--white);text-align:center;padding:8px 16px;font-size:11px;letter-spacing:.08em}
+
+nav{border-bottom:1px solid var(--line);padding:0 48px;background:var(--page)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{display:flex;align-items:baseline;text-decoration:none}
+.logo-word{font-family:var(--font-mono);font-size:20px;font-weight:500;letter-spacing:3px;color:var(--ink)}
+.logo-flip{display:inline-block;transform:scaleX(-1);color:var(--sky)}
+.nav-back{font-size:12px;color:var(--ink3);text-decoration:none}
+
+.page{max-width:760px;margin:0 auto;padding:40px 24px 80px}
+.eyebrow{font-size:10px;letter-spacing:.24em;color:var(--ink4);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:16px;height:.5px;background:var(--sky)}
+.title{font-family:var(--font-serif);font-size:clamp(26px,4vw,34px);font-weight:500;margin-bottom:8px;line-height:1.15}
+.sub{font-size:13px;color:var(--ink3);line-height:1.8;margin-bottom:32px;max-width:560px}
+.sub code{font-family:var(--font-mono);font-size:12px;color:var(--ink2)}
+
+.count-line{font-size:11px;letter-spacing:.14em;color:var(--ink4);margin-bottom:16px}
+
+/* Submission cards */
+.sub-card{background:var(--white);border:1px solid var(--line);border-radius:10px;margin-bottom:14px;overflow:hidden}
+.sub-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line2);flex-wrap:wrap}
+.sub-brand{font-family:var(--font-serif);font-size:18px;font-weight:500;color:var(--ink)}
+.status-chip{font-size:9px;letter-spacing:.14em;padding:3px 10px;border-radius:999px;font-weight:500}
+.status-submitted{color:var(--sky-text);background:var(--sky-bg);border:.5px solid var(--sky-brd)}
+.status-reviewing{color:var(--rose-dark);background:var(--rose-bg);border:.5px solid rgba(212,168,152,.35)}
+.status-live{color:var(--brand);background:var(--brand-bg);border:.5px solid var(--brand-brd)}
+.status-other{color:var(--ink3);background:var(--paper);border:.5px solid var(--line)}
+.sub-meta{display:flex;flex-wrap:wrap;gap:6px 22px;padding:12px 20px;font-size:12px;color:var(--ink3);border-bottom:1px solid var(--line2)}
+.sub-meta .m-label{font-size:9px;letter-spacing:.14em;color:var(--ink4);display:block;margin-bottom:1px}
+.sub-meta .m-value{font-family:var(--font-mono);font-size:12px;color:var(--ink2)}
+
+/* Product details */
+.prod{border-bottom:1px solid var(--line2)}
+.prod:last-child{border-bottom:none}
+.prod summary{padding:12px 20px;font-size:13px;color:var(--ink2);cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.prod summary::-webkit-details-marker{display:none}
+.prod summary::after{content:"+";color:var(--ink4);font-size:15px}
+.prod[open] summary::after{content:"—"}
+.prod summary:hover{background:var(--paper)}
+.prod-name{font-weight:400}
+.prod-price{font-family:var(--font-mono);font-size:12px;color:var(--ink3)}
+.prod-body{padding:4px 20px 16px}
+.prod-fields{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px}
+.prod-fields td{padding:5px 10px 5px 0;border-bottom:1px solid var(--line2);vertical-align:top;color:var(--ink2)}
+.prod-fields td:first-child{font-size:9px;letter-spacing:.12em;color:var(--ink4);white-space:nowrap;width:110px;padding-top:8px}
+.prod-fields tr:last-child td{border-bottom:none}
+.prod-photos{display:flex;gap:10px;flex-wrap:wrap}
+.prod-photo{width:110px}
+.prod-photo img{width:110px;height:138px;object-fit:cover;border-radius:6px;border:1px solid var(--line);display:block;background:var(--cream)}
+.prod-photo span{font-size:9px;letter-spacing:.12em;color:var(--ink4);display:block;margin-top:4px;text-align:center}
+
+.state-note{text-align:center;color:var(--ink3);font-size:14px;padding:48px 0;display:none}
+
+@media(max-width:640px){
+  nav{padding:0 20px}
+  .page{padding:32px 16px 60px}
+}
+/* Keyboard focus — visible outline for tab navigation (a11y) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="banner">INTERNAL TOOL — NOT PART OF THE PUBLIC SITE — DO NOT LINK</div>
+
+<div id="nav"></div>
+<script src="/nav.js"></script>
+
+<div class="page">
+
+  <div class="eyebrow">PRODUCT SUBMISSIONS</div>
+  <h1 class="title">Submissions review.</h1>
+  <p class="sub">Read-only view of <code>submissions.json</code> (written by the Catalog Worker). Newest first, <strong>submitted</strong> status grouped to the top. Changing a submission's status remains a manual GitHub edit, by design.</p>
+
+  <div class="count-line" id="count-line" style="display:none"></div>
+  <div id="cards"></div>
+  <div class="state-note" id="empty-note">No submissions yet — this list fills as brands submit products.</div>
+  <div class="state-note" id="fail-note">Something went wrong loading submissions.json — try again shortly.</div>
+
+</div>
+
+<script>
+// Submissions contain brand-typed text — escape everything before rendering.
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+var STATUS_ORDER = { submitted: 0, reviewing: 1, live: 2 };
+
+function statusChip(status) {
+  var s = String(status || 'unknown').toLowerCase();
+  var cls = s === 'submitted' ? 'status-submitted' : s === 'reviewing' ? 'status-reviewing' : s === 'live' ? 'status-live' : 'status-other';
+  return '<span class="status-chip ' + cls + '">' + esc(s.toUpperCase()) + '</span>';
+}
+
+// Product fields vary: the worker's minimal entries have name/category/price/
+// description; full client submissions add sku, material, sizes, dimensions,
+// and photo URLs. Render whichever fields exist.
+var FIELD_LABELS = [
+  ['category', 'CATEGORY'], ['price', 'PRICE (AUD)'], ['sku', 'SKU'],
+  ['material', 'MATERIAL'], ['sizes_in_stock', 'SIZES'], ['description', 'DESCRIPTION'],
+  ['dim_chest_cm', 'CHEST (CM)'], ['dim_waist_cm', 'WAIST (CM)'],
+  ['dim_length_cm', 'LENGTH (CM)'], ['dim_inseam_cm', 'INSEAM (CM)'],
+];
+
+function productHTML(p) {
+  var rows = FIELD_LABELS
+    .filter(function(f) { return p[f[0]] !== undefined && p[f[0]] !== '' && p[f[0]] !== null; })
+    .map(function(f) { return '<tr><td>' + f[1] + '</td><td>' + esc(p[f[0]]) + '</td></tr>'; })
+    .join('');
+  var photos = '';
+  if (p.front_photo || p.back_photo) {
+    photos = '<div class="prod-photos">' +
+      (p.front_photo ? '<div class="prod-photo"><img loading="lazy" src="' + esc(p.front_photo) + '" alt="Front photo — ' + esc(p.name) + '"><span>FRONT</span></div>' : '') +
+      (p.back_photo ? '<div class="prod-photo"><img loading="lazy" src="' + esc(p.back_photo) + '" alt="Back photo — ' + esc(p.name) + '"><span>BACK</span></div>' : '') +
+      '</div>';
+  }
+  return '<details class="prod"><summary><span class="prod-name">' + esc(p.name || 'Unnamed product') + '</span><span class="prod-price">' + esc(p.price ? '$' + p.price : '') + '</span></summary>' +
+    '<div class="prod-body"><table class="prod-fields">' + rows + '</table>' + photos + '</div></details>';
+}
+
+function cardHTML(s) {
+  var when = '';
+  try { when = new Date(s.submitted_at).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' }); } catch (e) { when = esc(s.submitted_at || ''); }
+  var products = Array.isArray(s.products) ? s.products : [];
+  return '<div class="sub-card">' +
+    '<div class="sub-head"><span class="sub-brand">' + esc(s.brand_name || 'Unknown brand') + '</span>' + statusChip(s.status) + '</div>' +
+    '<div class="sub-meta">' +
+      '<div><span class="m-label">REF</span><span class="m-value">' + esc(s.ref || '—') + '</span></div>' +
+      '<div><span class="m-label">EMAIL</span><span class="m-value">' + esc(s.brand_email || '—') + '</span></div>' +
+      '<div><span class="m-label">SUBMITTED</span><span class="m-value">' + esc(when) + '</span></div>' +
+      '<div><span class="m-label">PRODUCTS</span><span class="m-value">' + products.length + '</span></div>' +
+    '</div>' +
+    products.map(productHTML).join('') +
+  '</div>';
+}
+
+fetch('/submissions.json', { cache: 'no-store' })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (!Array.isArray(data)) throw new Error('submissions.json is not an array');
+    if (data.length === 0) {
+      document.getElementById('empty-note').style.display = 'block';
+      return;
+    }
+    var sorted = data.slice().sort(function(a, b) {
+      var sa = STATUS_ORDER[String(a.status).toLowerCase()], sb = STATUS_ORDER[String(b.status).toLowerCase()];
+      sa = sa === undefined ? 9 : sa; sb = sb === undefined ? 9 : sb;
+      if (sa !== sb) return sa - sb;
+      return String(b.submitted_at || '').localeCompare(String(a.submitted_at || ''));
+    });
+    var counts = {};
+    sorted.forEach(function(s) { var k = String(s.status || 'unknown').toLowerCase(); counts[k] = (counts[k] || 0) + 1; });
+    document.getElementById('count-line').textContent =
+      sorted.length + ' SUBMISSION' + (sorted.length === 1 ? '' : 'S') + ' — ' +
+      Object.keys(counts).map(function(k) { return counts[k] + ' ' + k.toUpperCase(); }).join(' · ');
+    document.getElementById('count-line').style.display = 'block';
+    document.getElementById('cards').innerHTML = sorted.map(cardHTML).join('');
+  })
+  .catch(function() {
+    document.getElementById('fail-note').style.display = 'block';
+  });
+</script>
+
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6fb28a3de5848c8837eaa3d8495d031"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
