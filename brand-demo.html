@@ -646,7 +646,16 @@ function renderBrandHeader(brand) {
 }
 
 function buyClick() {
+  var p = PRODS[curProd];
+  var url = (p && p.buy_url) || (currentBrand && currentBrand.store_url);
+  if (!url) {
+    showToast('Store link not available yet');
+    return;
+  }
+  // UTM params so the brand's own analytics can attribute traffic to Mirr.
+  url += (url.indexOf('?') === -1 ? '?' : '&') + 'utm_source=mirr&utm_medium=tryonresult';
   showToast('Opening ' + (currentBrand ? currentBrand.name : 'the brand') + ' store...');
+  window.open(url, '_blank', 'noopener');
 }
 
 async function initBrand() {
@@ -658,7 +667,7 @@ async function initBrand() {
   currentBrand = brand;
 
   PRODS = brand.products.map(function(p) {
-    return { cat: p.cat, name: p.name, price: p.price, old: p.old, desc: p.desc, scores: p.scores, tryon_cat: p.tryon_cat, image: p.image };
+    return { cat: p.cat, name: p.name, price: p.price, old: p.old, desc: p.desc, scores: p.scores, tryon_cat: p.tryon_cat, image: p.image, buy_url: p.buy_url };
   });
   REAL_IMGS = brand.products.map(function(p) { return p.image; });
   SVG_IMGS = brand.products.map(function(p) { return p.fallback_svg; });

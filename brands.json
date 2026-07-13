@@ -2,6 +2,8 @@
   "apex-active": {
     "name": "Apex Active",
     "tier": "founding",
+    "_note": "store_url and every buy_url below are PLACEHOLDERS — Apex Active is a demo brand with no real store. Replace with real product-page URLs when onboarding a real brand.",
+    "store_url": "https://example.com",
     "initials": "AA",
     "location": "MELBOURNE, AUSTRALIA",
     "rating": "4.8★",
@@ -19,6 +21,7 @@
       {
         "cat": "TOPS",
         "name": "Forest Compression Tee",
+        "buy_url": "https://example.com/products/forest-compression-tee",
         "price": "$54.99",
         "old": null,
         "desc": "Built for high-intensity training. Four-way stretch fabric with moisture-wicking technology keeps you dry. Flatlock seams reduce chafing on long sessions.",
@@ -37,6 +40,7 @@
       {
         "cat": "BOTTOMS",
         "name": "Apex Training Shorts",
+        "buy_url": "https://example.com/products/apex-training-shorts",
         "price": "$44.99",
         "old": null,
         "desc": "7-inch inseam with built-in compression liner. Lightweight recycled fabric with deep side pockets. Perfect for runs, HIIT, and gym sessions.",
@@ -55,6 +59,7 @@
       {
         "cat": "OUTERWEAR",
         "name": "Cobalt Zip-Up Jacket",
+        "buy_url": "https://example.com/products/cobalt-zip-up-jacket",
         "price": "$79.99",
         "old": "$109.99",
         "desc": "Lightweight, wind-resistant outer layer with a full-length zip. Packable into its own pocket. Built for pre and post training in any conditions.",
@@ -73,6 +78,7 @@
       {
         "cat": "TOPS",
         "name": "Sculpt Sports Bra",
+        "buy_url": "https://example.com/products/sculpt-sports-bra",
         "price": "$49.99",
         "old": null,
         "desc": "Medium-impact support with a longline design. Wide underbust band stays in place during movement. Available in 8 colourways.",
