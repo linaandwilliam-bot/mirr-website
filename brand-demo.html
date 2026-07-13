@@ -661,6 +661,46 @@ let SVG_IMGS = [];
 let IMGS = [];
 let currentBrand = null;
 
+// ── LAST-RESORT CLIENT ERROR NET ──
+// Reports genuinely unhandled errors so production breakage isn't invisible.
+// Deliberately minimal — a safety net, not an error-monitoring platform. All
+// existing user-facing error handling (try-on flow, form validation) runs
+// exactly as before; anything it catches never reaches these listeners.
+// One report per unique error message per page session; no PII, no stack
+// scraping beyond what the browser event provides.
+const _reportedErrors = new Set();
+function reportClientError(message, source, line) {
+  try {
+    const key = String(message || '').slice(0, 200);
+    if (!key || _reportedErrors.has(key)) return;
+    _reportedErrors.add(key);
+    const slug = new URLSearchParams(window.location.search).get('brand') || 'apex-active';
+    fetch('https://formspree.io/f/xvznvrdo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        type: 'client-error-report',
+        message: key,
+        source: (source || 'unknown') + (line ? ':' + line : ''),
+        brand: slug,
+        page: 'brand-demo',
+        timestamp: new Date().toISOString(),
+        _subject: 'Client error on brand-demo — ' + key.slice(0, 60),
+      }),
+    }).catch(function() { /* the reporter must never itself throw */ });
+  } catch (e) { /* ditto */ }
+}
+window.addEventListener('error', function(ev) {
+  // Bubble-phase listener: fires for uncaught JS errors only, not for
+  // resource load failures (those don't bubble), so image fallbacks
+  // never generate reports.
+  reportClientError(ev.message || 'unknown error', ev.filename, ev.lineno);
+});
+window.addEventListener('unhandledrejection', function(ev) {
+  const r = ev.reason;
+  reportClientError(r && r.message ? r.message : String(r), 'unhandledrejection', null);
+});
+
 function productCardHTML(p, idx) {
   var badgeHtml = p.badge ? '<div class="pbadge ' + p.badge_class + '">' + p.badge + '</div>' : '';
   var oldHtml = p.old ? '<span class="pprice-old">' + p.old + '</span>' : '';
