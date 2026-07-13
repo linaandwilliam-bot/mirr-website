@@ -1,0 +1,17 @@
+[
+  {
+    "ref": "MIRR-MRJDN3YE-HU52",
+    "brand_name": "VERIFICATION TEST — safe to delete",
+    "brand_email": "verification-test@example.com",
+    "status": "submitted",
+    "submitted_at": "2026-07-13T15:28:23.750Z",
+    "products": [
+      {
+        "name": "Test Product — VERIFICATION",
+        "category": "tops",
+        "price": "0.00",
+        "description": "Temporary verification entry — em dash — and — accents: café, naïve"
+      }
+    ]
+  }
+]
