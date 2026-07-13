@@ -56,6 +56,15 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .note strong{color:var(--ink3)}
 
 .divider{height:1px;background:var(--line);margin:32px 0}
+
+/* Verification checklist — forcing function so manual checks are never skipped */
+.vlist{background:var(--paper);border:.5px solid var(--line);border-radius:8px;padding:16px 18px;margin-bottom:18px}
+.vlist-title{font-size:10px;letter-spacing:.18em;color:var(--sky);margin-bottom:12px}
+.vlist label{display:flex;align-items:flex-start;gap:10px;font-size:12px;letter-spacing:0;color:var(--ink2);text-transform:none;margin-bottom:10px;cursor:pointer;line-height:1.6}
+.vlist label:last-of-type{margin-bottom:0}
+.vlist input[type=checkbox]{width:auto;margin:3px 0 0;flex:none}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:disabled:hover{background:var(--ink)}
 /* Keyboard focus — visible outline for tab navigation (a11y) */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 </style>
@@ -91,7 +100,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <span style="font-size:12px;letter-spacing:0;color:var(--ink);text-transform:none">Add Premium placement (15% commission instead of the base rate — homepage hero, Featured Brand badge, priority search, weekly Mirr Pick)</span>
     </label>
 
-    <button class="btn" onclick="generate()">GENERATE CODE + EMAIL →</button>
+    <div class="vlist">
+      <div class="vlist-title">VERIFICATION — ALL REQUIRED BEFORE GENERATING</div>
+      <label><input type="checkbox" class="vchk" onchange="updateVerifyGate()"> ABN verified at abr.business.gov.au</label>
+      <label><input type="checkbox" class="vchk" onchange="updateVerifyGate()"> Confirmed brand's website/social presence is real and active</label>
+      <label><input type="checkbox" class="vchk" onchange="updateVerifyGate()"> Understand banking details will be verified via Stripe Connect KYC before any payout</label>
+    </div>
+
+    <button class="btn" id="generate-btn" onclick="generate()" disabled>GENERATE CODE + EMAIL →</button>
   </div>
 
   <!-- RESULT -->
@@ -201,7 +217,22 @@ hello@trymirr.com`;
 // clicks) have access to it without re-reading the form.
 let currentBrand = null;
 
+// Verification gate — GENERATE (and therefore everything after it, including
+// ADD TO GITHUB) stays disabled until every manual check is confirmed. This
+// is a forcing function for the human steps, not automated verification.
+function verifyChecksComplete() {
+  return Array.prototype.every.call(document.querySelectorAll('.vchk'), function(c) { return c.checked; });
+}
+
+function updateVerifyGate() {
+  document.getElementById('generate-btn').disabled = !verifyChecksComplete();
+}
+
 function generate() {
+  if (!verifyChecksComplete()) {
+    alert('Complete every verification step in the checklist first.');
+    return;
+  }
   const name = document.getElementById('brand-name').value.trim();
   const email = document.getElementById('brand-email').value.trim().toLowerCase();
   const tier = document.getElementById('brand-tier').value;
@@ -383,6 +414,9 @@ function resetForm() {
   document.getElementById('brand-email').value = '';
   document.getElementById('brand-tier').value = 'Founding';
   document.getElementById('brand-premium').checked = false;
+  // Re-arm the verification gate — each brand gets its own confirmations
+  document.querySelectorAll('.vchk').forEach(function(c) { c.checked = false; });
+  updateVerifyGate();
   currentBrand = null;
   document.getElementById('result').style.display = 'none';
   document.getElementById('form-card').style.display = 'block';

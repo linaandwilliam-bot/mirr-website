@@ -48,6 +48,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 .bname{font-family:var(--font-serif);font-size:19px;font-weight:500;color:var(--ink);margin-bottom:2px}
 .bloc{font-size:10px;color:var(--ink4);letter-spacing:.07em}
 .bdemo-badge{display:inline-block;font-size:9px;letter-spacing:.1em;color:var(--rose-dark);background:rgba(212,168,152,.12);border:.5px solid rgba(212,168,152,.35);border-radius:3px;padding:2px 7px;margin-left:8px;vertical-align:1px}
+.bverified{display:inline-block;font-size:9px;letter-spacing:.1em;color:var(--sky-text);background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:3px;padding:2px 7px;margin-left:8px;vertical-align:1px}
 .bstats{display:flex;gap:22px;padding:12px 0;border-top:1px solid var(--line)}
 .bsn{font-family:var(--font-mono);font-size:17px;font-weight:500;color:var(--brand);line-height:1;margin-bottom:2px}
 .bsl{font-size:9px;letter-spacing:.12em;color:var(--ink4)}
@@ -659,7 +660,9 @@ function renderBrandHeader(brand) {
     '<div class="btop">' +
       '<div class="blogo"><div class="blogo-t">' + brand.initials + '</div></div>' +
       '<div>' +
-        '<div class="bname">' + brand.name + ' <span class="bdemo-badge">EXAMPLE STORE</span></div>' +
+        '<div class="bname">' + brand.name +
+          (brand.verified ? ' <span class="bverified">✓ VERIFIED BRAND</span>' : '') +
+          ' <span class="bdemo-badge">EXAMPLE STORE</span></div>' +
         '<div class="bloc">' + brand.location + '</div>' +
       '</div>' +
     '</div>' +

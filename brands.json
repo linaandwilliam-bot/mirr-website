@@ -2,6 +2,7 @@
   "apex-active": {
     "name": "Apex Active",
     "tier": "founding",
+    "verified": true,
     "_note": "store_url and every buy_url below are PLACEHOLDERS — Apex Active is a demo brand with no real store. Replace with real product-page URLs when onboarding a real brand.",
     "store_url": "https://example.com",
     "initials": "AA",
