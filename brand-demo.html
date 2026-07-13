@@ -382,6 +382,19 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 .remail-btn:hover{opacity:.88}
 .remail-note{display:none;font-size:11px;color:var(--rose-text);margin-top:8px}
 .remail-done{display:none;font-size:12px;color:var(--sky-text);margin-top:2px}
+/* Post-buy capture nudge (near the Buy button) */
+.buy-nudge{display:none;margin-top:10px;font-size:12px;color:var(--ink3);background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:6px;padding:9px 12px;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap}
+.buy-nudge.show{display:flex}
+.nudge-link{background:none;border:none;color:var(--sky-text);font-family:var(--font-sans);font-size:12px;font-weight:500;cursor:pointer;text-decoration:underline;padding:0}
+.nudge-x{background:none;border:none;color:var(--ink4);font-size:14px;cursor:pointer;padding:0 2px;line-height:1}
+/* Welcome-back purchase self-report prompt */
+.return-prompt{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--white);border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.12);padding:14px 16px;z-index:210;display:none;max-width:340px;width:calc(100% - 32px)}
+.return-prompt.show{display:block}
+.rp-text{font-size:13px;color:var(--ink);margin-bottom:10px;padding-right:18px}
+.rp-actions{display:flex;gap:8px}
+.rp-btn{flex:1;padding:9px;font-family:var(--font-sans);font-size:11px;letter-spacing:.06em;font-weight:500;cursor:pointer;border-radius:4px;border:1px solid var(--line);background:var(--white);color:var(--ink2)}
+.rp-btn.yes{background:var(--sky);border-color:var(--sky);color:var(--white)}
+.rp-x{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--ink4);font-size:14px;cursor:pointer;line-height:1;padding:2px}
 .tryon-note{font-size:11px;color:var(--ink3);line-height:1.7;background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:6px;padding:10px 12px;margin-bottom:14px;font-style:italic}
 .fit-scores-head{font-size:9px;letter-spacing:.18em;color:var(--ink4);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
 
@@ -607,6 +620,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
     <div class="bsec" id="buy-sec">
       <button class="bbtn" id="buy-btn" onclick="buyClick()">BUY FROM APEX ACTIVE →</button>
+      <div class="buy-nudge" id="buy-nudge">Want us to remember this fit? <button class="nudge-link" onclick="nudgeToRemail()">Email me this result</button><button class="nudge-x" aria-label="Dismiss" onclick="dismissBuyNudge()">×</button></div>
       <div class="bnote" id="buy-note">You will be taken to Apex Active to complete your purchase.</div>
       <div class="bmnote">Processed through <span>Mirr</span> — <span id="payout-pct">92%</span> goes directly to the brand.</div>
       <div class="bpolicy">
@@ -629,6 +643,16 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 </div><!-- end page-detail -->
 
 <div class="toast" id="toast-el"></div>
+
+<!-- Welcome-back purchase self-report — informal, unverified signal only -->
+<div class="return-prompt" id="return-prompt">
+  <button class="rp-x" aria-label="Dismiss" onclick="dismissReturnPrompt()">×</button>
+  <div class="rp-text" id="rp-text">Welcome back — did you complete your purchase?</div>
+  <div class="rp-actions" id="rp-actions">
+    <button class="rp-btn yes" onclick="answerReturnPrompt('yes')">YES</button>
+    <button class="rp-btn" onclick="answerReturnPrompt('no')">NO</button>
+  </div>
+</div>
 
 <script>
 let PRODS = [];
@@ -686,6 +710,9 @@ function buyClick() {
   url += (url.indexOf('?') === -1 ? '?' : '&') + 'utm_source=mirr&utm_medium=tryonresult';
   showToast('Opening ' + (currentBrand ? currentBrand.name : 'the brand') + ' store...');
   window.open(url, '_blank', 'noopener');
+  // After the store tab is already opening — never delays navigation
+  buyClickedThisSession = true;
+  maybeShowBuyNudge();
 }
 
 async function initBrand() {
@@ -1364,12 +1391,72 @@ function submitRemail(ev) {
     if (!res.ok) throw new Error('Formspree returned ' + res.status);
     form.style.display = 'none';
     done.style.display = 'block';
+    remailSubmitted = true;
+    dismissBuyNudge();
   }).catch(function() {
     err.textContent = "That didn't go through — please try again.";
     err.style.display = 'block';
     btn.disabled = false;
     btn.textContent = 'SEND IT →';
   });
+}
+
+// ── POST-BUY NUDGE + WELCOME-BACK SELF-REPORT ──
+// Session-level signals only. The self-report is exactly that — a shopper's
+// own unverified answer, not order data; real conversion tracking waits on
+// Stripe Connect webhooks.
+var remailSubmitted = false;
+var buyClickedThisSession = false;
+var returnPromptDone = false;
+
+function maybeShowBuyNudge() {
+  if (remailSubmitted) return;
+  // The capture form only exists at the result step — no surface to reuse otherwise
+  if (document.getElementById('result-state').style.display !== 'block') return;
+  document.getElementById('buy-nudge').classList.add('show');
+}
+
+function dismissBuyNudge() {
+  document.getElementById('buy-nudge').classList.remove('show');
+}
+
+function nudgeToRemail() {
+  dismissBuyNudge();
+  var card = document.querySelector('.remail');
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  var input = document.getElementById('remail-email');
+  if (input) input.focus({ preventScroll: true });
+}
+
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState !== 'visible') return;
+  if (!buyClickedThisSession || returnPromptDone) return;
+  returnPromptDone = true; // once per session, however it's answered
+  document.getElementById('return-prompt').classList.add('show');
+});
+
+function answerReturnPrompt(answer) {
+  var p = PRODS[curProd] || {};
+  fetch('https://formspree.io/f/xvznvrdo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      type: 'purchase-self-report',
+      answer: answer,
+      brand: currentBrand ? currentBrand.name : '',
+      product: p.name || '',
+      _subject: 'Purchase self-report (unverified) — ' + answer,
+    }),
+  }).catch(function() { /* informal signal — losing one is acceptable */ });
+  document.getElementById('rp-text').textContent = 'Thanks — noted.';
+  document.getElementById('rp-actions').style.display = 'none';
+  setTimeout(function() {
+    document.getElementById('return-prompt').classList.remove('show');
+  }, 1400);
+}
+
+function dismissReturnPrompt() {
+  document.getElementById('return-prompt').classList.remove('show');
 }
 
 // Handle resize — switch layout if user rotates device
