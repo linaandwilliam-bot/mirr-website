@@ -74,6 +74,26 @@ footer{padding:32px 24px;text-align:center;border-top:1px solid var(--line)}
   .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:18px 0 24px;border:1px solid var(--line);border-radius:6px}
   .table-scroll table{margin:0;min-width:480px}
 }
+/* ── PRINT (legal review / save-as-PDF) — plain black-on-white document ── */
+@media print{
+  nav,#nav,footer{display:none!important}
+  html,body{background:#fff!important;color:#000!important}
+  body{font-family:Georgia,"Times New Roman",serif}
+  .page{max-width:100%;padding:0}
+  .eyebrow{color:#000}
+  .eyebrow::before,.eyebrow::after{display:none}
+  .updated{font-weight:700;font-size:14px;color:#000;border:1px solid #000;display:inline-block;padding:4px 12px}
+  .intro,.toc,.highlight-box,.warn-box{background:none!important;border:none!important;padding:0;border-radius:0}
+  .toc{margin-bottom:28px}
+  p,li,td,.intro,.toc-list a,.highlight-box-title,.warn-box-title,.toc-label,.footer-note{color:#000!important}
+  a{color:#000!important;text-decoration:none}
+  li::before{color:#000}
+  h2{border-top-color:#000;break-after:avoid}
+  th{background:none!important;color:#000}
+  table,th,td{border-color:#000!important}
+  tr,li{break-inside:avoid}
+}
+
 /* Keyboard focus — visible outline for tab navigation (a11y) */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 </style>
