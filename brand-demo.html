@@ -368,6 +368,19 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 .tryon-tag{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.35);color:var(--white);font-size:9px;letter-spacing:.12em;padding:5px;text-align:center}
 .tryon-tag-right{background:rgba(123,174,200,.7)}
 .tryon-badge-live{position:absolute;top:8px;right:8px;background:var(--sky);color:var(--white);font-size:8px;letter-spacing:.1em;padding:3px 8px;border-radius:999px;font-weight:500}
+/* Brand-attribution watermark — part of the rendered result, survives screenshots */
+.tryon-watermark{position:absolute;bottom:26px;right:8px;background:rgba(123,174,200,.92);color:var(--white);font-family:var(--font-mono);font-size:8px;letter-spacing:.08em;padding:3px 7px;border-radius:999px;pointer-events:none}
+/* Email-me-this-result capture */
+.remail{background:var(--paper);border:.5px solid var(--line);border-radius:8px;padding:14px;margin-bottom:14px}
+.remail-title{font-size:9px;letter-spacing:.16em;color:var(--sky);margin-bottom:6px}
+.remail-sub{font-size:11px;color:var(--ink3);line-height:1.6;margin-bottom:10px}
+.remail-form{display:flex;gap:8px}
+.remail-form input{flex:1;min-width:0;border:1px solid var(--line);background:var(--white);padding:10px 12px;font-family:var(--font-sans);font-size:12px;color:var(--ink);outline:none;transition:border-color .2s}
+.remail-form input:focus{border-color:var(--sky)}
+.remail-btn{background:var(--sky);color:var(--white);border:none;padding:10px 16px;font-family:var(--font-sans);font-size:10px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px;white-space:nowrap;transition:opacity .2s}
+.remail-btn:hover{opacity:.88}
+.remail-note{display:none;font-size:11px;color:var(--rose-text);margin-top:8px}
+.remail-done{display:none;font-size:12px;color:var(--sky-text);margin-top:2px}
 .tryon-note{font-size:11px;color:var(--ink3);line-height:1.7;background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:6px;padding:10px 12px;margin-bottom:14px;font-style:italic}
 .fit-scores-head{font-size:9px;letter-spacing:.18em;color:var(--ink4);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
 
@@ -550,10 +563,24 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
               <img id="r-img" src="" alt="Garment">
               <div class="tryon-tag tryon-tag-right">GARMENT</div>
               <div class="tryon-badge-live">MIRR IT</div>
+              <div class="tryon-watermark">trymirr.com</div>
             </div>
           </div>
           <div class="tryon-note" id="tryon-note">
             ✓ When live, these two images merge into one — you wearing the garment, fitted to your exact measurements using computer vision.
+          </div>
+
+          <!-- EMAIL ME THIS RESULT -->
+          <div class="remail">
+            <div class="remail-title">EMAIL ME THIS RESULT</div>
+            <div class="remail-sub">Not buying right now? Send yourself this try-on to compare later.</div>
+            <form class="remail-form" id="remail-form" onsubmit="submitRemail(event)">
+              <input type="hidden" name="type" value="tryon-result-capture">
+              <input type="email" id="remail-email" name="email" placeholder="your email" required>
+              <button class="remail-btn" id="remail-btn" type="submit">SEND IT →</button>
+            </form>
+            <p class="remail-note" id="remail-error"></p>
+            <p class="remail-done" id="remail-done">✓ Sent — check your inbox shortly.</p>
           </div>
 
           <!-- FIT SCORES -->
@@ -851,6 +878,7 @@ function showDetail(idx) {
     '<span class="dprice">' + p.price + '</span>' +
     (p.old ? '<span class="dprice-old">' + p.old + '</span>' : '');
   document.getElementById('d-desc').textContent = p.desc;
+  resetRemail();
 
   goStep(1);
 
@@ -883,6 +911,7 @@ function hideDetail() {
   document.getElementById('upzone').style.display = 'block';
   document.getElementById('upprev').style.display = 'none';
   clearPhotoMsg();
+  resetRemail();
   // Back on the list view — reset the schema to match the initial-load state
   if (PRODS.length > 0) updateProductSchema(PRODS[0]);
 }
@@ -1282,6 +1311,62 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── EMAIL ME THIS RESULT ──
+// Same Formspree pipeline as the rest of the site, tagged so submissions
+// are distinguishable in the inbox. This is a lead-capture form, not part
+// of the try-on flow itself — safe to touch independently of runTryOn etc.
+function resetRemail() {
+  const form = document.getElementById('remail-form');
+  const err = document.getElementById('remail-error');
+  const done = document.getElementById('remail-done');
+  if (form) { form.reset(); form.style.display = 'flex'; }
+  if (err) { err.style.display = 'none'; err.textContent = ''; }
+  if (done) done.style.display = 'none';
+  const btn = document.getElementById('remail-btn');
+  if (btn) { btn.disabled = false; btn.textContent = 'SEND IT →'; }
+}
+
+function submitRemail(ev) {
+  ev.preventDefault();
+  const form = document.getElementById('remail-form');
+  const err = document.getElementById('remail-error');
+  const done = document.getElementById('remail-done');
+  const btn = document.getElementById('remail-btn');
+  const email = document.getElementById('remail-email').value.trim();
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    err.textContent = 'Enter a valid email address.';
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+
+  const p = PRODS[curProd] || {};
+  btn.disabled = true;
+  btn.textContent = 'SENDING...';
+
+  fetch('https://formspree.io/f/xvznvrdo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      type: 'tryon-result-capture',
+      email: email,
+      brand: currentBrand ? currentBrand.name : '',
+      product: p.name || '',
+      _subject: 'Try-on result request — ' + email,
+    }),
+  }).then(function(res) {
+    if (!res.ok) throw new Error('Formspree returned ' + res.status);
+    form.style.display = 'none';
+    done.style.display = 'block';
+  }).catch(function() {
+    err.textContent = "That didn't go through — please try again.";
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'SEND IT →';
+  });
 }
 
 // Handle resize — switch layout if user rotates device
