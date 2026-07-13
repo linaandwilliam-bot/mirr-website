@@ -88,6 +88,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   <div class="footer-note">Questions? <a href="/contact">Get in touch</a> — or email <a href="mailto:hello@trymirr.com">hello@trymirr.com</a></div>
 </footer>
 
+<script src="/error-report.js"></script>
 <script>
 function brandCardHTML(slug, brand) {
   var tags = (brand.tags || []).slice(0, 3).map(function(t) {
@@ -115,13 +116,19 @@ fetch('/brands.json', { cache: 'no-store' })
     var slugs = Object.keys(data);
     var grid = document.getElementById('brand-grid');
     if (slugs.length === 0) {
+      // Genuinely empty catalogue — honest state, keep the original wording
       document.getElementById('empty-note').style.display = 'block';
       return;
     }
     grid.innerHTML = slugs.map(function(slug) { return brandCardHTML(slug, data[slug]); }).join('');
   })
-  .catch(function() {
-    document.getElementById('empty-note').style.display = 'block';
+  .catch(function(err) {
+    // Load/parse failure — distinct from an empty catalogue (matches
+    // brand-demo's Sprint 29 fallback tone), reported via the shared net
+    reportClientError('brands directory data failed: ' + (err && err.message ? err.message : String(err)), 'brands.html fetch', null);
+    var note = document.getElementById('empty-note');
+    note.textContent = 'Something went wrong loading brands — try again shortly.';
+    note.style.display = 'block';
   });
 </script>
 
