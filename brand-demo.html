@@ -369,6 +369,15 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 .tryon-tag{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.35);color:var(--white);font-size:9px;letter-spacing:.12em;padding:5px;text-align:center}
 .tryon-tag-right{background:rgba(123,174,200,.7)}
 .tryon-badge-live{position:absolute;top:8px;right:8px;background:var(--sky);color:var(--white);font-size:8px;letter-spacing:.1em;padding:3px 8px;border-radius:999px;font-weight:500}
+/* Storefront data-failure fallback — one clear state, no retries */
+.store-fallback{display:none;max-width:460px;margin:72px auto;padding:44px 28px;text-align:center;background:var(--white);border:1px solid var(--line);border-radius:10px}
+.store-fallback.show{display:block}
+.sf-icon{font-size:26px;opacity:.4;margin-bottom:14px}
+.sf-title{font-family:var(--font-serif);font-size:22px;font-weight:500;color:var(--ink);margin-bottom:10px}
+.sf-body{font-size:13px;color:var(--ink3);line-height:1.8;margin-bottom:22px}
+.sf-link{display:inline-block;background:var(--sky);color:var(--white);text-decoration:none;padding:12px 24px;border-radius:4px;font-size:12px;letter-spacing:.08em;font-weight:500;transition:opacity .2s}
+.sf-link:hover{opacity:.88}
+
 /* Brand-attribution watermark — part of the rendered result, survives screenshots */
 .tryon-watermark{position:absolute;bottom:26px;right:8px;background:rgba(123,174,200,.92);color:var(--white);font-family:var(--font-mono);font-size:8px;letter-spacing:.08em;padding:3px 7px;border-radius:999px;pointer-events:none}
 /* Email-me-this-result capture */
@@ -444,6 +453,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   <div class="pgrid" id="pgrid"></div>
   <div class="powered">Powered by <a href="/">Mirr</a> — try it on before you buy</div>
 
+</div>
+
+<!-- STOREFRONT DATA FAILURE FALLBACK — shown when brands.json can't load or parse -->
+<div class="store-fallback" id="store-fallback">
+  <div class="sf-icon">✦</div>
+  <h2 class="sf-title">This store isn't available right now.</h2>
+  <p class="sf-body">Something went wrong loading this storefront — try again shortly.</p>
+  <a href="/brands" class="sf-link">BROWSE ALL BRANDS →</a>
 </div>
 
 <!-- ═══ DETAIL PAGE ═══ -->
@@ -756,11 +773,15 @@ function buyClick() {
 }
 
 async function initBrand() {
+  try {
   const params = new URLSearchParams(window.location.search);
   const slug = params.get('brand') || 'apex-active';
   const res = await fetch('/brands.json');
   const data = await res.json();
   const brand = data[slug] || data['apex-active'];
+  if (!brand || !Array.isArray(brand.products)) {
+    throw new Error('no usable brand entry for "' + slug + '"');
+  }
   currentBrand = brand;
 
   PRODS = brand.products.map(function(p) {
@@ -806,6 +827,15 @@ async function initBrand() {
   var resolvedSlug = data[slug] ? slug : 'apex-active';
   var canonical = document.querySelector('link[rel="canonical"]');
   if (canonical) canonical.setAttribute('href', 'https://www.trymirr.com/brand-demo?brand=' + encodeURIComponent(resolvedSlug));
+  } catch (err) {
+    // brands.json failed to load, parse, or contained no usable entry.
+    // One clear failure state — initBrand runs once, nothing retries or
+    // re-fetches, so this can never loop. Reported through the Sprint 28 net.
+    reportClientError('storefront data failed: ' + (err && err.message ? err.message : String(err)), 'initBrand', null);
+    document.getElementById('page-list').style.display = 'none';
+    document.getElementById('page-detail').style.display = 'none';
+    document.getElementById('store-fallback').classList.add('show');
+  }
 }
 
 initBrand();
