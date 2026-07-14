@@ -526,7 +526,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <p style="font-size:12px;color:var(--sky-text);text-align:center;margin-bottom:8px">✓ Photo ready</p>
           <button onclick="document.getElementById('file-input').click()" style="display:block;margin:0 auto;background:none;border:.5px solid var(--sky);color:var(--sky-text);font-size:11px;padding:5px 12px;border-radius:4px;cursor:pointer">Change photo</button>
         </div>
-        <div class="pv-msg" id="pv-msg"></div>
+        <div class="pv-msg" id="pv-msg" role="alert"></div>
         <div class="ptips">
           <div class="ptip ok"><span class="ptip-mark">✓</span>Full body, head to feet</div>
           <div class="ptip ok"><span class="ptip-mark">✓</span>Plain wall behind you</div>
@@ -565,9 +565,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <div class="proc-wrap">
             <div class="proc-spinner"></div>
             <div class="proc-title">Generating your try-on...</div>
-            <div class="proc-bar-wrap"><div class="proc-bar" id="proc-bar"></div></div>
-            <div class="proc-timer" id="proc-timer">0:00</div>
-            <div class="proc-msg" id="proc-msg">Analysing your photo...</div>
+            <div class="proc-bar-wrap" aria-hidden="true"><div class="proc-bar" id="proc-bar"></div></div>
+            <div class="proc-timer" id="proc-timer" aria-hidden="true">0:00</div>
+            <div class="proc-msg" id="proc-msg" aria-live="polite">Analysing your photo...</div>
             <div class="proc-steps">
               <div class="proc-step" id="ps1"><div class="ps-dot"></div>Analysing photo</div>
               <div class="proc-step" id="ps2"><div class="ps-dot"></div>Mapping body dimensions</div>
@@ -612,8 +612,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
               <input type="email" id="remail-email" name="email" placeholder="your email" required>
               <button class="remail-btn" id="remail-btn" type="submit">SEND IT →</button>
             </form>
-            <p class="remail-note" id="remail-error"></p>
-            <p class="remail-done" id="remail-done">✓ Sent — check your inbox shortly.</p>
+            <p class="remail-note" id="remail-error" role="alert"></p>
+            <p class="remail-done" id="remail-done" role="status">✓ Sent — check your inbox shortly.</p>
           </div>
 
           <!-- FIT SCORES -->
@@ -639,7 +639,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
     <div class="bsec" id="buy-sec">
       <button class="bbtn" id="buy-btn" onclick="buyClick()">BUY FROM APEX ACTIVE →</button>
-      <div class="buy-nudge" id="buy-nudge">Want us to remember this fit? <button class="nudge-link" onclick="nudgeToRemail()">Email me this result</button><button class="nudge-x" aria-label="Dismiss" onclick="dismissBuyNudge()">×</button></div>
+      <div class="buy-nudge" id="buy-nudge" aria-live="polite">Want us to remember this fit? <button class="nudge-link" onclick="nudgeToRemail()">Email me this result</button><button class="nudge-x" aria-label="Dismiss" onclick="dismissBuyNudge()">×</button></div>
       <div class="bnote" id="buy-note">You will be taken to Apex Active to complete your purchase.</div>
       <div class="bmnote">Processed through <span>Mirr</span> — <span id="payout-pct">92%</span> goes directly to the brand.</div>
       <div class="bpolicy">
@@ -661,10 +661,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 </div><!-- end page-detail -->
 
-<div class="toast" id="toast-el"></div>
+<div class="toast" id="toast-el" role="status"></div>
 
 <!-- Welcome-back purchase self-report — informal, unverified signal only -->
-<div class="return-prompt" id="return-prompt">
+<div class="return-prompt" id="return-prompt" aria-live="assertive">
   <button class="rp-x" aria-label="Dismiss" onclick="dismissReturnPrompt()">×</button>
   <div class="rp-text" id="rp-text">Welcome back — did you complete your purchase?</div>
   <div class="rp-actions" id="rp-actions">

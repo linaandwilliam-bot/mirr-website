@@ -187,7 +187,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <label for="gate-code">Access code <span class="req">*</span></label>
         <input type="text" id="gate-code" placeholder="From your welcome email" required pattern="[A-Za-z]{1,8}-[A-Za-z0-9]{4}" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')checkGate()">
       </div>
-      <p class="field-err" id="gate-err" style="display:none;margin-top:12px">That email and code don't match what we have on file. Double check your welcome email, or contact us if you're stuck.</p>
+      <p class="field-err" id="gate-err" role="alert" style="display:none;margin-top:12px">That email and code don't match what we have on file. Double check your welcome email, or contact us if you're stuck.</p>
       <button class="submit-btn" id="gate-submit-btn" onclick="checkGate()" style="margin-top:18px">CONTINUE →</button>
       <p class="submit-note">Not a Mirr brand yet? <a href="/list-your-brand" style="color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">List your brand first</a> — or email <a href="mailto:hello@trymirr.com" style="color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">hello@trymirr.com</a> if you've lost your code.</p>
     </div>
@@ -223,7 +223,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
     <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
 
-    <p class="field-err" id="form-err" style="margin:0 0 18px;padding:12px 14px;background:var(--rose-bg);border:.5px solid rgba(212,168,152,.35);border-radius:6px">Some fields need attention — the highlighted fields below are missing or invalid.</p>
+    <p class="field-err" id="form-err" role="alert" style="margin:0 0 18px;padding:12px 14px;background:var(--rose-bg);border:.5px solid rgba(212,168,152,.35);border-radius:6px">Some fields need attention — the highlighted fields below are missing or invalid.</p>
 
     <!-- BRAND DETAILS -->
     <div class="brand-strip">
