@@ -696,20 +696,30 @@ window.addEventListener('unhandledrejection', function(ev) {
   reportClientError(r && r.message ? r.message : String(r), 'unhandledrejection', null);
 });
 
+// Brand/product text comes from brands.json — now increasingly from real
+// brand input via submit-products, not just the hand-written fixture. Escape
+// everything before it goes into an innerHTML string (HTML body AND
+// double-quoted attribute contexts; escaping quotes covers both).
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
 function productCardHTML(p, idx) {
-  var badgeHtml = p.badge ? '<div class="pbadge ' + p.badge_class + '">' + p.badge + '</div>' : '';
-  var oldHtml = p.old ? '<span class="pprice-old">' + p.old + '</span>' : '';
-  var altText = p.name + (currentBrand ? ' — ' + currentBrand.name : '');
-  return '<div class="pcard" data-cat="' + p.cat.toLowerCase() + '" tabindex="0" role="button" aria-label="View ' + p.name + '" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();this.click()}" onclick="showDetail(' + idx + ')">' +
+  var badgeHtml = p.badge ? '<div class="pbadge ' + esc(p.badge_class) + '">' + esc(p.badge) + '</div>' : '';
+  var oldHtml = p.old ? '<span class="pprice-old">' + esc(p.old) + '</span>' : '';
+  var altText = esc(p.name + (currentBrand ? ' — ' + currentBrand.name : ''));
+  return '<div class="pcard" data-cat="' + esc(String(p.cat).toLowerCase()) + '" tabindex="0" role="button" aria-label="View ' + esc(p.name) + '" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();this.click()}" onclick="showDetail(' + idx + ')">' +
       '<div class="pimg-wrap">' +
-        '<img loading="lazy" src="' + p.image + '" onerror="this.onerror=null;this.src=\'' + p.fallback_svg + '\'" alt="' + altText + '">' +
+        '<img loading="lazy" src="' + esc(p.image) + '" onerror="this.onerror=null;this.src=\'' + esc(p.fallback_svg) + '\'" alt="' + altText + '">' +
         badgeHtml +
         '<div class="mcchip"><div class="chdot"></div>MIRROR IT</div>' +
       '</div>' +
       '<div class="pinfo">' +
-        '<div class="pcat">' + p.cat + '</div>' +
-        '<div class="pname">' + p.name + '</div>' +
-        '<div class="pfoot"><span class="pprice">' + p.price + '</span>' + oldHtml + '<span class="pview">VIEW →</span></div>' +
+        '<div class="pcat">' + esc(p.cat) + '</div>' +
+        '<div class="pname">' + esc(p.name) + '</div>' +
+        '<div class="pfoot"><span class="pprice">' + esc(p.price) + '</span>' + oldHtml + '<span class="pview">VIEW →</span></div>' +
       '</div>' +
     '</div>';
 }
@@ -717,21 +727,21 @@ function productCardHTML(p, idx) {
 function renderBrandHeader(brand) {
   document.getElementById('bhdr').innerHTML =
     '<div class="btop">' +
-      '<div class="blogo"><div class="blogo-t">' + brand.initials + '</div></div>' +
+      '<div class="blogo"><div class="blogo-t">' + esc(brand.initials) + '</div></div>' +
       '<div>' +
-        '<div class="bname">' + brand.name +
+        '<div class="bname">' + esc(brand.name) +
           (brand.verified ? ' <span class="bverified">✓ VERIFIED BRAND</span>' : '') +
           ' <span class="bdemo-badge">EXAMPLE STORE</span></div>' +
-        '<div class="bloc">' + brand.location + '</div>' +
+        '<div class="bloc">' + esc(brand.location) + '</div>' +
       '</div>' +
     '</div>' +
     '<div class="bstats">' +
-      '<div><div class="bsn">' + brand.products_count + '</div><div class="bsl">PRODUCTS</div></div>' +
-      '<div><div class="bsn">' + brand.rating + '</div><div class="bsl">RATING</div></div>' +
-      '<div><div class="bsn">' + brand.tryons_count + '</div><div class="bsl">TRY-ONS</div></div>' +
+      '<div><div class="bsn">' + esc(brand.products_count) + '</div><div class="bsl">PRODUCTS</div></div>' +
+      '<div><div class="bsn">' + esc(brand.rating) + '</div><div class="bsl">RATING</div></div>' +
+      '<div><div class="bsn">' + esc(brand.tryons_count) + '</div><div class="bsl">TRY-ONS</div></div>' +
     '</div>' +
-    '<div class="bdesc">' + brand.description + '</div>' +
-    '<div class="btags">' + brand.tags.map(function(t) { return '<div class="btag">' + t + '</div>'; }).join('') + '</div>';
+    '<div class="bdesc">' + esc(brand.description) + '</div>' +
+    '<div class="btags">' + (brand.tags || []).map(function(t) { return '<div class="btag">' + esc(t) + '</div>'; }).join('') + '</div>';
 }
 
 function buyClick() {
@@ -953,8 +963,8 @@ function showDetail(idx) {
   document.getElementById('d-cat').textContent = p.cat;
   document.getElementById('d-name').textContent = p.name;
   document.getElementById('d-price').innerHTML =
-    '<span class="dprice">' + p.price + '</span>' +
-    (p.old ? '<span class="dprice-old">' + p.old + '</span>' : '');
+    '<span class="dprice">' + esc(p.price) + '</span>' +
+    (p.old ? '<span class="dprice-old">' + esc(p.old) + '</span>' : '');
   document.getElementById('d-desc').textContent = p.desc;
   resetRemail();
 
