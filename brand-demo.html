@@ -511,7 +511,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
 
       <!-- STEP 1 -->
-      <div class="mpnl ac" id="pnl1">
+      <div class="mpnl ac" id="pnl1" tabindex="-1" aria-label="Step 1: your photo">
         <!-- Hidden file input - triggered by button click for reliability -->
         <input type="file" id="file-input" accept="image/*" aria-label="Upload your photo" style="display:none;position:absolute;left:-9999px" onchange="handlePhoto(this)">
 
@@ -537,7 +537,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
 
       <!-- STEP 2 -->
-      <div class="mpnl" id="pnl2">
+      <div class="mpnl" id="pnl2" tabindex="-1" aria-label="Step 2: your measurements">
         <div class="utog">
           <button class="utbtn on" id="btn-cm" onclick="setUnit('cm')">CM — metric</button>
           <button class="utbtn" id="btn-in" onclick="setUnit('in')">IN — imperial</button>
@@ -558,7 +558,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
 
       <!-- STEP 3 -->
-      <div class="mpnl" id="pnl3">
+      <div class="mpnl" id="pnl3" tabindex="-1" aria-label="Step 3: your result">
 
         <!-- PROCESSING STATE -->
         <div id="proc-state">
@@ -586,7 +586,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           </div>
 
           <!-- SIDE BY SIDE PHOTOS -->
-          <div class="tryon-label">YOUR TRY-ON RESULT</div>
+          <div class="tryon-label" id="tryon-label" tabindex="-1">YOUR TRY-ON RESULT</div>
           <div class="tryon-photos">
             <div class="tryon-wrap">
               <img id="user-photo" src="" alt="Your photo">
@@ -639,7 +639,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
     <div class="bsec" id="buy-sec">
       <button class="bbtn" id="buy-btn" onclick="buyClick()">BUY FROM APEX ACTIVE →</button>
-      <div class="buy-nudge" id="buy-nudge" aria-live="polite">Want us to remember this fit? <button class="nudge-link" onclick="nudgeToRemail()">Email me this result</button><button class="nudge-x" aria-label="Dismiss" onclick="dismissBuyNudge()">×</button></div>
+      <div class="buy-nudge" id="buy-nudge" aria-live="polite"><span id="buy-nudge-text">Want us to remember this fit? </span><button class="nudge-link" onclick="nudgeToRemail()">Email me this result</button><button class="nudge-x" aria-label="Dismiss" onclick="dismissBuyNudge()">×</button></div>
       <div class="bnote" id="buy-note">You will be taken to Apex Active to complete your purchase.</div>
       <div class="bmnote">Processed through <span>Mirr</span> — <span id="payout-pct">92%</span> goes directly to the brand.</div>
       <div class="bpolicy">
@@ -1024,6 +1024,20 @@ function goStep(n) {
   } else {
     window.scrollTo(0, 0);
   }
+  // Move focus to the new step's panel so a screen-reader/keyboard user's
+  // attention follows the transition (mirrors the sighted attention shift).
+  // preventScroll keeps the scroll positions set just above. No-op on the
+  // initial goStep(1) while the detail page is still hidden — harmless.
+  const panel = document.getElementById('pnl' + n);
+  if (panel) { try { panel.focus({ preventScroll: true }); } catch (e) { panel.focus(); } }
+}
+
+// The result renders asynchronously inside step 3 (after the loading state),
+// so its focus move is separate from goStep — this is the priority per the
+// accessibility review: attention lands on the result heading when it appears.
+function focusResultHeading() {
+  const h = document.getElementById('tryon-label');
+  if (h) { try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); } }
 }
 
 function runTryOn() {
@@ -1272,6 +1286,7 @@ function showRealResult(resultSrc) {
     '✓ This is you wearing the garment — fitted to your exact measurements using AI.';
 
   document.getElementById('result-state').style.display = 'block';
+  focusResultHeading();
   calcFit();
 }
 
@@ -1319,11 +1334,13 @@ function showFallbackResult(hadError, errMsg, pixelCode) {
     msg.textContent = 'Upload your photo in Step 1 to see yourself here';
     document.getElementById('tryon-note').textContent = 'Go back to Step 1 and upload a photo.';
     document.getElementById('result-state').style.display = 'block';
+    focusResultHeading();
     return; // no photo, no fit score — don't show a verdict with nothing behind it
   }
 
   document.getElementById('r-img').src = IMGS[curProd];
   document.getElementById('result-state').style.display = 'block';
+  focusResultHeading();
   calcFit();
 }
 
@@ -1472,6 +1489,14 @@ function maybeShowBuyNudge() {
   // The capture form only exists at the result step — no surface to reuse otherwise
   if (document.getElementById('result-state').style.display !== 'block') return;
   document.getElementById('buy-nudge').classList.add('show');
+  // Clear-then-set the text so the aria-live region registers a real mutation
+  // on reveal — a display toggle alone doesn't reliably announce (esp. VoiceOver).
+  var nt = document.getElementById('buy-nudge-text');
+  if (nt) {
+    var txt = 'Want us to remember this fit? ';
+    nt.textContent = '';
+    setTimeout(function() { nt.textContent = txt; }, 50);
+  }
 }
 
 function dismissBuyNudge() {
@@ -1491,6 +1516,14 @@ document.addEventListener('visibilitychange', function() {
   if (!buyClickedThisSession || returnPromptDone) return;
   returnPromptDone = true; // once per session, however it's answered
   document.getElementById('return-prompt').classList.add('show');
+  // Clear-then-set so the assertive live region announces on reveal rather
+  // than relying on the display toggle alone.
+  var rt = document.getElementById('rp-text');
+  if (rt) {
+    var q = 'Welcome back — did you complete your purchase?';
+    rt.textContent = '';
+    setTimeout(function() { rt.textContent = q; }, 50);
+  }
 });
 
 function answerReturnPrompt(answer) {
