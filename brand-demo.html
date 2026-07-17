@@ -878,6 +878,12 @@ function validatePhoto(src, done) {
   img.onload = function() {
     if (img.naturalWidth < 400 || img.naturalHeight < 600) {
       done({ ok: false, msg: 'This photo is too small for try-on — please use a larger photo.' });
+    } else if (src.length * 0.75 > 11 * 1024 * 1024) {
+      // ~11MB of actual image data (base64 inflates by 4/3) — comfortably
+      // under the Worker's 15MB cap so client and server agree with margin,
+      // and the shopper gets an instant error instead of a server rejection
+      // after the full loading sequence.
+      done({ ok: false, msg: 'This photo is too large for try-on — please use one under about 10MB. Most phone cameras can save a smaller size.' });
     } else if (img.naturalWidth > img.naturalHeight) {
       done({ ok: true, warn: 'Full-body photos work best in portrait orientation.' });
     } else {
