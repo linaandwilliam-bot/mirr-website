@@ -634,7 +634,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 <div id="nav" data-variant="home"><noscript><div style="padding:14px 24px;border-bottom:1px solid var(--line);font-size:13px"><a href="/" style="color:var(--sky-text);text-decoration:none">← Mirr home</a></div></noscript></div>
 <script src="/nav.js"></script>
-<div class="nav-mobile-panel" id="nav-mobile-panel">
+<div class="nav-mobile-panel" id="nav-mobile-panel" role="dialog" aria-modal="true" aria-label="Site menu">
   <button class="nav-mobile-close" aria-label="Close menu" onclick="closeMobileNav()">✕</button>
   <a href="#how" onclick="closeMobileNav()">How it works</a>
   <a href="#brands" onclick="closeMobileNav()">For brands</a>
@@ -652,6 +652,10 @@ function toggleMobileNav(){
   burger.classList.toggle('open', isOpen);
   burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   document.body.style.overflow = isOpen ? 'hidden' : '';
+  if (isOpen) {
+    var closeBtn = panel.querySelector('.nav-mobile-close');
+    if (closeBtn) closeBtn.focus();
+  }
 }
 function closeMobileNav(){
   document.getElementById('nav-mobile-panel').classList.remove('open');
@@ -659,6 +663,26 @@ function closeMobileNav(){
   document.getElementById('nav-burger').setAttribute('aria-expanded', 'false');
   document.body.style.overflow = '';
 }
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && document.getElementById('nav-mobile-panel').classList.contains('open')) {
+    closeMobileNav();
+    var burger = document.getElementById('nav-burger');
+    if (burger) burger.focus();
+  }
+});
+document.getElementById('nav-mobile-panel').addEventListener('keydown', function(e){
+  if (e.key !== 'Tab') return;
+  var items = this.querySelectorAll('button, a[href]');
+  if (!items.length) return;
+  var first = items[0], last = items[items.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+});
 </script>
 
 <!-- HERO -->
