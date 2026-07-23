@@ -88,7 +88,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <input type="text" id="brand-name" placeholder="e.g. Active Truth" required>
 
     <label for="brand-email">Brand contact email <span class="req">*</span></label>
-    <input type="email" id="brand-email" placeholder="hello@activetruth.com.au" required pattern="[^\s@]+@[^\s@]+\.[^\s@]+">
+    <input type="email" id="brand-email" placeholder="hello@yourbrand.com" required pattern="[^\s@]+@[^\s@]+\.[^\s@]+">
 
     <label for="brand-tier">Brand tier <span class="req">*</span></label>
     <select id="brand-tier" required>
@@ -103,7 +103,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
     <div class="vlist">
       <div class="vlist-title">VERIFICATION — ALL REQUIRED BEFORE GENERATING</div>
-      <label><input type="checkbox" class="vchk" onchange="updateVerifyGate()"> ABN verified at abr.business.gov.au</label>
+      <label><input type="checkbox" class="vchk" onchange="updateVerifyGate()"> ABN or local business registration number verified (Australian brands: abr.business.gov.au)</label>
       <label><input type="checkbox" class="vchk" onchange="updateVerifyGate()"> Confirmed brand's website/social presence is real and active</label>
       <label><input type="checkbox" class="vchk" onchange="updateVerifyGate()"> Understand banking details will be verified via Stripe Connect KYC before any payout</label>
     </div>
