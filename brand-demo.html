@@ -620,6 +620,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             <div class="remail-sub">Not buying right now? Send yourself this try-on to compare later.</div>
             <form class="remail-form" id="remail-form" onsubmit="submitRemail(event)">
               <input type="hidden" name="type" value="tryon-result-capture">
+              <input type="text" name="_gotcha" id="remail-hp" style="position:absolute;left:-9999px" aria-hidden="true" tabindex="-1" autocomplete="off">
               <input type="email" id="remail-email" name="email" placeholder="your email" required>
               <button class="remail-btn" id="remail-btn" type="submit">SEND IT →</button>
             </form>
@@ -1474,6 +1475,7 @@ function submitRemail(ev) {
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
     body: JSON.stringify({
       type: 'tryon-result-capture',
+      _gotcha: document.getElementById('remail-hp').value,
       email: email,
       brand: currentBrand ? currentBrand.name : '',
       product: p.name || '',

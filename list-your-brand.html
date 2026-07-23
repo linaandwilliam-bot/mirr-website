@@ -205,6 +205,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
       <form id="brand-form" novalidate>
 
+        <input type="text" name="_gotcha" id="brand-hp" style="position:absolute;left:-9999px" aria-hidden="true" tabindex="-1" autocomplete="off">
         <div class="form-section-title">ABOUT YOUR BRAND</div>
 
         <div class="field-group">
@@ -519,6 +520,7 @@ function attemptSubmit() {
   var reply = getReply(brandName, premiumVal, ref);
 
   var payload = {
+    _gotcha: document.getElementById('brand-hp').value,
     brand_name: brandName,
     contact_name: document.getElementById('contact-name').value,
     contact_email: brandEmail,
