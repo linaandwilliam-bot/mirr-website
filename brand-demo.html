@@ -427,6 +427,42 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .utbtn{padding-top:15px;padding-bottom:15px}
 }
 
+/* ── My fitting room (Sprint 53) ── */
+.fitroom-save-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 4px}
+.fitroom-save-btn{background:var(--white);border:1px solid var(--sky);color:var(--sky-text);padding:10px 16px;font-family:var(--font-sans);font-size:10px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px;transition:background .2s}
+.fitroom-save-btn:hover{background:var(--sky-bg)}
+.fitroom-save-btn:disabled{cursor:default;opacity:.7}
+.fitroom-confirm{font-size:11px;color:var(--sky-text)}
+.fitroom{max-width:1160px;margin:0 auto;padding:40px 48px 56px;border-top:1px solid var(--line)}
+.fitroom-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.fitroom-title{font-family:var(--font-serif);font-size:22px;font-weight:500}
+.fitroom-title:focus{outline:none}
+.fitroom-count{font-family:var(--font-mono);font-size:11px;color:var(--ink4)}
+.fitroom-sub{font-size:11px;color:var(--ink3);margin:4px 0 18px}
+.fitroom-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.fitroom-card{background:var(--white);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.fitroom-thumb{position:relative;display:block;width:100%;aspect-ratio:3/4;border:none;padding:0;background:var(--cream);cursor:pointer}
+.fitroom-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.fitroom-thumb .tryon-watermark{bottom:8px}
+.fitroom-card-body{padding:10px 12px 12px}
+.fitroom-card-name{font-size:12px;color:var(--ink);font-weight:400;line-height:1.4}
+.fitroom-card-meta{font-family:var(--font-mono);font-size:10px;color:var(--ink4);margin:3px 0 9px}
+.fitroom-card-actions{display:flex;gap:8px}
+.fitroom-card-actions button{background:none;border:1px solid var(--line);border-radius:4px;padding:6px 10px;font-family:var(--font-sans);font-size:9px;letter-spacing:.08em;color:var(--ink3);cursor:pointer;transition:all .2s}
+.fitroom-card-actions button:hover{border-color:var(--sky);color:var(--sky-text)}
+.fitroom-live{position:absolute;left:-9999px}
+.fitroom-overlay{position:fixed;inset:0;background:rgba(26,26,26,.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px}
+.fitroom-overlay-card{background:var(--page);border-radius:10px;max-width:400px;width:100%;max-height:92vh;overflow-y:auto;padding:18px;position:relative}
+.fitroom-overlay-x{position:absolute;top:10px;right:12px;background:none;border:none;font-size:20px;color:var(--ink3);cursor:pointer;line-height:1;padding:4px 8px;z-index:1}
+.fitroom-overlay-imgwrap{position:relative;border-radius:6px;overflow:hidden;background:var(--cream);margin-bottom:12px}
+.fitroom-overlay-imgwrap img{width:100%;display:block}
+.fitroom-overlay-imgwrap .tryon-watermark{bottom:8px}
+.fitroom-overlay-name{font-family:var(--font-serif);font-size:17px;font-weight:500;margin-bottom:2px}
+.fitroom-overlay-meta{font-size:12px;color:var(--ink3);line-height:1.7;margin-bottom:14px}
+.fitroom-overlay-view{background:var(--sky);color:var(--white);border:none;padding:11px 18px;font-family:var(--font-sans);font-size:10px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px;transition:opacity .2s}
+.fitroom-overlay-view:hover{opacity:.88}
+@media(max-width:760px){.fitroom{padding:32px 20px 44px}}
+
 /* Reduced motion — honor the OS preference (WCAG 2.3.3). Additive overrides
    only. The try-on loading state stays fully communicated without the spin:
    the progress bar still fills (in instant steps), the timer counts down,
@@ -615,6 +651,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             ✓ When live, these two images merge into one — you wearing the garment, fitted to your exact measurements using computer vision.
           </div>
 
+          <!-- SAVE TO FITTING ROOM (Sprint 53) — revealed only for real results -->
+          <div class="fitroom-save-row">
+            <button class="fitroom-save-btn" id="fitroom-save" type="button" style="display:none" onclick="fitroomSave()">SAVE TO MY FITTING ROOM</button>
+            <span class="fitroom-confirm" id="fitroom-confirm" role="status" aria-live="polite"></span>
+          </div>
+
           <!-- EMAIL ME THIS RESULT -->
           <div class="remail">
             <div class="remail-title">EMAIL ME THIS RESULT</div>
@@ -673,6 +715,29 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   </div>
 
 </div><!-- end page-detail -->
+
+<!-- MY FITTING ROOM (Sprint 53) — hidden until the shopper saves a look.
+     Saved looks live in localStorage only; nothing leaves the browser. -->
+<section class="fitroom" id="fitroom" style="display:none" aria-labelledby="fitroom-title">
+  <div class="fitroom-head">
+    <h2 class="fitroom-title" id="fitroom-title" tabindex="-1">My fitting room</h2>
+    <span class="fitroom-count" id="fitroom-count"></span>
+  </div>
+  <p class="fitroom-sub">Saved on this device only — your try-on photos never leave your browser.</p>
+  <div class="fitroom-grid" id="fitroom-grid"></div>
+  <p class="fitroom-live" id="fitroom-live" role="status" aria-live="polite"></p>
+</section>
+
+<!-- Saved-look viewer -->
+<div class="fitroom-overlay" id="fitroom-overlay" role="dialog" aria-modal="true" aria-label="Saved try-on" style="display:none">
+  <div class="fitroom-overlay-card">
+    <button class="fitroom-overlay-x" id="fitroom-overlay-x" type="button" aria-label="Close saved try-on" onclick="fitroomCloseOverlay()">×</button>
+    <div class="fitroom-overlay-imgwrap"><img id="fitroom-overlay-img" src="" alt="Saved try-on result"><div class="tryon-watermark">trymirr.com</div></div>
+    <div class="fitroom-overlay-name" id="fitroom-overlay-name"></div>
+    <div class="fitroom-overlay-meta" id="fitroom-overlay-meta"></div>
+    <button class="fitroom-overlay-view" id="fitroom-overlay-view" type="button" onclick="fitroomViewProduct()">VIEW PRODUCT →</button>
+  </div>
+</div>
 
 <div class="toast" id="toast-el" role="status"></div>
 
@@ -1693,6 +1758,223 @@ function answerReturnPrompt(answer) {
     document.getElementById('return-prompt').classList.remove('show');
   }, 1400);
 }
+
+// ── MY FITTING ROOM (Sprint 53) ──
+// Saved looks live in localStorage only (cap 6, oldest evicted). Every
+// storage touch is wrapped in try/catch: quota errors and private-mode
+// restrictions degrade silently to the pre-Sprint-53 behavior. Hooked in
+// AFTER showRealResult via reassignment — protected functions untouched.
+var FITROOM_KEY = 'mirr-fitting-room';
+var FITROOM_CAP = 6;
+var _fitroomLastFocus = null;
+var _fitroomOpenIdx = -1;
+
+function fitroomLoad() {
+  try {
+    var a = JSON.parse(localStorage.getItem(FITROOM_KEY));
+    return Array.isArray(a) ? a : [];
+  } catch (e) { return []; }
+}
+
+function fitroomStore(arr) {
+  try { localStorage.setItem(FITROOM_KEY, JSON.stringify(arr)); return true; }
+  catch (e) { return false; }
+}
+
+// Results can be MB-scale; downscale to a 480px-wide JPEG so six saved
+// looks stay comfortably inside the localStorage quota.
+function fitroomShrink(dataUrl, cb) {
+  try {
+    var im = new Image();
+    im.onload = function() {
+      try {
+        var w = Math.min(480, im.naturalWidth || 480);
+        var h = Math.round(w * (im.naturalHeight || 640) / (im.naturalWidth || 480));
+        var c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(im, 0, 0, w, h);
+        cb(c.toDataURL('image/jpeg', 0.82));
+      } catch (e) { cb(dataUrl); }
+    };
+    im.onerror = function() { cb(dataUrl); };
+    im.src = dataUrl;
+  } catch (e) { cb(dataUrl); }
+}
+
+function fitroomCapture(src, cb) {
+  if (/^data:/.test(src)) { fitroomShrink(src, cb); return; }
+  // Remote result URL (PixelAPI output is ephemeral) — pull it into a
+  // data URL now so the saved look survives the remote purge.
+  fetch(src).then(function(r) { return r.blob(); }).then(function(b) {
+    var fr = new FileReader();
+    fr.onload = function() { fitroomShrink(String(fr.result), cb); };
+    fr.onerror = function() { cb(src); };
+    fr.readAsDataURL(b);
+  }).catch(function() { cb(src); });
+}
+
+function fitroomSave() {
+  var btn = document.getElementById('fitroom-save');
+  var confirmEl = document.getElementById('fitroom-confirm');
+  var p = PRODS[curProd] || {};
+  btn.disabled = true;
+  btn.textContent = 'SAVING...';
+  fitroomCapture(document.getElementById('r-img').src, function(img) {
+    var entry = {
+      brand: new URLSearchParams(window.location.search).get('brand') || 'apex-active',
+      product: p.name || '',
+      img: img,
+      scores: {
+        chest: document.getElementById('rp-chest').textContent,
+        waist: document.getElementById('rp-waist').textContent,
+        hips: document.getElementById('rp-hips').textContent,
+        length: document.getElementById('rp-inseam').textContent
+      },
+      overall: document.getElementById('rov-score').textContent,
+      sub: document.getElementById('rov-sub').textContent,
+      size: (typeof selectedSize === 'function') ? selectedSize() : 'M',
+      rec: (p.dims && typeof recommendSize === 'function') ? recommendSize(p, MCM).size : null,
+      at: Date.now()
+    };
+    var arr = fitroomLoad();
+    arr.push(entry);
+    while (arr.length > FITROOM_CAP) arr.shift();
+    // Quota pressure: keep evicting oldest until the write fits or only
+    // the new entry remains; if even that fails, degrade silently.
+    var ok = fitroomStore(arr);
+    while (!ok && arr.length > 1) { arr.shift(); ok = fitroomStore(arr); }
+    if (ok) {
+      btn.textContent = 'SAVED ✓';
+      // Clear-then-set so the live region announces reliably (Sprint 41).
+      confirmEl.textContent = '';
+      setTimeout(function() { confirmEl.textContent = '✓ Saved to your fitting room below.'; }, 50);
+      fitroomRender();
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'SAVE TO MY FITTING ROOM';
+      confirmEl.textContent = '';
+      setTimeout(function() { confirmEl.textContent = 'Could not save on this device — storage is unavailable.'; }, 50);
+    }
+  });
+}
+
+function fitroomCardHTML(x, i) {
+  var when = '';
+  try { when = new Date(x.at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }); } catch (e) { /* cosmetic only */ }
+  var meta = [x.overall ? esc(x.overall) + ' fit' : '', x.size ? 'size ' + esc(x.size) : '', when].filter(Boolean).join(' · ');
+  return '<div class="fitroom-card">' +
+    '<button class="fitroom-thumb" type="button" onclick="fitroomOpen(' + i + ')" aria-label="Open saved try-on: ' + esc(x.product) + '">' +
+      '<img src="' + esc(x.img) + '" alt="" loading="lazy"><div class="tryon-watermark">trymirr.com</div>' +
+    '</button>' +
+    '<div class="fitroom-card-body">' +
+      '<div class="fitroom-card-name">' + esc(x.product) + '</div>' +
+      '<div class="fitroom-card-meta">' + meta + '</div>' +
+      '<div class="fitroom-card-actions">' +
+        '<button type="button" onclick="fitroomOpen(' + i + ')">OPEN</button>' +
+        '<button type="button" onclick="fitroomRemove(' + i + ')" aria-label="Remove ' + esc(x.product) + ' from fitting room">REMOVE</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function fitroomRender() {
+  var arr = fitroomLoad();
+  var sec = document.getElementById('fitroom');
+  if (arr.length === 0) { sec.style.display = 'none'; return; }
+  // Newest first in the grid; indexes map back through the reversal.
+  document.getElementById('fitroom-grid').innerHTML = arr.map(fitroomCardHTML).reverse().join('');
+  document.getElementById('fitroom-count').textContent = arr.length + ' OF ' + FITROOM_CAP + ' SAVED';
+  sec.style.display = 'block';
+}
+
+function fitroomRemove(i) {
+  var arr = fitroomLoad();
+  if (!arr[i]) return;
+  var name = arr[i].product;
+  arr.splice(i, 1);
+  fitroomStore(arr);
+  fitroomRender();
+  var live = document.getElementById('fitroom-live');
+  live.textContent = '';
+  setTimeout(function() { live.textContent = 'Removed ' + name + ' from your fitting room.'; }, 50);
+  // Keep keyboard users anchored: focus the section heading (or nothing
+  // left to anchor to if the section just emptied and hid).
+  var title = document.getElementById('fitroom-title');
+  if (arr.length > 0 && title) title.focus();
+}
+
+function fitroomOpen(i) {
+  var arr = fitroomLoad();
+  var x = arr[i];
+  if (!x) return;
+  _fitroomOpenIdx = i;
+  _fitroomLastFocus = document.activeElement;
+  document.getElementById('fitroom-overlay-img').src = x.img;
+  document.getElementById('fitroom-overlay-name').textContent = x.product;
+  var bits = [];
+  if (x.overall) bits.push('Overall fit ' + x.overall + ' in size ' + (x.size || '—'));
+  if (x.rec && x.rec !== x.size) bits.push('Recommended size: ' + x.rec);
+  if (x.sub) bits.push(x.sub);
+  var s = x.scores || {};
+  var detail = ['chest', 'waist', 'hips', 'length'].map(function(k) {
+    return (s[k] && s[k] !== '—' && s[k] !== 'N/A') ? k + ' ' + s[k] : null;
+  }).filter(Boolean).join(' · ');
+  if (detail) bits.push(detail);
+  document.getElementById('fitroom-overlay-meta').textContent = bits.join('. ');
+  var viewBtn = document.getElementById('fitroom-overlay-view');
+  var exists = PRODS.some(function(pp) { return pp.name === x.product; });
+  viewBtn.style.display = exists ? 'inline-block' : 'none';
+  document.getElementById('fitroom-overlay').style.display = 'flex';
+  document.getElementById('fitroom-overlay-x').focus();
+}
+
+function fitroomCloseOverlay() {
+  document.getElementById('fitroom-overlay').style.display = 'none';
+  _fitroomOpenIdx = -1;
+  if (_fitroomLastFocus && document.contains(_fitroomLastFocus)) _fitroomLastFocus.focus();
+  _fitroomLastFocus = null;
+}
+
+function fitroomViewProduct() {
+  var arr = fitroomLoad();
+  var x = arr[_fitroomOpenIdx];
+  fitroomCloseOverlay();
+  if (!x) return;
+  for (var i = 0; i < PRODS.length; i++) {
+    if (PRODS[i].name === x.product) { showDetail(i); return; }
+  }
+}
+
+document.getElementById('fitroom-overlay').addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { fitroomCloseOverlay(); return; }
+  if (e.key !== 'Tab') return;
+  // Contain Tab within the dialog (same pattern as the index mobile nav).
+  var items = [].filter.call(this.querySelectorAll('button'), function(b) { return b.offsetParent !== null; });
+  if (!items.length) return;
+  var first = items[0], last = items[items.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+
+// Hook in AFTER the result renders — reassignment, not modification, so the
+// try-on flow (including protected functions) runs exactly as before.
+var _fitroomShowReal = showRealResult;
+showRealResult = function(resultSrc) {
+  _fitroomShowReal(resultSrc);
+  var b = document.getElementById('fitroom-save');
+  b.style.display = 'inline-block';
+  b.disabled = false;
+  b.textContent = 'SAVE TO MY FITTING ROOM';
+  document.getElementById('fitroom-confirm').textContent = '';
+};
+var _fitroomShowFallback = showFallbackResult;
+showFallbackResult = function(hadError, errMsg, pixelCode) {
+  _fitroomShowFallback(hadError, errMsg, pixelCode);
+  // Fallback previews are not saveable — only real merged results are.
+  document.getElementById('fitroom-save').style.display = 'none';
+};
+
+fitroomRender();
 
 function dismissReturnPrompt() {
   document.getElementById('return-prompt').classList.remove('show');
