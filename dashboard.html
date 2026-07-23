@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="robots" content="noindex, nofollow">
+<title>Brand dashboard — Mirr</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-weight:300;line-height:1.6}
+@media(prefers-color-scheme:dark){html,body{background:var(--page)!important;color:var(--ink)!important}}
+
+nav{border-bottom:1px solid var(--line);padding:0 48px;background:var(--page)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{display:flex;align-items:baseline;text-decoration:none}
+.logo-word{font-family:var(--font-mono);font-size:20px;font-weight:500;letter-spacing:3px;color:var(--ink)}
+.logo-flip{display:inline-block;transform:scaleX(-1);color:var(--sky)}
+.nav-back{font-size:12px;color:var(--ink3);text-decoration:none}
+
+.page{max-width:760px;margin:0 auto;padding:40px 24px 80px}
+.eyebrow{font-size:10px;letter-spacing:.24em;color:var(--ink4);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:16px;height:.5px;background:var(--sky)}
+
+.dash-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.dash-title{font-family:var(--font-serif);font-size:clamp(26px,4vw,34px);font-weight:500;line-height:1.15}
+.vbadge{font-size:9px;letter-spacing:.14em;padding:3px 10px;border-radius:999px;color:var(--sky-text);background:var(--sky-bg);border:.5px solid var(--sky-brd);font-weight:500;white-space:nowrap}
+.dash-sub{font-size:13px;color:var(--ink3);margin-bottom:26px}
+
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.meta-card{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+.meta-label{font-size:9px;letter-spacing:.16em;color:var(--ink4);margin-bottom:6px}
+.meta-value{font-family:var(--font-serif);font-size:24px;font-weight:500;color:var(--ink);line-height:1.1}
+.meta-note{font-size:11px;color:var(--ink3);margin-top:4px}
+
+.founding-line{font-size:12px;color:var(--ink3);background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:8px;padding:11px 16px;margin-bottom:26px;display:none}
+.founding-line strong{color:var(--sky-text);font-weight:500}
+
+.section-label{font-size:10px;letter-spacing:.2em;color:var(--sky);margin:26px 0 10px}
+.pcard-list{background:var(--white);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.prow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line2);flex-wrap:wrap}
+.prow:last-child{border-bottom:none}
+.p-name{font-size:13px;color:var(--ink);font-weight:400}
+.p-cat{font-size:9px;letter-spacing:.14em;color:var(--ink4);margin-left:8px}
+.p-right{display:flex;align-items:center;gap:12px}
+.p-price{font-family:var(--font-mono);font-size:12px;color:var(--ink3)}
+.status-chip{font-size:9px;letter-spacing:.14em;padding:3px 10px;border-radius:999px;font-weight:500}
+.status-live{color:var(--brand);background:var(--brand-bg);border:.5px solid var(--brand-brd)}
+.status-submitted{color:var(--sky-text);background:var(--sky-bg);border:.5px solid var(--sky-brd)}
+.status-reviewing{color:var(--rose-dark);background:var(--rose-bg);border:.5px solid rgba(212,168,152,.35)}
+.plist-note{font-size:11px;color:var(--ink4);margin-top:8px}
+
+.analytics-panel{background:var(--white);border:1px dashed var(--line);border-radius:10px;padding:28px 24px;text-align:center;margin-top:26px}
+.analytics-title{font-family:var(--font-serif);font-size:18px;font-weight:500;margin-bottom:8px}
+.analytics-body{font-size:12px;color:var(--ink3);line-height:1.8;max-width:480px;margin:0 auto}
+.analytics-body a{color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)}
+
+.links-row{display:flex;gap:18px;flex-wrap:wrap;margin-top:26px;font-size:12px}
+.links-row a{color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3);padding-bottom:1px}
+
+.state-note{text-align:center;color:var(--ink3);font-size:14px;padding:48px 0;display:none}
+.state-note .brand-links{margin-top:14px;font-size:13px}
+.state-note .brand-links a{color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)}
+
+@media(max-width:640px){
+  nav{padding:0 20px}
+  .page{padding:32px 16px 60px}
+  .meta-grid{grid-template-columns:1fr}
+}
+/* Keyboard focus — visible outline for tab navigation (a11y) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<noscript><div style="max-width:680px;margin:24px auto;padding:14px 18px;background:var(--rose-bg);border:1px solid rgba(212,168,152,.35);border-radius:8px;font-size:13px;color:var(--rose-dark)">This dashboard requires JavaScript.</div></noscript>
+
+<div id="nav"><noscript><div style="padding:14px 24px;border-bottom:1px solid var(--line);font-size:13px"><a href="/" style="color:var(--sky-text);text-decoration:none">← Mirr home</a></div></noscript></div>
+<script src="/nav.js"></script>
+
+<div class="page">
+
+  <div id="dash-content" style="display:none">
+    <div class="eyebrow">BRAND DASHBOARD</div>
+    <div class="dash-head">
+      <h1 class="dash-title" id="d-name"></h1>
+      <span class="vbadge" id="d-verified" style="display:none">✓ VERIFIED</span>
+    </div>
+    <p class="dash-sub" id="d-tier-line"></p>
+
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="meta-label">PAYOUT RATE</div>
+        <div class="meta-value" id="d-payout"></div>
+        <div class="meta-note" id="d-rate-note"></div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">PRODUCTS LIVE</div>
+        <div class="meta-value" id="d-products"></div>
+        <div class="meta-note">on your Mirr storefront</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">TRY-ONS TO DATE</div>
+        <div class="meta-value" id="d-tryons"></div>
+        <div class="meta-note">across your listed products</div>
+      </div>
+    </div>
+
+    <div class="founding-line" id="d-founding"></div>
+
+    <div class="section-label">YOUR PRODUCTS</div>
+    <div class="pcard-list" id="d-plist"></div>
+    <p class="plist-note" id="d-pipeline-note" style="display:none"></p>
+
+    <div class="analytics-panel">
+      <div class="analytics-title">Sales analytics arrive with launch.</div>
+      <p class="analytics-body">Once Stripe payouts go live, this panel shows your real sales, orders, try-on-to-sale conversion, and earnings — never illustrative figures. Until then, the <a href="/dashboard-preview">example preview</a> shows what the full analytics view will look like.</p>
+    </div>
+
+    <div class="links-row">
+      <a id="d-storefront" href="/brand-demo">View your live storefront →</a>
+      <a href="/submit-products">Submit more products →</a>
+      <a href="/contact">Contact the Mirr team →</a>
+    </div>
+  </div>
+
+  <div class="state-note" id="unknown-note">
+    We could not find a brand with that link.
+    <div class="brand-links" id="known-brands"></div>
+  </div>
+  <div class="state-note" id="fail-note">Something went wrong loading your brand data — try again shortly, or <a href="/contact" style="color:var(--sky-text)">contact us</a>.</div>
+
+</div>
+
+<script src="/error-report.js"></script>
+<script>
+// Brand-typed text (names, categories, prices) is interpolated below —
+// escape everything before rendering, same discipline as submissions-review.
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+// Payout share follows the brand's commission tier — same rates as stated
+// site-wide (brand-demo, founding-brands); founding is the default.
+var TIER_RATES = { founding: 8, standard: 12, premium: 15 };
+var TIER_LABELS = { founding: 'Founding brand', standard: 'Standard brand', premium: 'Premium brand' };
+
+var slug = new URLSearchParams(location.search).get('brand') || 'apex-active';
+
+function statusChip(status) {
+  var s = String(status || '').toLowerCase();
+  var cls = s === 'live' ? 'status-live' : s === 'reviewing' ? 'status-reviewing' : 'status-submitted';
+  return '<span class="status-chip ' + cls + '">' + esc(s.toUpperCase() || 'SUBMITTED') + '</span>';
+}
+
+function productRow(name, cat, price, status) {
+  return '<div class="prow"><div><span class="p-name">' + esc(name) + '</span>' +
+    (cat ? '<span class="p-cat">' + esc(cat) + '</span>' : '') + '</div>' +
+    '<div class="p-right"><span class="p-price">' + esc(price || '') + '</span>' + statusChip(status) + '</div></div>';
+}
+
+function render(brand, subs, fc) {
+  document.getElementById('d-name').textContent = brand.name;
+  if (brand.verified) document.getElementById('d-verified').style.display = 'inline-block';
+
+  var tier = TIER_RATES[brand.tier] ? brand.tier : 'founding';
+  var rate = TIER_RATES[tier];
+  document.getElementById('d-tier-line').textContent =
+    (TIER_LABELS[tier] || tier) + ' — ' + rate + '% commission, no monthly fee.';
+  document.getElementById('d-payout').textContent = (100 - rate) + '%';
+  document.getElementById('d-rate-note').textContent = 'of every sale, at your ' + rate + '% ' + tier + ' rate';
+
+  var liveProducts = Array.isArray(brand.products) ? brand.products : [];
+  document.getElementById('d-products').textContent = liveProducts.length;
+  document.getElementById('d-tryons').textContent = (brand.tryons_count != null ? brand.tryons_count : '—');
+
+  // Founding-spot context — straight from founding-count.json, no invention.
+  if (fc && typeof fc.filled === 'number' && typeof fc.total === 'number') {
+    var el = document.getElementById('d-founding');
+    var base = '<strong>' + fc.filled + ' of ' + fc.total + '</strong> founding spots filled.';
+    el.innerHTML = tier === 'founding'
+      ? base + ' Your ' + rate + '% founding rate is locked for 12 months from your listing date.'
+      : base + ' The founding rate is ' + TIER_RATES.founding + '% while spots remain.';
+    el.style.display = 'block';
+  }
+
+  // Live products come from brands.json (they are on the storefront now);
+  // pipeline products come from this brand's submissions.json entries that
+  // are still submitted/reviewing and not yet listed under the same name.
+  var rows = liveProducts.map(function(p) {
+    return productRow(p.name, p.cat, p.price, 'live');
+  });
+  var liveNames = {};
+  liveProducts.forEach(function(p) { liveNames[String(p.name).toLowerCase()] = true; });
+  var pipelineCount = 0;
+  (Array.isArray(subs) ? subs : []).forEach(function(s) {
+    if (!s || String(s.brand_name || '').trim().toLowerCase() !== String(brand.name).trim().toLowerCase()) return;
+    var st = String(s.status || '').toLowerCase();
+    if (st !== 'submitted' && st !== 'reviewing') return;
+    (Array.isArray(s.products) ? s.products : []).forEach(function(p) {
+      if (!p || !p.name || liveNames[String(p.name).toLowerCase()]) return;
+      rows.push(productRow(p.name, p.category, p.price ? '$' + p.price : '', st));
+      pipelineCount++;
+    });
+  });
+  document.getElementById('d-plist').innerHTML = rows.join('');
+  if (pipelineCount > 0) {
+    var note = document.getElementById('d-pipeline-note');
+    note.textContent = pipelineCount + ' product' + (pipelineCount === 1 ? '' : 's') +
+      ' in the review pipeline — live within 3 business days of approval.';
+    note.style.display = 'block';
+  }
+
+  document.getElementById('d-storefront').href = '/brand-demo?brand=' + encodeURIComponent(slug);
+  document.title = brand.name + ' — Brand dashboard — Mirr';
+  document.getElementById('dash-content').style.display = 'block';
+}
+
+function showUnknown(brands) {
+  var links = Object.keys(brands || {}).map(function(s) {
+    return '<a href="/dashboard?brand=' + encodeURIComponent(s) + '">' + esc((brands[s] && brands[s].name) || s) + '</a>';
+  }).join(' · ');
+  if (links) document.getElementById('known-brands').innerHTML = 'Listed brands: ' + links;
+  document.getElementById('unknown-note').style.display = 'block';
+}
+
+// brands.json is required; submissions.json and founding-count.json are
+// enhancements — the dashboard still renders real storefront data without
+// them (Sprint 29 degradation pattern).
+var optional = function(url) {
+  return fetch(url, { cache: 'no-store' })
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .catch(function() { return null; });
+};
+
+Promise.all([
+  fetch('/brands.json', { cache: 'no-store' }).then(function(r) {
+    if (!r.ok) throw new Error('brands.json returned ' + r.status);
+    return r.json();
+  }),
+  optional('/submissions.json'),
+  optional('/founding-count.json')
+]).then(function(res) {
+  var brands = res[0];
+  if (!brands || typeof brands !== 'object') throw new Error('brands.json malformed');
+  if (!brands[slug]) { showUnknown(brands); return; }
+  render(brands[slug], res[1], res[2]);
+}).catch(function(e) {
+  document.getElementById('fail-note').style.display = 'block';
+  reportClientError('dashboard data load failed: ' + e.message, 'dashboard', 0);
+});
+</script>
+
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6fb28a3de5848c8837eaa3d8495d031"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
