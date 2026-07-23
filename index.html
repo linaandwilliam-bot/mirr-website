@@ -1183,7 +1183,7 @@ document.getElementById('nav-mobile-panel').addEventListener('keydown', function
   <h2 class="cta-h2"><span class="wordmark">MIR<span class="flip">R</span></span> it.<br><span class="sky">Sell more.</span></h2>
   <p class="cta-sub">Become a founding brand on Mirr. No monthly fee. No setup cost. 8% founding rate locked for 12 months.</p>
   <div class="cta-form">
-    <input type="email" class="cta-input" placeholder="your brand email" id="ei" aria-label="Your brand email">
+    <input type="email" class="cta-input" autocomplete="email" placeholder="your brand email" id="ei" aria-label="Your brand email">
     <button class="cta-btn" id="sub-btn" onclick="sub()">GET EARLY ACCESS</button>
   </div>
   <p class="cta-note" id="sn" aria-live="polite">We'll reach out within 3 business days to get your brand listed.</p>
@@ -1195,7 +1195,7 @@ document.getElementById('nav-mobile-panel').addEventListener('keydown', function
   <p class="wlist-sub">Mirr launches soon — leave your email and try on the first drops before anyone else.</p>
   <form class="wlist-form" id="wl-form" onsubmit="wlSubmit(event)">
     <input type="hidden" name="type" value="shopper-waitlist">
-    <input type="email" class="cta-input" name="email" id="wl-email" placeholder="your email" required aria-label="Your email address">
+    <input type="email" class="cta-input" name="email" id="wl-email" autocomplete="email" placeholder="your email" required aria-label="Your email address">
     <button class="cta-btn" id="wl-btn" type="submit">JOIN THE WAITLIST</button>
   </form>
   <p class="wlist-note" id="wl-note" role="alert"></p>
@@ -1212,7 +1212,7 @@ document.getElementById('nav-mobile-panel').addEventListener('keydown', function
     <p class="rwd-sub">A points program for purchases made through Mirr is in the works. Join early and you'll be first to start earning when it launches.</p>
     <form class="rwd-form" id="rwd-form" onsubmit="rwSubmit(event)">
       <input type="hidden" name="type" value="rewards-early-access">
-      <input type="email" class="cta-input" name="email" id="rwd-email" placeholder="your email" required aria-label="Your email address">
+      <input type="email" class="cta-input" name="email" id="rwd-email" autocomplete="email" placeholder="your email" required aria-label="Your email address">
       <button class="cta-btn" id="rwd-btn" type="submit">JOIN EARLY</button>
     </form>
     <p class="rwd-note" id="rwd-note" role="alert"></p>

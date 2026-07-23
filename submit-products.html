@@ -181,11 +181,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="strip-label">VERIFY YOUR BRAND</div>
       <div class="field-group">
         <label for="gate-email">Your brand email <span class="req">*</span></label>
-        <input type="email" id="gate-email" placeholder="you@yourbrand.com" required pattern="[^\s@]+@[^\s@]+\.[^\s@]+">
+        <input type="email" id="gate-email" autocomplete="email" placeholder="you@yourbrand.com" required pattern="[^\s@]+@[^\s@]+\.[^\s@]+">
       </div>
       <div class="field-group" style="margin-bottom:0">
         <label for="gate-code">Access code <span class="req">*</span></label>
-        <input type="text" id="gate-code" placeholder="From your welcome email" required pattern="[A-Za-z]{1,8}-[A-Za-z0-9]{4}" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')checkGate()">
+        <input type="text" id="gate-code" autocomplete="off" placeholder="From your welcome email" required pattern="[A-Za-z]{1,8}-[A-Za-z0-9]{4}" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')checkGate()">
       </div>
       <p class="field-err" id="gate-err" role="alert" style="display:none;margin-top:12px">That email and code don't match what we have on file. Double check your welcome email, or contact us if you're stuck.</p>
       <button class="submit-btn" id="gate-submit-btn" onclick="checkGate()" style="margin-top:18px">CONTINUE →</button>
@@ -231,12 +231,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="strip-fields">
         <div class="field-group" style="margin-bottom:0">
           <label for="brand-name">Brand name <span class="req">*</span></label>
-          <input type="text" id="brand-name" placeholder="e.g. Apex Active" required>
+          <input type="text" id="brand-name" autocomplete="organization" placeholder="e.g. Apex Active" required>
           <div class="field-err" id="err-brand-name">Required</div>
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="brand-email">Your email <span class="req">*</span></label>
-          <input type="email" id="brand-email" placeholder="you@yourbrand.com" required pattern="[^\s@]+@[^\s@]+\.[^\s@]+" readonly style="background:var(--paper);cursor:not-allowed">
+          <input type="email" id="brand-email" autocomplete="email" placeholder="you@yourbrand.com" required pattern="[^\s@]+@[^\s@]+\.[^\s@]+" readonly style="background:var(--paper);cursor:not-allowed">
           <div class="field-err" id="err-brand-email">Enter a valid email</div>
         </div>
       </div>
@@ -370,13 +370,13 @@ function addProduct() {
       <div class="field-row-2" style="margin-bottom:18px">
         <div class="field-group" style="margin-bottom:0">
           <label for="pname-${idx}">Product name <span class="req">*</span></label>
-          <input type="text" id="pname-${idx}" placeholder="e.g. Forest Compression Tee" required
+          <input type="text" id="pname-${idx}" autocomplete="off" placeholder="e.g. Forest Compression Tee" required
             oninput="document.getElementById('pname-display-${idx}').textContent=this.value||'Untitled product'">
           <div class="field-err" id="err-pname-${idx}">Required</div>
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="pcat-${idx}">Category <span class="req">*</span></label>
-          <select id="pcat-${idx}" required>
+          <select id="pcat-${idx}" autocomplete="off" required>
             <option value="" disabled selected>Select category</option>
             <option value="Tops">Tops</option>
             <option value="Bottoms">Bottoms</option>
@@ -395,16 +395,16 @@ function addProduct() {
       <div class="field-row-3" style="margin-bottom:18px">
         <div class="field-group" style="margin-bottom:0">
           <label for="pprice-${idx}">Price (AUD) <span class="req">*</span></label>
-          <input type="number" id="pprice-${idx}" placeholder="0.00" min="0" step="0.01" required>
+          <input type="number" id="pprice-${idx}" autocomplete="off" placeholder="0.00" min="0" step="0.01" required>
           <div class="field-err" id="err-pprice-${idx}">Enter a valid price (0 or more)</div>
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="psku-${idx}">SKU / Product code</label>
-          <input type="text" id="psku-${idx}" placeholder="Optional">
+          <input type="text" id="psku-${idx}" autocomplete="off" placeholder="Optional">
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="pmaterial-${idx}">Material</label>
-          <input type="text" id="pmaterial-${idx}" placeholder="e.g. 80% Polyester">
+          <input type="text" id="pmaterial-${idx}" autocomplete="off" placeholder="e.g. 80% Polyester">
         </div>
       </div>
 
@@ -452,19 +452,19 @@ function addProduct() {
       <div class="field-row-4" style="margin-bottom:8px">
         <div class="field-group" style="margin-bottom:0">
           <label for="dim-chest-${idx}">Chest (cm)</label>
-          <input type="number" id="dim-chest-${idx}" placeholder="e.g. 48" min="0">
+          <input type="number" id="dim-chest-${idx}" autocomplete="off" placeholder="e.g. 48" min="0">
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="dim-waist-${idx}">Waist (cm)</label>
-          <input type="number" id="dim-waist-${idx}" placeholder="e.g. 42" min="0">
+          <input type="number" id="dim-waist-${idx}" autocomplete="off" placeholder="e.g. 42" min="0">
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="dim-length-${idx}">Length (cm)</label>
-          <input type="number" id="dim-length-${idx}" placeholder="e.g. 70" min="0">
+          <input type="number" id="dim-length-${idx}" autocomplete="off" placeholder="e.g. 70" min="0">
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="dim-inseam-${idx}">Inseam (cm)</label>
-          <input type="number" id="dim-inseam-${idx}" placeholder="e.g. 80" min="0">
+          <input type="number" id="dim-inseam-${idx}" autocomplete="off" placeholder="e.g. 80" min="0">
         </div>
       </div>
       <p class="sizes-note" style="margin-bottom:18px">Inseam only required for bottoms. Leave blank if not applicable.</p>
@@ -482,7 +482,7 @@ function addProduct() {
       <div class="divider"></div>
       <div class="field-group" style="margin-bottom:0">
         <label for="pdesc-${idx}">Product description <span class="req">*</span></label>
-        <textarea id="pdesc-${idx}" placeholder="Brief description for customers — fabric, fit, key features..." rows="3" required></textarea>
+        <textarea id="pdesc-${idx}" autocomplete="off" placeholder="Brief description for customers — fabric, fit, key features..." rows="3" required></textarea>
         <div class="field-err" id="err-pdesc-${idx}">Required</div>
       </div>
 
