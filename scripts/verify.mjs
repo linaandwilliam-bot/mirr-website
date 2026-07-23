@@ -79,6 +79,36 @@ for (const f of htmlFiles) {
   if (beaconCount !== 1) fail(`${f}: Cloudflare Analytics beacon appears ${beaconCount} times (expected exactly 1)`);
 }
 
+// ── Page titles: exactly one per page, unique site-wide, branded on public pages ──
+// brand-demo.html's title is also set dynamically per-brand at runtime; the
+// static fallback ("Apex Active — on Mirr") is what this guard checks.
+// Internal tools are deliberately titled "— internal" without the brand name.
+const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']);
+{
+  const titleOwners = new Map();
+  for (const f of htmlFiles) {
+    const html = read(f);
+    const titles = [...html.matchAll(/<title>([\s\S]*?)<\/title>/gi)].map((m) => m[1].trim());
+    if (titles.length !== 1) {
+      fail(`${f}: expected exactly one <title>, found ${titles.length}`);
+      continue;
+    }
+    const title = titles[0];
+    if (!title) {
+      fail(`${f}: <title> is empty`);
+      continue;
+    }
+    if (titleOwners.has(title)) {
+      fail(`${f}: <title> "${title}" duplicates ${titleOwners.get(title)}`);
+    } else {
+      titleOwners.set(title, f);
+    }
+    if (!TITLE_BRAND_EXEMPT.has(f) && !title.includes('Mirr')) {
+      fail(`${f}: public page <title> "${title}" does not contain "Mirr"`);
+    }
+  }
+}
+
 // ── brand-demo.html try-on flow regression guard ──
 {
   const bd = read('brand-demo.html');
