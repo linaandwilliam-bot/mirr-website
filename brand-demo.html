@@ -1421,15 +1421,17 @@ function computeFit(product, mcm, sizeLabel) {
 // recommending XS when M fits equally well is bad advice).
 function recommendSize(product, mcm) {
   var sampleIdx = SIZE_STEPS.indexOf(product.sample_size || 'M');
-  var best = null;
+  var results = [];
   for (var i = 0; i < SIZE_STEPS.length; i++) {
-    var r = computeFit(product, mcm, SIZE_STEPS[i]);
-    var dist = Math.abs(i - sampleIdx);
-    if (!best || r.overall > best.overall || (r.overall === best.overall && dist < best.dist)) {
-      best = { size: SIZE_STEPS[i], overall: r.overall, dist: dist };
-    }
+    results.push({ size: SIZE_STEPS[i], overall: computeFit(product, mcm, SIZE_STEPS[i]).overall, dist: Math.abs(i - sampleIdx) });
   }
-  return { size: best.size, overall: best.overall };
+  var top = 0;
+  for (var j = 0; j < results.length; j++) { if (results[j].overall > top) top = results[j].overall; }
+  // Near-ties (within 3 points of the best) resolve toward the garment's
+  // sample cut — don't send a usual-M shopper to XS over a 2-point model edge.
+  var cand = results.filter(function (r) { return r.overall >= top - 3; });
+  cand.sort(function (a, b) { return a.dist - b.dist || b.overall - a.overall; });
+  return { size: cand[0].size, overall: cand[0].overall };
 }
 // ── end fit engine ─────────────────────────────────────────────────────
 
