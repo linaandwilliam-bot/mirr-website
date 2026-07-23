@@ -33,6 +33,13 @@
           "inseam": 96
         },
         "tryon_cat": "upperbody",
+        "dims": {
+          "chest": 47,
+          "waist": 44,
+          "length": 71
+        },
+        "fit": "compression",
+        "sample_size": "M",
         "badge": "BESTSELLER",
         "badge_class": "b-best",
         "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80&fit=crop",
@@ -52,6 +59,13 @@
           "inseam": 91
         },
         "tryon_cat": "lowerbody",
+        "dims": {
+          "waist": 40,
+          "hips": 52,
+          "inseam": 18
+        },
+        "fit": "fitted",
+        "sample_size": "M",
         "badge": "NEW",
         "badge_class": "b-new",
         "image": "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&q=80&fit=crop",
@@ -71,6 +85,13 @@
           "inseam": 88
         },
         "tryon_cat": "upperbody",
+        "dims": {
+          "chest": 58,
+          "waist": 56,
+          "length": 74
+        },
+        "fit": "relaxed",
+        "sample_size": "M",
         "badge": "SALE",
         "badge_class": "b-sale",
         "image": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80&fit=crop",

@@ -203,6 +203,9 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
 // checks catch a malformed entry before it ships, naming the entry and field.
 {
   const VALID_TIERS = ['founding', 'standard', 'premium'];
+  const VALID_DIM_KEYS = ['chest', 'waist', 'hips', 'length', 'inseam'];
+  const VALID_FITS = ['compression', 'fitted', 'regular', 'relaxed'];
+  const VALID_SAMPLE_SIZES = ['XS', 'S', 'M', 'L', 'XL'];
   try {
     const brands = JSON.parse(read('brands.json'));
     for (const [slug, b] of Object.entries(brands)) {
@@ -212,6 +215,28 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
         fail(`brands.json: "${slug}" needs a non-empty products array`);
       } else if (!b.products.some((p) => p && p.name && p.price)) {
         fail(`brands.json: "${slug}" needs at least one product with both name and price`);
+      }
+      // Fit-engine fields (Sprint 50) — all optional, but must be well-formed
+      // when present: the engine trusts these numbers without re-validating.
+      for (const p of Array.isArray(b.products) ? b.products : []) {
+        if (!p) continue;
+        const label = `brands.json: "${slug}" product "${p.name || '(unnamed)'}"`;
+        if (p.dims != null) {
+          if (typeof p.dims !== 'object' || Array.isArray(p.dims)) {
+            fail(`${label} dims must be an object of cm measurements`);
+          } else {
+            for (const [k, v] of Object.entries(p.dims)) {
+              if (!VALID_DIM_KEYS.includes(k)) fail(`${label} dims key "${k}" must be one of ${VALID_DIM_KEYS.join('/')}`);
+              if (!Number.isFinite(v) || v < 10 || v > 200) fail(`${label} dims.${k} must be a finite number between 10 and 200 (got ${JSON.stringify(v)})`);
+            }
+          }
+        }
+        if (p.fit != null && !VALID_FITS.includes(p.fit)) {
+          fail(`${label} fit must be one of ${VALID_FITS.join('/')} (got ${JSON.stringify(p.fit)})`);
+        }
+        if (p.sample_size != null && !VALID_SAMPLE_SIZES.includes(p.sample_size)) {
+          fail(`${label} sample_size must be one of ${VALID_SAMPLE_SIZES.join('/')} (got ${JSON.stringify(p.sample_size)})`);
+        }
       }
     }
   } catch { /* parse failure already reported by the earlier brands.json check */ }

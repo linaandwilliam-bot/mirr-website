@@ -786,7 +786,7 @@ async function initBrand() {
   currentBrand = brand;
 
   PRODS = brand.products.map(function(p) {
-    return { cat: p.cat, name: p.name, price: p.price, old: p.old, desc: p.desc, scores: p.scores, tryon_cat: p.tryon_cat, image: p.image, buy_url: p.buy_url };
+    return { cat: p.cat, name: p.name, price: p.price, old: p.old, desc: p.desc, scores: p.scores, tryon_cat: p.tryon_cat, image: p.image, buy_url: p.buy_url, dims: p.dims, fit: p.fit, sample_size: p.sample_size };
   });
   REAL_IMGS = brand.products.map(function(p) { return p.image; });
   SVG_IMGS = brand.products.map(function(p) { return p.fallback_svg; });
@@ -1364,7 +1364,131 @@ function showFallbackResult(hadError, errMsg, pixelCode) {
 }
 
 
+// ── Sprint 50: real fit engine ─────────────────────────────────────────
+// Ease bands (cm of circumference ease = garment circ − body circ).
+var FIT_EASE = {
+  compression: { min: -8,  max: 0  },
+  fitted:      { min: 2,   max: 8  },
+  regular:     { min: 6,   max: 14 },
+  relaxed:     { min: 12,  max: 24 }
+};
+var SIZE_STEPS = ['XS', 'S', 'M', 'L', 'XL'];
+var GRADE = { chest: 2, waist: 2, hips: 2, length: 1.5, inseam: 0.5 };
+
+function scoreCirc(flatCm, bodyCm, fit) {
+  var band = FIT_EASE[fit] || FIT_EASE.regular;
+  var ease = flatCm * 2 - bodyCm;
+  var off = ease < band.min ? band.min - ease : ease > band.max ? ease - band.max : 0;
+  var rate = ease < band.min ? 3.5 : 2; // too tight is worse than too loose
+  return Math.max(40, Math.round(97 - off * rate));
+}
+
+// Intentionally-short garments (shorts, crop tops, bras) are a style choice,
+// not a fit failure — below thresholds length is NOT scored (row shows N/A).
+function scoreLength(garmentCm, heightCm, kind) {
+  if (kind === 'inseam' ? garmentCm < 60 : garmentCm < 55) return null;
+  var ideal = heightCm * (kind === 'inseam' ? 0.45 : 0.40);
+  var off = Math.max(0, Math.abs(garmentCm - ideal) - 5);
+  return Math.max(40, Math.round(97 - off * 2));
+}
+
+function gradeDims(dims, steps) {
+  var out = {};
+  for (var k in dims) out[k] = dims[k] + (GRADE[k] || 0) * steps;
+  return out;
+}
+
+function computeFit(product, mcm, sizeLabel) {
+  var fit = product.fit || 'regular';
+  var sample = product.sample_size || 'M';
+  var steps = SIZE_STEPS.indexOf(sizeLabel) - SIZE_STEPS.indexOf(sample);
+  var d = gradeDims(product.dims, steps);
+  var isBottom = product.tryon_cat === 'lowerbody';
+  var s = {}, tot = 0, cnt = 0;
+  if (d.chest != null && !isBottom) { s.chest = scoreCirc(d.chest, mcm.chest, fit); }
+  if (d.waist != null) { s.waist = scoreCirc(d.waist, mcm.waist, isBottom ? (product.fit || 'fitted') : fit); }
+  if (d.hips != null) { s.hips = scoreCirc(d.hips, mcm.hips, fit); }
+  var lengthDim = isBottom ? d.inseam : d.length;
+  if (lengthDim != null) {
+    var ls = scoreLength(lengthDim, mcm.height, isBottom ? 'inseam' : 'length');
+    if (ls != null) s.inseam = ls;
+  }
+  for (var k in s) { tot += s[k]; cnt++; }
+  return { scores: s, overall: cnt ? Math.round(tot / cnt) : 0 };
+}
+
+// Ties break toward the sample size (a relaxed jacket can tie across XS–L;
+// recommending XS when M fits equally well is bad advice).
+function recommendSize(product, mcm) {
+  var sampleIdx = SIZE_STEPS.indexOf(product.sample_size || 'M');
+  var best = null;
+  for (var i = 0; i < SIZE_STEPS.length; i++) {
+    var r = computeFit(product, mcm, SIZE_STEPS[i]);
+    var dist = Math.abs(i - sampleIdx);
+    if (!best || r.overall > best.overall || (r.overall === best.overall && dist < best.dist)) {
+      best = { size: SIZE_STEPS[i], overall: r.overall, dist: dist };
+    }
+  }
+  return { size: best.size, overall: best.overall };
+}
+// ── end fit engine ─────────────────────────────────────────────────────
+
+function selectedSize() {
+  var on = document.querySelector('.sbtn.on');
+  return on ? on.textContent.trim() : (PRODS[curProd].sample_size || 'M');
+}
+
 function calcFit() {
+  var p = PRODS[curProd];
+  if (p.dims) { calcFitReal(p); } else { calcFitLegacy(); }
+}
+
+function calcFitReal(p) {
+  var size = selectedSize();
+  var r = computeFit(p, MCM, size);
+  var rec = recommendSize(p, MCM);
+  ['chest','waist','hips','inseam'].forEach(function(d) {
+    var pe = document.getElementById('rp-' + d);
+    var be = document.getElementById('rb-' + d);
+    var v = r.scores[d];
+    if (v != null) {
+      setTimeout(function() {
+        pe.textContent = v + '%';
+        be.style.width = v + '%';
+        be.classList.toggle('g', v >= 90);
+      }, 200);
+    } else {
+      pe.textContent = 'N/A';
+      be.style.width = '0';
+    }
+  });
+  document.getElementById('rov-sub').textContent =
+    'Measured against this garment in size ' + size;
+  setTimeout(function() {
+    document.getElementById('rov-score').textContent = r.overall + '%';
+    document.getElementById('rverd').style.display = 'block';
+    var t = document.getElementById('rv-t'), b = document.getElementById('rv-b');
+    var recLine = (rec.size === size)
+      ? ' Size ' + size + ' is your best fit for this garment.'
+      : ' Your best size for this garment: ' + rec.size + ' (' + rec.overall + '% match).';
+    if (r.overall >= 90) {
+      t.textContent = '✓ Excellent fit for your body';
+      b.textContent = 'Scored against this garment’s measured dimensions.' + recLine;
+    } else if (r.overall >= 80) {
+      t.textContent = '✓ Good fit — minor variations';
+      b.textContent = 'Fits well overall — check individual scores above.' + recLine;
+    } else if (rec.overall >= 80 && rec.size !== size) {
+      t.textContent = '⚠ Try size ' + rec.size + ' instead';
+      b.textContent = 'Size ' + size + ' scores ' + r.overall + '% for your measurements, but size ' + rec.size + ' scores ' + rec.overall + '%.';
+    } else {
+      t.textContent = '⚠ This cut may not suit your measurements';
+      b.textContent = 'Even its best size (' + rec.size + ') scores ' + rec.overall + '% — the honest answer is another garment may fit better.';
+    }
+  }, 400);
+}
+
+function calcFitLegacy() {
+  document.getElementById('rov-sub').textContent = 'Estimated — this brand hasn’t submitted measured dimensions yet';
   const sc = PRODS[curProd].scores;
   // Standard measurements this garment is designed around (size S/M baseline)
   const baseline = {chest: 92, waist: 78, hips: 96, inseam: 80};
@@ -1410,6 +1534,8 @@ function selSz(btn) {
   if (btn.classList.contains('sold')) return;
   document.querySelectorAll('.sbtn').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
+  var rs = document.getElementById('result-state');
+  if (rs && rs.style.display === 'block' && PRODS[curProd] && PRODS[curProd].dims) calcFit();
 }
 
 function filterP(cat, pill) {
