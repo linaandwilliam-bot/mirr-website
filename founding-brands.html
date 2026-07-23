@@ -143,6 +143,46 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   }
 }
 </script>
+<!-- FAQPage block must stay AFTER the Offer block: the spot-count script
+     updates the first ld+json element on the page and expects the Offer. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does 8% commission actually mean for my business?",
+      "acceptedAnswer": { "@type": "Answer", "text": "For every sale that comes through Mirr, we take 8¢ in the dollar — you keep 92¢. There are no monthly platform fees, no setup costs, and no charges for virtual try-ons. Mirr only earns when you do." }
+    },
+    {
+      "@type": "Question",
+      "name": "How does the virtual try-on work for my products?",
+      "acceptedAnswer": { "@type": "Answer", "text": "You upload photos of your garments. When a shopper visits your listing, they upload a photo of themselves and our AI composites the garment onto their body in about a minute. The shopper sees themselves wearing your piece before they buy. We handle all the AI infrastructure." }
+    },
+    {
+      "@type": "Question",
+      "name": "What do you need from me to get started?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Product photos (front-facing, plain background), pricing, and a short brand description. We’ll walk you through the product upload process after you submit — it usually takes less than an hour to get your first products live." }
+    },
+    {
+      "@type": "Question",
+      "name": "When and how do I get paid?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Payouts go directly to your bank account via Stripe. We’re finalising the payment schedule now — founding brands will be the first to know, and will have direct input on what works for them." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I leave if it’s not working?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. There’s no lock-in contract and no exit fee. The 12-month founding rate is a benefit, not a commitment — you can pause or close your listing at any time." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Mirr only for Australian brands?",
+      "acceptedAnswer": { "@type": "Answer", "text": "For now, yes — we’re launching with Australian DTC brands and Australian shoppers. Once we’ve proven the model locally, we’ll expand. Founding brands will be front-of-queue as we open new markets." }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 

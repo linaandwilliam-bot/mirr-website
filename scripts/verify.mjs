@@ -243,6 +243,38 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   }
 }
 
+// ── FAQPage JSON-LD ↔ visible copy consistency ──
+// Schema copy must never drift from on-page copy (same invariant class as
+// the business-day promises): every FAQPage question must appear verbatim
+// in the page's visible HTML. Script blocks are stripped before searching
+// so the JSON-LD itself can't satisfy the check.
+{
+  for (const f of htmlFiles) {
+    const html = read(f);
+    const visible = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+    for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi)) {
+      if (!m[1].includes('FAQPage')) continue;
+      let ld;
+      try {
+        ld = JSON.parse(m[1]);
+      } catch (e) {
+        fail(`${f}: FAQPage JSON-LD block is not valid JSON — ${e.message}`);
+        continue;
+      }
+      if (ld['@type'] !== 'FAQPage') continue;
+      const entities = Array.isArray(ld.mainEntity) ? ld.mainEntity : [];
+      if (entities.length === 0) fail(`${f}: FAQPage JSON-LD has an empty mainEntity`);
+      for (const q of entities) {
+        if (!q || !q.name) {
+          fail(`${f}: FAQPage mainEntity entry is missing its question name`);
+        } else if (!visible.includes(q.name)) {
+          fail(`${f}: FAQPage question does not appear verbatim in visible page copy: "${q.name}"`);
+        }
+      }
+    }
+  }
+}
+
 // ── Inline <script> blocks must parse: node --check on each extracted block ──
 // Catches JS syntax errors (e.g. an unescaped apostrophe breaking a string)
 // that would silently kill a page's entire script at runtime. Skips JSON-LD
