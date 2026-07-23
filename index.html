@@ -615,6 +615,18 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 
 /* Keyboard focus — visible outline for tab navigation (a11y) */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+
+/* Reduced motion — honor the OS preference (WCAG 2.3.3). Additive overrides
+   only: decorative animation stops in its resting (visible) state,
+   scroll-reveals render immediately, and the hero-demo's simulated loading
+   still reads through its step list and bar without spin or fade. */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .mirror-dot,.live-dot,.hero-demo-live-dot,.marquee-inner,
+  .hd-state,.hd-spinner,.hd-proc-step.active .hd-proc-dot{animation:none}
+  .rv,.rvl{opacity:1;transform:none;transition:none}
+  .hero-fit-fill,.hd-upload-fill{transition:none}
+}
 </style>
 <noscript><style>.rv,.rvl{opacity:1;transform:none}</style></noscript>
 <script type="application/ld+json">

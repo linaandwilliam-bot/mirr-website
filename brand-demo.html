@@ -425,6 +425,17 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
      gets real height instead. */
   .utbtn{padding-top:15px;padding-bottom:15px}
 }
+
+/* Reduced motion — honor the OS preference (WCAG 2.3.3). Additive overrides
+   only. The try-on loading state stays fully communicated without the spin:
+   the progress bar still fills (in instant steps), the timer counts down,
+   and the status message updates — status information beats motion purity. */
+@media (prefers-reduced-motion: reduce){
+  .chdot,.proc-spinner,.proc-step.active .ps-dot{animation:none}
+  .pimg-wrap img{transition:none}
+  .pcard:hover .pimg-wrap img{transform:none}
+  .rsbf,.proc-bar{transition:none}
+}
 </style>
 </head>
 <body>
