@@ -47,5 +47,8 @@ The authoritative submission pipeline is the deployed Catalog Worker (`mirr-cata
 
 **Caution for verification work:** do not casually POST real test data to the Worker's `/submit` during checks — every successful call creates a real commit on `main` that needs manual cleanup. Prefer probing with invalid/malformed payloads, which correctly fail validation without writing anything. If a full end-to-end write test is genuinely needed, clean up the resulting `submissions.json` entry in the same session.
 
+### Promoting a submission into brands.json
+`node scripts/promote-submission.mjs <submission-ref>` scaffolds/updates the brand's entry in `brands.json` from a `submissions.json` entry, mapping submitted flat-lay dims into the fit-engine format (`dims`/`sample_size`; `fit` is left for human judgment). The default run is a dry run that prints the proposed diff and review notes — add `--write` to apply, `--force` to overwrite an existing product. It validates against the same schema rules `verify.mjs` enforces and refuses to write anything invalid. It never touches `submissions.json` — flip the submission's status to `live` by hand (a permitted manual edit of Worker-managed data, per the review-page convention). Review the printed notes before going live: `buy_url` is always missing from submissions, and submitted dims measure the smallest stocked size while `sample_size` is set to the range's middle.
+
 ### Custom domain
 `CNAME` pins the Pages deployment to `www.trymirr.com`; `sitemap.xml` and `robots.txt` reference the same host — keep them in sync if the domain or route list changes.
