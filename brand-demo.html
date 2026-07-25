@@ -670,6 +670,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <!-- SAVE TO FITTING ROOM (Sprint 53) — revealed only for real results -->
           <div class="fitroom-save-row">
             <button class="fitroom-save-btn" id="fitroom-save" type="button" style="display:none" onclick="fitroomSave()">SAVE TO MY FITTING ROOM</button>
+            <button class="fitroom-save-btn" id="look-dl" type="button" style="display:none" onclick="downloadLook()">DOWNLOAD MY LOOK</button>
             <span class="fitroom-confirm" id="fitroom-confirm" role="status" aria-live="polite"></span>
           </div>
 
@@ -1817,16 +1818,22 @@ function fitroomShrink(dataUrl, cb) {
   } catch (e) { cb(dataUrl); }
 }
 
-function fitroomCapture(src, cb) {
-  if (/^data:/.test(src)) { fitroomShrink(src, cb); return; }
-  // Remote result URL (PixelAPI output is ephemeral) — pull it into a
-  // data URL now so the saved look survives the remote purge.
+// Pull a result src into a data URL (remote PixelAPI output is ephemeral —
+// and a same-origin data URL keeps later canvas work taint-free). Shared by
+// the fitting-room save (which then shrinks for storage quota) and the
+// look download (which wants full resolution).
+function fitroomToData(src, cb) {
+  if (/^data:/.test(src)) { cb(src); return; }
   fetch(src).then(function(r) { return r.blob(); }).then(function(b) {
     var fr = new FileReader();
-    fr.onload = function() { fitroomShrink(String(fr.result), cb); };
+    fr.onload = function() { cb(String(fr.result)); };
     fr.onerror = function() { cb(src); };
     fr.readAsDataURL(b);
   }).catch(function() { cb(src); });
+}
+
+function fitroomCapture(src, cb) {
+  fitroomToData(src, function(u) { fitroomShrink(u, cb); });
 }
 
 function fitroomSave() {
@@ -1981,14 +1988,137 @@ showRealResult = function(resultSrc) {
   b.style.display = 'inline-block';
   b.disabled = false;
   b.textContent = 'SAVE TO MY FITTING ROOM';
+  var dl = document.getElementById('look-dl');
+  dl.style.display = 'inline-block';
+  dl.disabled = false;
+  dl.textContent = 'DOWNLOAD MY LOOK';
   document.getElementById('fitroom-confirm').textContent = '';
 };
 var _fitroomShowFallback = showFallbackResult;
 showFallbackResult = function(hadError, errMsg, pixelCode) {
   _fitroomShowFallback(hadError, errMsg, pixelCode);
-  // Fallback previews are not saveable — only real merged results are.
+  // Fallback previews are not saveable or downloadable — only real merged
+  // results are.
   document.getElementById('fitroom-save').style.display = 'none';
+  document.getElementById('look-dl').style.display = 'none';
 };
+
+// ── DOWNLOAD MY LOOK (Sprint 57) ──
+// Canvas-composites the result with a baked-in watermark (MIRR wordmark +
+// trymirr.com, matching the .tryon-watermark overlay's look) and a footer
+// strip carrying product name, overall fit and best size, then downloads
+// as JPEG. The on-screen overlay watermark is untouched — baking applies
+// to the exported file only. Reuses the fitting-room capture path
+// (fitroomToData) so remote result URLs become data URLs first — but not
+// its storage shrink: the download keeps full resolution up to the 900px
+// canvas cap. If the canvas taints or capture fails, degrades to
+// downloading the un-composited image rather than failing.
+function buildLookExport(done) {
+  var p = PRODS[curProd] || {};
+  var fallbackName = 'mirr-look-' + String(p.name || 'try-on').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') + '.jpg';
+  fitroomToData(document.getElementById('r-img').src, function(src) {
+    var im = new Image();
+    im.onload = function() {
+      try {
+        var w = im.naturalWidth || 600, h = im.naturalHeight || 800;
+        var scale = Math.min(1, 900 / w);
+        w = Math.round(w * scale); h = Math.round(h * scale);
+        var strip = Math.max(46, Math.round(h * 0.075));
+        var c = document.createElement('canvas');
+        c.width = w; c.height = h + strip;
+        var ctx = c.getContext('2d');
+        ctx.drawImage(im, 0, 0, w, h);
+
+        // Watermark pill — same look as the .tryon-watermark overlay
+        // (sky at .92 opacity, white mono text), MIRR wordmark with the
+        // flipped final R plus trymirr.com, bottom-right of the image.
+        var wmFont = Math.max(11, Math.round(w * 0.02));
+        ctx.font = '500 ' + wmFont + 'px "DM Mono", monospace';
+        ctx.textBaseline = 'middle';
+        var pre = 'MIR', post = ' · trymirr.com';
+        var wPre = ctx.measureText(pre).width;
+        var wR = ctx.measureText('R').width;
+        var wPost = ctx.measureText(post).width;
+        var padX = Math.round(wmFont * 0.7), padY = Math.round(wmFont * 0.45);
+        var pillW = wPre + wR + wPost + padX * 2;
+        var pillH = wmFont + padY * 2;
+        var pillX = w - pillW - 10, pillY = h - pillH - 10;
+        ctx.fillStyle = 'rgba(123,174,200,.92)';
+        if (ctx.roundRect) {
+          ctx.beginPath();
+          ctx.roundRect(pillX, pillY, pillW, pillH, pillH / 2);
+          ctx.fill();
+        } else {
+          ctx.fillRect(pillX, pillY, pillW, pillH);
+        }
+        ctx.fillStyle = '#FFFFFF';
+        var tx = pillX + padX, ty = pillY + pillH / 2;
+        ctx.fillText(pre, tx, ty);
+        ctx.save();
+        ctx.translate(tx + wPre + wR, ty);
+        ctx.scale(-1, 1);
+        ctx.fillText('R', 0, 0);
+        ctx.restore();
+        ctx.fillText(post, tx + wPre + wR, ty);
+
+        // Footer strip: product name left, fit summary right.
+        ctx.fillStyle = '#FAF9F7';
+        ctx.fillRect(0, h, w, strip);
+        var ftFont = Math.max(12, Math.round(strip * 0.3));
+        var fy = h + strip / 2;
+        var fitBits = [];
+        var overall = document.getElementById('rov-score').textContent;
+        if (/\d/.test(overall)) fitBits.push('Fit ' + overall);
+        var best = p.dims ? recommendSize(p, MCM).size : selectedSize();
+        if (best) fitBits.push('Best size ' + best);
+        var right = fitBits.join(' · ');
+        ctx.font = '500 ' + ftFont + 'px "DM Mono", monospace';
+        var wRight = right ? ctx.measureText(right).width : 0;
+        if (right) {
+          ctx.fillStyle = '#48738C';
+          ctx.fillText(right, w - wRight - 14, fy);
+        }
+        ctx.font = ftFont + 'px Inter, sans-serif';
+        ctx.fillStyle = '#1A1A1A';
+        var name = String(p.name || '');
+        var avail = w - wRight - 42;
+        while (name.length > 1 && ctx.measureText(name).width > avail) {
+          name = name.slice(0, -2).replace(/\s+$/, '') + '…';
+        }
+        ctx.fillText(name, 14, fy);
+
+        done({ url: c.toDataURL('image/jpeg', 0.9), name: fallbackName, composited: true });
+      } catch (e) {
+        // Tainted canvas or any draw failure — un-composited original.
+        done({ url: src, name: fallbackName, composited: false });
+      }
+    };
+    im.onerror = function() { done({ url: src, name: fallbackName, composited: false }); };
+    im.src = src;
+  });
+}
+
+function downloadLook() {
+  var btn = document.getElementById('look-dl');
+  var confirmEl = document.getElementById('fitroom-confirm');
+  btn.disabled = true;
+  btn.textContent = 'PREPARING...';
+  buildLookExport(function(exp) {
+    var a = document.createElement('a');
+    a.href = exp.url;
+    a.download = exp.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    btn.disabled = false;
+    btn.textContent = 'DOWNLOAD MY LOOK';
+    // Clear-then-set so the live region announces reliably (Sprint 41).
+    confirmEl.textContent = '';
+    setTimeout(function() {
+      confirmEl.textContent = exp.composited ? 'Downloaded ✓' : 'Downloaded ✓ (original image — the watermark could not be added)';
+    }, 50);
+  });
+}
 
 fitroomRender();
 
