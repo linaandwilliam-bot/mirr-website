@@ -300,6 +300,20 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   }
 }
 
+// ── Sprint 55: dashboard + fitting-room invariants ──
+// dashboard.html renders brand-typed data and must stay unindexed, escaped,
+// and honest about analytics; brand-demo's fitting room must keep its
+// storage anchors (key + cap) so the localStorage contract never drifts.
+{
+  const d = read('dashboard.html');
+  if (!/<meta name="robots" content="noindex/.test(d)) fail('dashboard.html: noindex robots meta is missing');
+  if (!d.includes('function esc(')) fail('dashboard.html: esc( definition is missing (brand-typed data must be escaped)');
+  if (!d.includes('arrive with launch')) fail('dashboard.html: the "arrive with launch" analytics honesty line is missing');
+  const bd = read('brand-demo.html');
+  if (!bd.includes('FITROOM_KEY')) fail('brand-demo.html: fitting-room storage anchor FITROOM_KEY is missing');
+  if (!bd.includes('FITROOM_CAP')) fail('brand-demo.html: fitting-room cap constant FITROOM_CAP is missing');
+}
+
 // ── Inline <script> blocks must parse: node --check on each extracted block ──
 // Catches JS syntax errors (e.g. an unescaped apostrophe breaking a string)
 // that would silently kill a page's entire script at runtime. Skips JSON-LD
