@@ -427,6 +427,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .utbtn{padding-top:15px;padding-bottom:15px}
 }
 
+/* ── Remembered measurements (Sprint 56) ── */
+.msaved{display:none;align-items:center;gap:10px;flex-wrap:wrap;background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:6px;padding:8px 12px;margin:10px 0 2px;font-size:11px;color:var(--sky-text)}
+.msaved-clear{background:none;border:none;padding:0;font-family:var(--font-sans);font-size:11px;color:var(--sky-text);text-decoration:underline;cursor:pointer}
+.msaved-x{background:none;border:none;font-size:14px;color:var(--ink4);cursor:pointer;padding:0 2px;margin-left:auto;line-height:1}
+.msaved-live{position:absolute;left:-9999px}
+
 /* ── My fitting room (Sprint 53) ── */
 .fitroom-save-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 4px}
 .fitroom-save-btn{background:var(--white);border:1px solid var(--sky);color:var(--sky-text);padding:10px 16px;font-family:var(--font-sans);font-size:10px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px;transition:background .2s}
@@ -592,7 +598,16 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <button class="utbtn" id="btn-in" onclick="setUnit('in')">IN — imperial</button>
         </div>
         <div class="unote" id="unote">Centimetres — AU, EU, UK, Asia</div>
-        <div class="svdnote">💾 Saved to your Mirr profile — used across every brand.</div>
+        <div class="svdnote">💾 Remembered on this device — used across every brand on Mirr.</div>
+        <!-- Saved measurements never leave the browser: they live in
+             localStorage on this device only, same privacy model as the
+             fitting room. No account, no server, no cross-device sync. -->
+        <div class="msaved" id="msaved" style="display:none">
+          <span>Using your saved measurements — edit anytime.</span>
+          <button class="msaved-clear" id="msaved-clear" type="button" onclick="clearSavedMeasurements()">Clear saved measurements</button>
+          <button class="msaved-x" type="button" aria-label="Dismiss saved-measurements note" onclick="dismissMsaved()">×</button>
+        </div>
+        <p class="msaved-live" id="msaved-live" role="status" aria-live="polite"></p>
         <div>
           <div class="mitem"><div class="mlft"><div class="mnm">Height</div><div class="mht">Floor to top of head</div></div><div class="mrgt"><input type="number" class="minput" id="m-height" aria-label="Height" value="178" oninput="updM('height',this.value)"><div class="mvu" id="u-height">cm</div></div></div>
           <div class="mitem"><div class="mlft"><div class="mnm">Chest</div><div class="mht">Fullest part of chest</div></div><div class="mrgt"><input type="number" class="minput" id="m-chest" aria-label="Chest" value="96" oninput="updM('chest',this.value)"><div class="mvu" id="u-chest">cm</div></div></div>
@@ -1976,6 +1991,65 @@ showFallbackResult = function(hadError, errMsg, pixelCode) {
 };
 
 fitroomRender();
+
+// ── REMEMBERED MEASUREMENTS (Sprint 56) ──
+// Measurements and unit preference persist in localStorage only — they
+// never leave the browser (same privacy model as the fitting room: no
+// account, no server, no cross-device sync). Hooked via reassignment
+// wrappers and an added listener; goStep flow and protected functions
+// untouched. Every storage touch degrades silently (Sprint 53 pattern).
+var MEASURE_KEY = 'mirr-measurements';
+
+function saveMeasurements() {
+  try {
+    localStorage.setItem(MEASURE_KEY, JSON.stringify({ mcm: MCM, unit: curUnit, at: Date.now() }));
+  } catch (e) { /* private mode / quota — session-only behavior, as before */ }
+}
+
+function clearSavedMeasurements() {
+  try { localStorage.removeItem(MEASURE_KEY); } catch (e) { /* nothing to clear */ }
+  document.getElementById('msaved').style.display = 'none';
+  var live = document.getElementById('msaved-live');
+  live.textContent = '';
+  setTimeout(function() { live.textContent = 'Saved measurements cleared from this device.'; }, 50);
+  var first = document.getElementById('m-height');
+  if (first) first.focus();
+}
+
+function dismissMsaved() {
+  document.getElementById('msaved').style.display = 'none';
+  var first = document.getElementById('m-height');
+  if (first) first.focus();
+}
+
+var _msUpdM = updM;
+updM = function(key, val) { _msUpdM(key, val); saveMeasurements(); };
+var _msSetUnit = setUnit;
+setUnit = function(u) { _msSetUnit(u); saveMeasurements(); };
+
+// Completing step 2 also persists, even with untouched defaults — an added
+// click listener on the step-2 next button; goStep itself is not wrapped.
+(function() {
+  var next = document.querySelector('button[onclick="goStep(3)"]');
+  if (next) next.addEventListener('click', saveMeasurements);
+})();
+
+// Restore on load: validate each saved value, prefill the inputs and unit
+// toggle through the original setUnit (it re-renders every input from MCM),
+// then show the dismissible note.
+(function() {
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem(MEASURE_KEY)); } catch (e) { return; }
+  if (!saved || typeof saved !== 'object' || !saved.mcm) return;
+  var any = false;
+  ['height', 'chest', 'waist', 'hips', 'inseam'].forEach(function(k) {
+    var v = Number(saved.mcm[k]);
+    if (Number.isFinite(v) && v >= 30 && v <= 250) { MCM[k] = Math.round(v); any = true; }
+  });
+  if (!any) return;
+  _msSetUnit(saved.unit === 'in' ? 'in' : 'cm');
+  document.getElementById('msaved').style.display = 'flex';
+})();
 
 function dismissReturnPrompt() {
   document.getElementById('return-prompt').classList.remove('show');
