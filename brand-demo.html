@@ -457,6 +457,21 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .fitroom-card-actions button{background:none;border:1px solid var(--line);border-radius:4px;padding:6px 10px;font-family:var(--font-sans);font-size:9px;letter-spacing:.08em;color:var(--ink3);cursor:pointer;transition:all .2s}
 .fitroom-card-actions button:hover{border-color:var(--sky);color:var(--sky-text)}
 .fitroom-live{position:absolute;left:-9999px}
+/* Compare mode (Sprint 59) — no new animation/transition anywhere here,
+   so there is nothing for prefers-reduced-motion to override. */
+.fitroom-cmp-toggle{background:none;border:1px solid var(--line);border-radius:4px;padding:6px 12px;font-family:var(--font-sans);font-size:9px;letter-spacing:.08em;color:var(--ink3);cursor:pointer;margin-left:auto}
+.fitroom-cmp-toggle:hover,.fitroom-cmp-toggle[aria-pressed="true"]{border-color:var(--sky);color:var(--sky-text)}
+.fitroom-cmp-hint{font-size:11px;color:var(--sky-text)}
+.fitroom-sel{display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.06em;color:var(--ink3);margin-top:9px;cursor:pointer}
+.fitroom-sel input{accent-color:var(--sky);width:14px;height:14px;cursor:pointer}
+.fitroom-cmp-card{max-width:640px}
+.fitroom-cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fitroom-cmp-imgwrap{position:relative;border-radius:6px;overflow:hidden;background:var(--cream)}
+.fitroom-cmp-imgwrap img{width:100%;height:min(40vh,320px);object-fit:cover;display:block}
+.fitroom-cmp-imgwrap .tryon-watermark{bottom:8px}
+.fitroom-cmp-name{font-size:13px;font-weight:400;margin-top:8px;line-height:1.4}
+.fitroom-cmp-meta{font-family:var(--font-mono);font-size:11px;color:var(--sky-text);margin-top:2px}
+.fitroom-cmp-dims{font-family:var(--font-mono);font-size:10px;color:var(--ink4);margin-top:2px;line-height:1.6}
 .fitroom-overlay{position:fixed;inset:0;background:rgba(26,26,26,.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px}
 .fitroom-overlay-card{background:var(--page);border-radius:10px;max-width:400px;width:100%;max-height:92vh;overflow-y:auto;padding:18px;position:relative}
 .fitroom-overlay-x{position:absolute;top:10px;right:12px;background:none;border:none;font-size:20px;color:var(--ink3);cursor:pointer;line-height:1;padding:4px 8px;z-index:1}
@@ -739,7 +754,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   <div class="fitroom-head">
     <h2 class="fitroom-title" id="fitroom-title" tabindex="-1">My fitting room</h2>
     <span class="fitroom-count" id="fitroom-count"></span>
+    <button class="fitroom-cmp-toggle" id="fitroom-compare-toggle" type="button" style="display:none" aria-pressed="false" onclick="fitroomCompareToggle()">COMPARE</button>
   </div>
+  <p class="fitroom-cmp-hint" id="fitroom-cmp-hint" style="display:none" role="status" aria-live="polite">Select two looks to compare them side by side.</p>
   <p class="fitroom-sub">Saved on this device only — your try-on photos never leave your browser.</p>
   <div class="fitroom-grid" id="fitroom-grid"></div>
   <p class="fitroom-live" id="fitroom-live" role="status" aria-live="polite"></p>
@@ -753,6 +770,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="fitroom-overlay-name" id="fitroom-overlay-name"></div>
     <div class="fitroom-overlay-meta" id="fitroom-overlay-meta"></div>
     <button class="fitroom-overlay-view" id="fitroom-overlay-view" type="button" onclick="fitroomViewProduct()">VIEW PRODUCT →</button>
+  </div>
+</div>
+
+<!-- Compare two saved looks (Sprint 59) — read-only over saved-look data -->
+<div class="fitroom-overlay" id="fitroom-cmp-overlay" role="dialog" aria-modal="true" aria-label="Compare saved try-ons" style="display:none">
+  <div class="fitroom-overlay-card fitroom-cmp-card">
+    <button class="fitroom-overlay-x" id="fitroom-cmp-x" type="button" aria-label="Close comparison" onclick="fitroomCmpClose()">×</button>
+    <div class="fitroom-cmp-grid" id="fitroom-cmp-grid"></div>
   </div>
 </div>
 
@@ -1789,6 +1814,8 @@ var FITROOM_KEY = 'mirr-fitting-room';
 var FITROOM_CAP = 6;
 var _fitroomLastFocus = null;
 var _fitroomOpenIdx = -1;
+var _fitroomCompare = false;
+var _fitroomCmpSel = [];
 
 function fitroomLoad() {
   try {
@@ -1889,6 +1916,12 @@ function fitroomCardHTML(x, i) {
   var when = '';
   try { when = new Date(x.at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }); } catch (e) { /* cosmetic only */ }
   var meta = [x.overall ? esc(x.overall) + ' fit' : '', x.size ? 'size ' + esc(x.size) : '', when].filter(Boolean).join(' · ');
+  var sel = '';
+  if (_fitroomCompare) {
+    sel = '<label class="fitroom-sel"><input type="checkbox" onchange="fitroomCmpSelect(' + i + ', this.checked)"' +
+      (_fitroomCmpSel.indexOf(i) > -1 ? ' checked' : '') +
+      ' aria-label="Select ' + esc(x.product) + ' for comparison"> Select to compare</label>';
+  }
   return '<div class="fitroom-card">' +
     '<button class="fitroom-thumb" type="button" onclick="fitroomOpen(' + i + ')" aria-label="Open saved try-on: ' + esc(x.product) + '">' +
       '<img src="' + esc(x.img) + '" alt="" loading="lazy"><div class="tryon-watermark">trymirr.com</div>' +
@@ -1900,6 +1933,7 @@ function fitroomCardHTML(x, i) {
         '<button type="button" onclick="fitroomOpen(' + i + ')">OPEN</button>' +
         '<button type="button" onclick="fitroomRemove(' + i + ')" aria-label="Remove ' + esc(x.product) + ' from fitting room">REMOVE</button>' +
       '</div>' +
+      sel +
     '</div>' +
   '</div>';
 }
@@ -1907,7 +1941,22 @@ function fitroomCardHTML(x, i) {
 function fitroomRender() {
   var arr = fitroomLoad();
   var sec = document.getElementById('fitroom');
+  var toggle = document.getElementById('fitroom-compare-toggle');
   if (arr.length === 0) { sec.style.display = 'none'; return; }
+  // Compare needs two looks; below that the toggle hides and any active
+  // compare state resets.
+  if (arr.length >= 2) {
+    toggle.style.display = 'inline-block';
+  } else {
+    toggle.style.display = 'none';
+    if (_fitroomCompare) {
+      _fitroomCompare = false;
+      _fitroomCmpSel = [];
+      toggle.setAttribute('aria-pressed', 'false');
+      toggle.textContent = 'COMPARE';
+      document.getElementById('fitroom-cmp-hint').style.display = 'none';
+    }
+  }
   // Newest first in the grid; indexes map back through the reversal.
   document.getElementById('fitroom-grid').innerHTML = arr.map(fitroomCardHTML).reverse().join('');
   document.getElementById('fitroom-count').textContent = arr.length + ' OF ' + FITROOM_CAP + ' SAVED';
@@ -1917,6 +1966,9 @@ function fitroomRender() {
 function fitroomRemove(i) {
   var arr = fitroomLoad();
   if (!arr[i]) return;
+  // Indices shift after a removal — any in-progress compare selection
+  // would point at the wrong looks, so it resets.
+  _fitroomCmpSel = [];
   var name = arr[i].product;
   arr.splice(i, 1);
   fitroomStore(arr);
@@ -1976,6 +2028,69 @@ document.getElementById('fitroom-overlay').addEventListener('keydown', function(
   if (e.key === 'Escape') { fitroomCloseOverlay(); return; }
   if (e.key !== 'Tab') return;
   // Contain Tab within the dialog (same pattern as the index mobile nav).
+  var items = [].filter.call(this.querySelectorAll('button'), function(b) { return b.offsetParent !== null; });
+  if (!items.length) return;
+  var first = items[0], last = items[items.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+
+// ── COMPARE MODE (Sprint 59) — read-only over the saved looks ──
+function fitroomCompareToggle() {
+  _fitroomCompare = !_fitroomCompare;
+  _fitroomCmpSel = [];
+  var t = document.getElementById('fitroom-compare-toggle');
+  t.setAttribute('aria-pressed', _fitroomCompare ? 'true' : 'false');
+  t.textContent = _fitroomCompare ? 'CANCEL COMPARE' : 'COMPARE';
+  document.getElementById('fitroom-cmp-hint').style.display = _fitroomCompare ? 'block' : 'none';
+  fitroomRender();
+}
+
+function fitroomCmpSelect(i, checked) {
+  var at = _fitroomCmpSel.indexOf(i);
+  if (checked && at === -1) _fitroomCmpSel.push(i);
+  if (!checked && at > -1) _fitroomCmpSel.splice(at, 1);
+  if (_fitroomCmpSel.length === 2) fitroomCmpOpen();
+}
+
+// Side-by-side numbers only — no generated prose verdict, by design.
+function fitroomCmpColHTML(x) {
+  var s = x.scores || {};
+  var detail = ['chest', 'waist', 'hips', 'length'].map(function(k) {
+    return (s[k] && s[k] !== '—' && s[k] !== 'N/A') ? k + ' ' + esc(s[k]) : null;
+  }).filter(Boolean).join(' · ');
+  var best = x.rec || x.size;
+  return '<div class="fitroom-cmp-col">' +
+    '<div class="fitroom-cmp-imgwrap"><img src="' + esc(x.img) + '" alt="Saved try-on: ' + esc(x.product) + '"><div class="tryon-watermark">trymirr.com</div></div>' +
+    '<div class="fitroom-cmp-name">' + esc(x.product) + '</div>' +
+    '<div class="fitroom-cmp-meta">' +
+      [x.overall ? esc(x.overall) + ' overall' : null, best ? 'best size ' + esc(best) : null].filter(Boolean).join(' · ') +
+    '</div>' +
+    (detail ? '<div class="fitroom-cmp-dims">' + detail + '</div>' : '') +
+  '</div>';
+}
+
+function fitroomCmpOpen() {
+  var arr = fitroomLoad();
+  var a = arr[_fitroomCmpSel[0]], b = arr[_fitroomCmpSel[1]];
+  if (!a || !b) { _fitroomCmpSel = []; fitroomRender(); return; }
+  document.getElementById('fitroom-cmp-grid').innerHTML = fitroomCmpColHTML(a) + fitroomCmpColHTML(b);
+  document.getElementById('fitroom-cmp-overlay').style.display = 'flex';
+  document.getElementById('fitroom-cmp-x').focus();
+}
+
+function fitroomCmpClose() {
+  document.getElementById('fitroom-cmp-overlay').style.display = 'none';
+  // Compare mode stays active for the next pair; the selection clears.
+  _fitroomCmpSel = [];
+  fitroomRender();
+  var t = document.getElementById('fitroom-compare-toggle');
+  if (t) t.focus();
+}
+
+document.getElementById('fitroom-cmp-overlay').addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { fitroomCmpClose(); return; }
+  if (e.key !== 'Tab') return;
   var items = [].filter.call(this.querySelectorAll('button'), function(b) { return b.offsetParent !== null; });
   if (!items.length) return;
   var first = items[0], last = items[items.length - 1];
