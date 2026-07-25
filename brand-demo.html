@@ -768,6 +768,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   </div>
 </div>
 
+<!-- Metrics beacons (Sprint 58): anonymous usage counts only — event name,
+     brand slug, product index, timestamp. Never measurements, never photos,
+     never emails. Fire-and-forget: the site behaves identically if the
+     metrics worker is unreachable or not yet deployed. -->
 <script src="/error-report.js"></script>
 <script>
 let PRODS = [];
@@ -2180,6 +2184,41 @@ setUnit = function(u) { _msSetUnit(u); saveMeasurements(); };
   _msSetUnit(saved.unit === 'in' ? 'in' : 'cm');
   document.getElementById('msaved').style.display = 'flex';
 })();
+
+// ── METRICS BEACONS (Sprint 58) — dormant until the worker deploys ──
+// Fire-and-forget POSTs, silent-fail on every path (Sprint 24/32
+// convention): the site behaves identically while METRICS_WORKER is not
+// yet deployed. Payload is anonymous — event name, brand slug, product
+// index, timestamp. No PII: never measurements, never photos, never
+// emails. Protected function bodies untouched — reassignment wrappers
+// only, same pattern as the fitting room and remembered measurements.
+var METRICS_WORKER = 'https://mirr-metrics-worker.linaandwilliam.workers.dev';
+
+function sendMetric(event) {
+  try {
+    fetch(METRICS_WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: event,
+        brand: new URLSearchParams(window.location.search).get('brand') || 'apex-active',
+        product: curProd,
+        at: new Date().toISOString()
+      })
+    }).catch(function() { /* worker dormant or offline — never surfaces */ });
+  } catch (e) { /* metrics must never affect the shopper */ }
+}
+
+var _metricsShowReal = showRealResult;
+showRealResult = function(resultSrc) {
+  _metricsShowReal(resultSrc);
+  sendMetric('tryon-completed');
+};
+var _metricsBuyClick = buyClick;
+buyClick = function() {
+  sendMetric('buy-clicked');
+  _metricsBuyClick();
+};
 
 function dismissReturnPrompt() {
   document.getElementById('return-prompt').classList.remove('show');

@@ -105,7 +105,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="meta-card">
         <div class="meta-label">TRY-ONS TO DATE</div>
         <div class="meta-value" id="d-tryons"></div>
-        <div class="meta-note">across your listed products</div>
+        <div class="meta-note" id="d-tryons-note">across your listed products</div>
       </div>
     </div>
 
@@ -148,6 +148,10 @@ function esc(s) {
 // Payout share follows the brand's commission tier — same rates as stated
 // site-wide (brand-demo, founding-brands); founding is the default.
 var TIER_RATES = { founding: 8, standard: 12, premium: 15 };
+// Real try-on counts come from the metrics worker once it deploys; until
+// then (or on any failure) the brands.json fixture is shown, honestly
+// relabeled "as of listing" so it never masquerades as a live metric.
+var METRICS_WORKER = 'https://mirr-metrics-worker.linaandwilliam.workers.dev';
 var TIER_LABELS = { founding: 'Founding brand', standard: 'Standard brand', premium: 'Premium brand' };
 
 var slug = new URLSearchParams(location.search).get('brand') || 'apex-active';
@@ -164,7 +168,7 @@ function productRow(name, cat, price, status) {
     '<div class="p-right"><span class="p-price">' + esc(price || '') + '</span>' + statusChip(status) + '</div></div>';
 }
 
-function render(brand, subs, fc) {
+function render(brand, subs, fc, metrics) {
   document.getElementById('d-name').textContent = brand.name;
   if (brand.verified) document.getElementById('d-verified').style.display = 'inline-block';
 
@@ -177,7 +181,17 @@ function render(brand, subs, fc) {
 
   var liveProducts = Array.isArray(brand.products) ? brand.products : [];
   document.getElementById('d-products').textContent = liveProducts.length;
-  document.getElementById('d-tryons').textContent = (brand.tryons_count != null ? brand.tryons_count : '—');
+
+  // Live metric when the worker answers with a real number; otherwise the
+  // brands.json fixture, labeled honestly as a listing-time figure.
+  var liveTryons = metrics && Number(metrics.tryons);
+  if (Number.isFinite(liveTryons)) {
+    document.getElementById('d-tryons').textContent = liveTryons;
+    document.getElementById('d-tryons-note').textContent = 'since launch';
+  } else {
+    document.getElementById('d-tryons').textContent = (brand.tryons_count != null ? brand.tryons_count : '—');
+    document.getElementById('d-tryons-note').textContent = 'as of listing';
+  }
 
   // Founding-spot context — straight from founding-count.json, no invention.
   if (fc && typeof fc.filled === 'number' && typeof fc.total === 'number') {
@@ -244,12 +258,13 @@ Promise.all([
     return r.json();
   }),
   optional('/submissions.json'),
-  optional('/founding-count.json')
+  optional('/founding-count.json'),
+  optional(METRICS_WORKER + '/counts?brand=' + encodeURIComponent(slug))
 ]).then(function(res) {
   var brands = res[0];
   if (!brands || typeof brands !== 'object') throw new Error('brands.json malformed');
   if (!brands[slug]) { showUnknown(brands); return; }
-  render(brands[slug], res[1], res[2]);
+  render(brands[slug], res[1], res[2], res[3]);
 }).catch(function(e) {
   document.getElementById('fail-note').style.display = 'block';
   reportClientError('dashboard data load failed: ' + e.message, 'dashboard', 0);

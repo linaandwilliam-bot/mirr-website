@@ -314,6 +314,21 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   if (!bd.includes('FITROOM_CAP')) fail('brand-demo.html: fitting-room cap constant FITROOM_CAP is missing');
 }
 
+// ── Sprint 58: metrics beacon invariants ──
+// The beacons are dormant-safe wrappers; the guard makes sure the wrapper
+// pattern never quietly turns into a body replacement — buyClick's ORIGINAL
+// declaration must still carry its UTM attribution logic.
+{
+  const bd = read('brand-demo.html');
+  if (!bd.includes('METRICS_WORKER')) fail('brand-demo.html: METRICS_WORKER const is missing');
+  const bc = bd.match(/function buyClick\(\) \{[\s\S]*?\n\}/);
+  if (!bc) {
+    fail('brand-demo.html: buyClick function declaration not found');
+  } else if (!bc[0].includes('utm_source=mirr')) {
+    fail('brand-demo.html: buyClick original body lost its UTM attribution (utm_source=mirr) — the metrics wrapper must augment, not replace');
+  }
+}
+
 // ── Inline <script> blocks must parse: node --check on each extracted block ──
 // Catches JS syntax errors (e.g. an unescaped apostrophe breaking a string)
 // that would silently kill a page's entire script at runtime. Skips JSON-LD
