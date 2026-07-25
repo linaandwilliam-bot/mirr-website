@@ -312,6 +312,10 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   const bd = read('brand-demo.html');
   if (!bd.includes('FITROOM_KEY')) fail('brand-demo.html: fitting-room storage anchor FITROOM_KEY is missing');
   if (!bd.includes('FITROOM_CAP')) fail('brand-demo.html: fitting-room cap constant FITROOM_CAP is missing');
+  // Sprint 60: remembered-measurements storage anchor and the look-download
+  // definition must survive refactors the same way the fitting room's do.
+  if (!bd.includes('MEASURE_KEY')) fail('brand-demo.html: remembered-measurements anchor MEASURE_KEY is missing');
+  if (!bd.includes('function downloadLook(')) fail('brand-demo.html: downloadLook definition is missing');
 }
 
 // ── Sprint 58: metrics beacon invariants ──
