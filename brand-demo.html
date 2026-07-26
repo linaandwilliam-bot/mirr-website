@@ -427,6 +427,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .utbtn{padding-top:15px;padding-bottom:15px}
 }
 
+/* ── Measured-dimensions trust badge (Sprint 62) ──
+   Shown ONLY when the product has a real dims object — the badge means
+   measured garment dimensions exist, nothing else; legacy scores-only
+   products never get it. */
+.measured-badge{display:inline-block;font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;color:var(--sky-text);border:.5px solid var(--sky-brd);background:var(--sky-bg);padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pcat .measured-badge{margin-left:6px;vertical-align:middle}
+#d-measured{margin:2px 0 8px}
+.measured-note{font-size:11px;color:var(--sky-text);margin:-6px 0 10px}
+
 /* ── Remembered measurements (Sprint 56) ── */
 .msaved{display:none;align-items:center;gap:10px;flex-wrap:wrap;background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:6px;padding:8px 12px;margin:10px 0 2px;font-size:11px;color:var(--sky-text)}
 .msaved-clear{background:none;border:none;padding:0;font-family:var(--font-sans);font-size:11px;color:var(--sky-text);text-decoration:underline;cursor:pointer}
@@ -548,6 +557,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <img class="dimg" id="d-img" src="" alt="" width="600" height="800">
     <div class="dinfo">
       <div class="dcat" id="d-cat"></div>
+      <div class="measured-badge" id="d-measured" style="display:none">MEASURED ✓</div>
       <div class="dname" id="d-name"></div>
       <div class="dprice-row" id="d-price"></div>
       <div class="ddesc" id="d-desc"></div>
@@ -706,6 +716,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
           <!-- FIT SCORES -->
           <div class="fit-scores-head">FIT SCORES</div>
+          <!-- Shown only for dims products; the fit panel's own "Estimated"
+               label already covers the legacy case — never both. -->
+          <div class="measured-note" id="measured-note" style="display:none">Fit scores use this garment’s measured dimensions.</div>
           <div class="rsi"><div class="rsit"><span class="rsin">Chest</span><span class="rsip" id="rp-chest">—</span></div><div class="rsb"><div class="rsbf" id="rb-chest"></div></div></div>
           <div class="rsi"><div class="rsit"><span class="rsin">Waist</span><span class="rsip" id="rp-waist">—</span></div><div class="rsb"><div class="rsbf" id="rb-waist"></div></div></div>
           <div class="rsi"><div class="rsit"><span class="rsin">Hips</span><span class="rsip" id="rp-hips">—</span></div><div class="rsb"><div class="rsbf" id="rb-hips"></div></div></div>
@@ -842,7 +855,7 @@ function productCardHTML(p, idx) {
         '<div class="mcchip"><div class="chdot"></div>MIRROR IT</div>' +
       '</div>' +
       '<div class="pinfo">' +
-        '<div class="pcat">' + esc(p.cat) + '</div>' +
+        '<div class="pcat">' + esc(p.cat) + (p.dims ? ' <span class="measured-badge">MEASURED ✓</span>' : '') + '</div>' +
         '<div class="pname">' + esc(p.name) + '</div>' +
         '<div class="pfoot"><span class="pprice">' + esc(p.price) + '</span>' + oldHtml + '<span class="pview">VIEW →</span></div>' +
       '</div>' +
@@ -1097,6 +1110,11 @@ function showDetail(idx) {
     '<span class="dprice">' + esc(p.price) + '</span>' +
     (p.old ? '<span class="dprice-old">' + esc(p.old) + '</span>' : '');
   document.getElementById('d-desc').textContent = p.desc;
+  // Measured badge + explainer follow the dims object only (Sprint 62) —
+  // the honesty condition is "real garment dimensions exist", nothing else.
+  var measured = !!p.dims;
+  document.getElementById('d-measured').style.display = measured ? 'inline-block' : 'none';
+  document.getElementById('measured-note').style.display = measured ? 'block' : 'none';
   resetRemail();
 
   goStep(1);

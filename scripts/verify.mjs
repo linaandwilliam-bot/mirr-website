@@ -316,6 +316,8 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   // definition must survive refactors the same way the fitting room's do.
   if (!bd.includes('MEASURE_KEY')) fail('brand-demo.html: remembered-measurements anchor MEASURE_KEY is missing');
   if (!bd.includes('function downloadLook(')) fail('brand-demo.html: downloadLook definition is missing');
+  // Sprint 62: the measured-dimensions trust badge must not silently vanish.
+  if (!bd.includes('MEASURED ✓')) fail('brand-demo.html: measured-dimensions badge string "MEASURED ✓" is missing');
 }
 
 // ── Sprint 58: metrics beacon invariants ──
