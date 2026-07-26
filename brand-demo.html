@@ -427,6 +427,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .utbtn{padding-top:15px;padding-bottom:15px}
 }
 
+/* ── Welcome-back strip (Sprint 63) ──
+   Hidden by default and only revealed when saved data exists — first-time
+   visitors reserve no space and see no layout shift. No entrance animation
+   at all, so there is nothing for prefers-reduced-motion to override. */
+.wb-strip{display:none;align-items:center;gap:10px;flex-wrap:wrap;background:var(--sky-bg);border-bottom:1px solid var(--sky-brd);padding:10px 20px;font-size:12px;color:var(--sky-text)}
+.wb-view{background:none;border:1px solid var(--sky);border-radius:4px;padding:6px 12px;font-family:var(--font-sans);font-size:10px;letter-spacing:.08em;color:var(--sky-text);cursor:pointer;white-space:nowrap}
+.wb-x{background:none;border:none;font-size:15px;color:var(--ink4);cursor:pointer;padding:2px 6px;margin-left:auto;line-height:1}
+
 /* ── Measured-dimensions trust badge (Sprint 62) ──
    Shown ONLY when the product has a real dims object — the badge means
    measured garment dimensions exist, nothing else; legacy scores-only
@@ -529,6 +537,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="fpill" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="filterP('tops',this)">Tops</div>
     <div class="fpill" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="filterP('bottoms',this)">Bottoms</div>
     <div class="fpill" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="filterP('outerwear',this)">Outerwear</div>
+  </div>
+
+  <!-- Welcome-back strip (Sprint 63) — appears only when this device has
+       both saved measurements and at least one fitting-room look. -->
+  <div class="wb-strip" id="wb-strip">
+    <span id="wb-text"></span>
+    <button class="wb-view" id="wb-view" type="button" onclick="wbViewFitroom()">VIEW FITTING ROOM →</button>
+    <button class="wb-x" type="button" aria-label="Dismiss welcome-back note" onclick="wbDismiss()">×</button>
   </div>
 
   <div class="pgrid" id="pgrid"></div>
@@ -2411,6 +2427,45 @@ buyClick = function() {
   sendMetric('buy-clicked');
   _metricsBuyClick();
 };
+
+// ── WELCOME-BACK STRIP (Sprint 63) ──
+// Read-only over the Sprint 53/56 data: revealed only when this device has
+// BOTH saved measurements and at least one fitting-room look. First-time
+// visitors reserve no space (display:none static markup, no injection).
+function wbViewFitroom() {
+  var sec = document.getElementById('fitroom');
+  if (!sec || sec.style.display === 'none') return;
+  var reduce = false;
+  try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { /* default to smooth */ }
+  // Same pattern as scrollToMirr/scrollToBuy, but honoring reduced motion:
+  // JS-initiated smooth scrolling is not covered by the CSS override.
+  sec.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  var title = document.getElementById('fitroom-title');
+  if (title) title.focus({ preventScroll: true });
+}
+
+function wbDismiss() {
+  document.getElementById('wb-strip').style.display = 'none';
+  // Keep keyboard users anchored on the storefront they were browsing.
+  var card = document.querySelector('.pcard');
+  if (card) card.focus();
+}
+
+(function() {
+  var looks = 0, hasMeasurements = false;
+  try {
+    var a = JSON.parse(localStorage.getItem(FITROOM_KEY));
+    if (Array.isArray(a)) looks = a.length;
+  } catch (e) { /* no fitting-room data — no strip */ }
+  try {
+    var m = JSON.parse(localStorage.getItem(MEASURE_KEY));
+    hasMeasurements = !!(m && typeof m === 'object' && m.mcm);
+  } catch (e) { /* no measurements — no strip */ }
+  if (looks < 1 || !hasMeasurements) return;
+  document.getElementById('wb-text').textContent =
+    'Welcome back — your fitting room has ' + looks + ' saved look' + (looks === 1 ? '' : 's') + '.';
+  document.getElementById('wb-strip').style.display = 'flex';
+})();
 
 function dismissReturnPrompt() {
   document.getElementById('return-prompt').classList.remove('show');
