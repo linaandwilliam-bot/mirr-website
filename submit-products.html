@@ -128,6 +128,15 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 .submit-btn:disabled{background:var(--ink4);cursor:not-allowed}
 .submit-note{font-size:11px;color:var(--ink4);text-align:center;line-height:1.6}
 
+/* Photo pre-flight (Sprint 65) — soft warnings are studio tips, not errors */
+.photo-warn{display:none;font-size:12px;color:var(--sky-text);background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:6px;padding:10px 12px;margin:-8px 0 18px;line-height:1.6}
+.standards-strip{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-bottom:16px;text-align:left}
+.standards-title{font-size:10px;letter-spacing:.18em;color:var(--sky);margin-bottom:10px}
+.std-row{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--ink2);padding:6px 0;cursor:pointer}
+.std-row input{accent-color:var(--sky);width:16px;height:16px;margin-top:2px;flex:none;cursor:pointer}
+.std-note{font-size:11px;color:var(--ink4);margin-top:8px}
+.std-note a{color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)}
+
 /* PROGRESS */
 .progress-bar{height:3px;background:var(--line);border-radius:3px;margin-bottom:32px;overflow:hidden}
 .progress-fill{height:100%;background:var(--sky);border-radius:3px;transition:width .4s;width:0%}
@@ -210,7 +219,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <strong>Price and category</strong>
         </div>
       </div>
-      <div class="info-box">
+      <div class="info-box" id="photos">
         <div class="info-box-label">PHOTO REQUIREMENTS</div>
         <div class="info-box-body">
           Plain <strong>white or light background</strong><br>
@@ -254,6 +263,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="submit-section">
       <div class="submit-section-title">READY TO SUBMIT</div>
       <div class="submit-section-body">Once you submit, our team will review your products and have them live on Mirr within 3 business days. We'll email you to confirm when each product is available.</div>
+      <!-- Photo-standards confirm (Sprint 65) — ticked once per session,
+           remembered in sessionStorage so repeat submissions are not nagged -->
+      <div class="standards-strip" id="standards-strip">
+        <div class="standards-title">PHOTO STANDARDS — CONFIRM ONCE</div>
+        <label class="std-row"><input type="checkbox" class="std-chk" onchange="updateStandardsGate()"> Garment spread flat (not folded)</label>
+        <label class="std-row"><input type="checkbox" class="std-chk" onchange="updateStandardsGate()"> Plain, light background</label>
+        <label class="std-row"><input type="checkbox" class="std-chk" onchange="updateStandardsGate()"> No model, hanger props, or accessories in frame</label>
+        <p class="std-note">Confirmed once per session — these are the three things the try-on processor cares about most. <a href="#photos">See our photo guide →</a></p>
+      </div>
       <button class="submit-btn" id="submit-btn" onclick="submitForm()">SUBMIT ALL PRODUCTS →</button>
       <p class="submit-note">Your photos are uploaded securely. We'll contact you if we need anything adjusted.</p>
     </div>
@@ -444,6 +462,7 @@ function addProduct() {
         </div>
       </div>
       <p class="field-err" id="err-photo-${idx}" style="margin:-8px 0 18px"></p>
+      <p class="photo-warn" id="warn-photo-${idx}" role="status" aria-live="polite"></p>
 
       <div class="divider"></div>
       <div class="section-label" id="dim-label-${idx}">GARMENT DIMENSIONS — SMALLEST SIZE (cm)</div>
@@ -512,15 +531,27 @@ function triggerUpload(inputId) {
 function handlePhoto(input, side, idx) {
   if (!input.files || !input.files[0]) return;
   const file = input.files[0];
-
-  // imgbb's hard limit is 32MB; phone camera photos can exceed this, and even
-  // well under it, large files make the base64 upload step slow on mobile.
-  // Catch it here with a clear message rather than letting it fail silently
-  // during the actual submission later.
-  const MAX_MB = 20;
-  if (file.size > MAX_MB * 1024 * 1024) {
-    alert(`That photo is ${(file.size / 1024 / 1024).toFixed(1)}MB — please use one under ${MAX_MB}MB. Most phone cameras let you pick a smaller size, or you can compress it first.`);
+  const label = side === 'front' ? 'Front' : 'Back';
+  const errEl = document.getElementById('err-photo-' + idx);
+  const warnEl = document.getElementById('warn-photo-' + idx);
+  const failPhoto = function(msg) {
+    if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
     input.value = '';
+  };
+  // A fresh pick resets both message surfaces for this product.
+  if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+  if (warnEl) { warnEl.style.display = 'none'; warnEl.textContent = ''; }
+
+  // ── Pre-flight hard fails (Sprint 65) — learned from real try-on runs ──
+  if (['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) === -1) {
+    failPhoto(label + ' photo must be a JPEG, PNG, or WebP image.');
+    return;
+  }
+  // Over ~10MB the base64 upload step crawls on mobile and the try-on
+  // processor gains nothing from the extra resolution.
+  const MAX_MB = 10;
+  if (file.size > MAX_MB * 1024 * 1024) {
+    failPhoto('That photo is ' + (file.size / 1024 / 1024).toFixed(1) + 'MB — please use one under ' + MAX_MB + 'MB. Most phone cameras let you pick a smaller size, or you can compress it first.');
     return;
   }
 
@@ -532,34 +563,92 @@ function handlePhoto(input, side, idx) {
     // check, undersized photos sailed through to a degraded try-on.
     const img = new Image();
     img.onload = function() {
-      const errEl = document.getElementById('err-photo-' + idx);
       if (img.naturalWidth < 800 || img.naturalHeight < 1000) {
-        if (errEl) {
-          errEl.textContent = (side === 'front' ? 'Front' : 'Back') + ' photo is ' + img.naturalWidth + ' × ' + img.naturalHeight + 'px — the minimum is 800 × 1000px so the try-on renders cleanly. Please use a larger photo.';
-          errEl.style.display = 'block';
-        }
+        failPhoto(label + ' photo is ' + img.naturalWidth + ' × ' + img.naturalHeight + 'px — the minimum is 800 × 1000px so the try-on renders cleanly. Please use a larger photo.');
         return; // photo rejected — slot stays empty
       }
-      if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+      // Extreme aspect ratios (beyond 3:1 either way) crop badly in try-on.
+      const ar = img.naturalWidth / img.naturalHeight;
+      if (ar > 3 || ar < 1 / 3) {
+        failPhoto(label + ' photo is ' + img.naturalWidth + ' × ' + img.naturalHeight + 'px — that shape is too extreme for try-on. Use a photo closer to portrait proportions.');
+        return;
+      }
       const slotId = side + '-slot-' + idx;
       const previewId = side + '-preview-' + idx;
       document.getElementById(previewId).src = e.target.result;
       document.getElementById(slotId).classList.add('has-photo');
       productData[idx][side + 'File'] = file;
+      // Soft warnings only — heuristics can be wrong, so any sampling
+      // failure means no warning, never a blocked upload.
+      try { photoSoftWarnings(img, warnEl, label); } catch (softErr) { /* tip skipped */ }
       updateProgress();
     };
     img.onerror = function() {
-      const errEl = document.getElementById('err-photo-' + idx);
-      if (errEl) {
-        errEl.textContent = "That file couldn't be read — please use a JPEG or PNG photo.";
-        errEl.style.display = 'block';
-      }
+      failPhoto("That file couldn't be read — please use a JPEG or PNG photo.");
     };
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
   input.value = '';
 }
+
+// ── Soft photo warnings (Sprint 65) ──
+// Downscale to 64px and sample the outer ~10% frame: a plain, light
+// background reads bright with low variance. Thresholds are deliberately
+// forgiving — these are studio tips, and the photo stays fully usable.
+function photoSoftWarnings(img, warnEl, label) {
+  if (!warnEl) return;
+  const S = 64, B = 6;
+  const c = document.createElement('canvas');
+  c.width = S; c.height = S;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, S, S);
+  const d = ctx.getImageData(0, 0, S, S).data;
+  let sum = 0, sumSq = 0, n = 0;
+  for (let y = 0; y < S; y++) {
+    for (let x = 0; x < S; x++) {
+      if (x >= B && x < S - B && y >= B && y < S - B) continue; // border only
+      const i = (y * S + x) * 4;
+      const lum = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+      sum += lum; sumSq += lum * lum; n++;
+    }
+  }
+  const mean = sum / n;
+  const variance = sumSq / n - mean * mean;
+  const tips = [];
+  if (mean < 180) tips.push('Background looks dark or busy — garments photograph best spread flat on a plain, light background.');
+  // Calibrated against fixtures at this downscale: plain/soft-textured
+  // backgrounds measure 0-35, genuine clutter 1000+ — 500 splits them
+  // with a wide margin on both sides.
+  if (variance > 500) tips.push('Background looks cluttered — plain backgrounds give the best try-on results.');
+  if (tips.length > 0) {
+    warnEl.textContent = '💡 ' + label + ' photo: ' + tips.join(' ');
+    warnEl.style.display = 'block';
+  }
+}
+
+// ── Photo-standards confirm gate (Sprint 65) ──
+// Ticked once per session (sessionStorage), not per photo — the submit
+// button stays disabled until all three are confirmed.
+const STANDARDS_KEY = 'mirr-photo-standards';
+
+function updateStandardsGate() {
+  const boxes = document.querySelectorAll('.std-chk');
+  const all = boxes.length > 0 && [].every.call(boxes, function(b) { return b.checked; });
+  const btn = document.getElementById('submit-btn');
+  if (btn) btn.disabled = !all;
+  try {
+    if (all) sessionStorage.setItem(STANDARDS_KEY, '1');
+    else sessionStorage.removeItem(STANDARDS_KEY);
+  } catch (e) { /* private mode — gate still works, just not remembered */ }
+}
+
+(function initStandardsGate() {
+  let done = false;
+  try { done = sessionStorage.getItem(STANDARDS_KEY) === '1'; } catch (e) { /* not remembered */ }
+  if (done) document.querySelectorAll('.std-chk').forEach(function(b) { b.checked = true; });
+  updateStandardsGate();
+})();
 
 function toggleSize(idx, size, el) {
   el.classList.toggle('active');
