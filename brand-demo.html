@@ -427,6 +427,30 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .utbtn{padding-top:15px;padding-bottom:15px}
 }
 
+/* ── Size chart + fit-across-sizes (Sprint 66) — dims products only ── */
+.szchart{margin:14px 0 4px;border:1px solid var(--line);border-radius:8px;background:var(--white)}
+.szchart summary{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--sky-text);padding:10px 14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.szchart summary::-webkit-details-marker{display:none}
+.szchart summary::after{content:"+";color:var(--ink4);font-size:14px}
+.szchart[open] summary::after{content:"—"}
+.szchart-scroll{overflow-x:auto;padding:0 14px}
+.szchart-t{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:11px;color:var(--ink2)}
+.szchart-t th{font-weight:500;color:var(--ink3);text-align:right;padding:6px 8px;border-bottom:1px solid var(--line)}
+.szchart-t td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--line2)}
+.szchart-t td:first-child,.szchart-t th:first-child{text-align:left;font-family:var(--font-sans);color:var(--ink3)}
+.szchart-t tr:last-child td{border-bottom:none}
+.szchart-t .szchart-sample{color:var(--sky-text);text-decoration:underline;text-underline-offset:3px}
+.szchart-note{font-size:10px;color:var(--ink4);padding:8px 14px 12px}
+.fas-wrap{margin:14px 0 2px}
+.fas-row{display:flex;gap:6px;flex-wrap:wrap}
+.fas-pill{flex:1;min-width:52px;text-align:center;border:.5px solid var(--line);border-radius:6px;padding:7px 4px;background:var(--white)}
+.fas-pill.on{border-color:var(--sky);background:var(--sky-bg)}
+.fas-s{display:block;font-family:var(--font-mono);font-size:10px;color:var(--ink4)}
+.fas-pill.on .fas-s{color:var(--sky-text)}
+.fas-p{display:block;font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--ink2);margin-top:2px}
+.fas-pill.on .fas-p{color:var(--sky-text)}
+.fas-note{font-size:11px;color:var(--ink3);margin-top:8px}
+
 /* ── Welcome-back strip (Sprint 63) ──
    Hidden by default and only revealed when saved data exists — first-time
    visitors reserve no space and see no layout shift. No entrance animation
@@ -577,6 +601,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="dname" id="d-name"></div>
       <div class="dprice-row" id="d-price"></div>
       <div class="ddesc" id="d-desc"></div>
+      <!-- Size chart (Sprint 66) — generated from measured dims via the fit
+           engine's own grading; hidden entirely for products without dims -->
+      <details class="szchart" id="szchart" style="display:none">
+        <summary>SIZE CHART (CM)</summary>
+        <div class="szchart-scroll"><table class="szchart-t" id="szchart-t"></table></div>
+        <p class="szchart-note" id="szchart-note"></p>
+      </details>
       <div class="slbl">SELECT SIZE</div>
       <div class="sgrid">
         <div class="sbtn" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selSz(this)">XS</div>
@@ -745,6 +776,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             <div class="rovn" id="rov-score">—</div>
           </div>
           <div class="rverd" id="rverd" style="display:none"><div class="rvico" id="rvico">✓</div><div class="rvt" id="rv-t"></div><div class="rvb" id="rv-b"></div></div>
+          <!-- Fit across sizes (Sprint 66) — real fit scores only -->
+          <div class="fas-wrap" id="fas-wrap" style="display:none">
+            <div class="fit-scores-head">YOUR FIT ACROSS SIZES</div>
+            <div class="fas-row" id="fas-row"></div>
+            <div class="fas-note" id="fas-note"></div>
+          </div>
           <div class="snv">
             <button class="sbk2" onclick="goStep(2)">← Adjust</button>
             <button class="snxt" onclick="scrollToBuy()">BUY NOW →</button>
@@ -1131,6 +1168,11 @@ function showDetail(idx) {
   var measured = !!p.dims;
   document.getElementById('d-measured').style.display = measured ? 'inline-block' : 'none';
   document.getElementById('measured-note').style.display = measured ? 'block' : 'none';
+  // Size chart + fit-across-sizes follow the same condition (Sprint 66);
+  // the strip re-renders with the result, so switching products clears it.
+  renderSizeChart(p);
+  var fasEl = document.getElementById('fas-wrap');
+  if (fasEl) fasEl.style.display = 'none';
   resetRemail();
 
   goStep(1);
@@ -2466,6 +2508,67 @@ function wbDismiss() {
     'Welcome back — your fitting room has ' + looks + ' saved look' + (looks === 1 ? '' : 's') + '.';
   document.getElementById('wb-strip').style.display = 'flex';
 })();
+
+// ── SIZE CHART + FIT ACROSS SIZES (Sprint 66) — dims products only ──
+// Both features are pure views over the fit engine's existing data and
+// functions (SIZE_STEPS, gradeDims, computeFit, recommendSize) — zero
+// duplicated fit math. The strip hooks onto the fit-score render via the
+// established wrapper-reassignment pattern, so it recomputes on exactly
+// the same triggers (result shown, size changed) with no protected or
+// engine function edited in place.
+function renderSizeChart(p) {
+  var det = document.getElementById('szchart');
+  if (!det) return;
+  if (!p || !p.dims) { det.style.display = 'none'; det.open = false; return; }
+  var isBottom = p.tryon_cat === 'lowerbody';
+  // Row labels match the fit-score rows; bottoms show inseam as Length.
+  var LABELS = { chest: 'Chest', waist: 'Waist', hips: 'Hips', length: 'Length', inseam: isBottom ? 'Length' : 'Inseam' };
+  var sample = p.sample_size || 'M';
+  var sampleIdx = SIZE_STEPS.indexOf(sample);
+  var head = '<tr><th></th>' + SIZE_STEPS.map(function(s) {
+    return '<th' + (s === sample ? ' class="szchart-sample"' : '') + '>' + s + '</th>';
+  }).join('') + '</tr>';
+  var rows = Object.keys(p.dims).map(function(k) {
+    return '<tr><td>' + esc(LABELS[k] || k) + '</td>' + SIZE_STEPS.map(function(s, i) {
+      var v = Math.round(gradeDims(p.dims, i - sampleIdx)[k] * 10) / 10;
+      return '<td' + (s === sample ? ' class="szchart-sample"' : '') + '>' + v + '</td>';
+    }).join('') + '</tr>';
+  }).join('');
+  document.getElementById('szchart-t').innerHTML = head + rows;
+  document.getElementById('szchart-note').textContent =
+    'Flat-lay cm, measured by the brand — ' + sample + ' is the measured sample size.';
+  det.style.display = 'block';
+}
+
+function renderFitAcross(p) {
+  var wrap = document.getElementById('fas-wrap');
+  if (!wrap) return;
+  if (!p || !p.dims) { wrap.style.display = 'none'; return; }
+  var rec = recommendSize(p, MCM);
+  document.getElementById('fas-row').innerHTML = SIZE_STEPS.map(function(s) {
+    var r = computeFit(p, MCM, s);
+    // A size the engine cannot score shows a dash — never an invented number.
+    var score = r.overall > 0 ? r.overall + '%' : '—';
+    return '<div class="fas-pill' + (s === rec.size ? ' on' : '') + '">' +
+      '<span class="fas-s">' + s + '</span><span class="fas-p">' + score + '</span></div>';
+  }).join('');
+  document.getElementById('fas-note').textContent =
+    'Best size ' + rec.size + ' — scored against your measurements.';
+  wrap.style.display = 'block';
+}
+
+var _s66CalcFitReal = calcFitReal;
+calcFitReal = function(p) {
+  _s66CalcFitReal(p);
+  renderFitAcross(p);
+};
+var _s66CalcFitLegacy = calcFitLegacy;
+calcFitLegacy = function() {
+  _s66CalcFitLegacy();
+  // Legacy (scores-only) products have no per-size truth to show.
+  var wrap = document.getElementById('fas-wrap');
+  if (wrap) wrap.style.display = 'none';
+};
 
 function dismissReturnPrompt() {
   document.getElementById('return-prompt').classList.remove('show');
