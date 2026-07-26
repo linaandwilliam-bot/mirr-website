@@ -686,6 +686,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <div class="fitroom-save-row">
             <button class="fitroom-save-btn" id="fitroom-save" type="button" style="display:none" onclick="fitroomSave()">SAVE TO MY FITTING ROOM</button>
             <button class="fitroom-save-btn" id="look-dl" type="button" style="display:none" onclick="downloadLook()">DOWNLOAD MY LOOK</button>
+            <button class="fitroom-save-btn" id="look-share" type="button" style="display:none" onclick="shareLook()">SHARE MY LOOK</button>
             <span class="fitroom-confirm" id="fitroom-confirm" role="status" aria-live="polite"></span>
           </div>
 
@@ -2111,15 +2112,24 @@ showRealResult = function(resultSrc) {
   dl.style.display = 'inline-block';
   dl.disabled = false;
   dl.textContent = 'DOWNLOAD MY LOOK';
+  var sh = document.getElementById('look-share');
+  if (lookShareSupported()) {
+    sh.style.display = 'inline-block';
+    sh.disabled = false;
+    sh.textContent = 'SHARE MY LOOK';
+  } else {
+    sh.style.display = 'none';
+  }
   document.getElementById('fitroom-confirm').textContent = '';
 };
 var _fitroomShowFallback = showFallbackResult;
 showFallbackResult = function(hadError, errMsg, pixelCode) {
   _fitroomShowFallback(hadError, errMsg, pixelCode);
-  // Fallback previews are not saveable or downloadable — only real merged
-  // results are.
+  // Fallback previews are not saveable, downloadable or shareable — only
+  // real merged results are.
   document.getElementById('fitroom-save').style.display = 'none';
   document.getElementById('look-dl').style.display = 'none';
+  document.getElementById('look-share').style.display = 'none';
 };
 
 // ── DOWNLOAD MY LOOK (Sprint 57) ──
@@ -2206,13 +2216,13 @@ function buildLookExport(done) {
         }
         ctx.fillText(name, 14, fy);
 
-        done({ url: c.toDataURL('image/jpeg', 0.9), name: fallbackName, composited: true });
+        done({ url: c.toDataURL('image/jpeg', 0.9), name: fallbackName, composited: true, canvas: c });
       } catch (e) {
         // Tainted canvas or any draw failure — un-composited original.
-        done({ url: src, name: fallbackName, composited: false });
+        done({ url: src, name: fallbackName, composited: false, canvas: null });
       }
     };
-    im.onerror = function() { done({ url: src, name: fallbackName, composited: false }); };
+    im.onerror = function() { done({ url: src, name: fallbackName, composited: false, canvas: null }); };
     im.src = src;
   });
 }
@@ -2236,6 +2246,55 @@ function downloadLook() {
     setTimeout(function() {
       confirmEl.textContent = exp.composited ? 'Downloaded ✓' : 'Downloaded ✓ (original image — the watermark could not be added)';
     }, 50);
+  });
+}
+
+// ── SHARE MY LOOK (Sprint 61) — same compositor as downloadLook ──
+// Shown only where the Web Share API can share files (checked per reveal
+// with a dummy File) — desktop browsers without it never see the button,
+// per the no-dead-controls rule. A cancelled share sheet (AbortError) is
+// silent: the shopper changed their mind, nothing went wrong.
+function lookShareSupported() {
+  try {
+    return !!(navigator.canShare && navigator.canShare({ files: [new File([''], 't.jpg', { type: 'image/jpeg' })] }));
+  } catch (e) { return false; }
+}
+
+function shareLook() {
+  var btn = document.getElementById('look-share');
+  var confirmEl = document.getElementById('fitroom-confirm');
+  btn.disabled = true;
+  btn.textContent = 'PREPARING...';
+  buildLookExport(function(exp) {
+    var finish = function(shared) {
+      btn.disabled = false;
+      btn.textContent = 'SHARE MY LOOK';
+      if (!shared) return;
+      confirmEl.textContent = '';
+      setTimeout(function() { confirmEl.textContent = 'Shared ✓'; }, 50);
+    };
+    var doShare = function(payload) {
+      navigator.share(payload).then(function() { finish(true); }).catch(function() {
+        // AbortError (sheet dismissed) and everything else end silently.
+        finish(false);
+      });
+    };
+    if (exp.composited && exp.canvas) {
+      exp.canvas.toBlob(function(blob) {
+        try {
+          var file = blob ? new File([blob], exp.name, { type: 'image/jpeg' }) : null;
+          if (file && navigator.canShare({ files: [file] })) {
+            doShare({ files: [file], text: 'My Mirr try-on — trymirr.com' });
+            return;
+          }
+        } catch (e) { /* fall through to text-only */ }
+        doShare({ text: 'My Mirr try-on — trymirr.com' });
+      }, 'image/jpeg', 0.9);
+    } else {
+      // Compositing failed — share the text alone rather than an
+      // un-watermarked file.
+      doShare({ text: 'My Mirr try-on — trymirr.com' });
+    }
   });
 }
 
