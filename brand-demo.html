@@ -1448,7 +1448,7 @@ function showRealResult(resultSrc) {
   if (tags[1]) tags[1].textContent = 'YOU IN THIS';
 
   document.getElementById('tryon-note').textContent =
-    '✓ This is you wearing the garment — fitted to your exact measurements using AI.';
+    '✓ This is you wearing the garment — fitted to your exact measurements.';
 
   document.getElementById('result-state').style.display = 'block';
   focusResultHeading();
@@ -1470,7 +1470,7 @@ function showFallbackResult(hadError, errMsg, pixelCode) {
       return '📷 Photo issue: please use a half-body or full-body photo that clearly shows your upper body — not a close-up selfie. Tap ← Back to try a different photo.';
     }
     if (code === 'person_image_social_ui') {
-      return '📷 Photo rejected: the AI detected a screen or UI in your photo background (e.g. a TV or phone screen). Retake in front of a plain wall with no screens visible, or crop them out, then try again. No credits charged.';
+      return '📷 Photo rejected: we detected a screen or UI in your photo background (e.g. a TV or phone screen). Retake in front of a plain wall with no screens visible, or crop them out, then try again. No credits charged.';
     }
     if (code && code.startsWith('person_image_')) {
       return '📷 There was a problem with your photo — ' + (msg ? msg.split('.')[0] + '. Tap ← Back to try a different photo.' : 'please tap ← Back and try a different full-body photo.');
