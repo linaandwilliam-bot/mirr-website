@@ -273,6 +273,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <p class="std-note">Confirmed once per session — these are the three things the try-on processor cares about most. <a href="/how-to-measure#photos" target="_blank" rel="noopener">See our photo guide →</a></p>
       </div>
       <button class="submit-btn" id="submit-btn" onclick="submitForm()">SUBMIT ALL PRODUCTS →</button>
+      <p class="submit-note" id="standards-hint" style="display:none;color:var(--sky-text)">Confirm the photo standards above to submit.</p>
       <p class="submit-note">Your photos are uploaded securely. We'll contact you if we need anything adjusted.</p>
     </div>
 
@@ -637,6 +638,9 @@ function updateStandardsGate() {
   const all = boxes.length > 0 && [].every.call(boxes, function(b) { return b.checked; });
   const btn = document.getElementById('submit-btn');
   if (btn) btn.disabled = !all;
+  // Say WHY the button is disabled (Sprint 70) — hint shows only while it is.
+  const hint = document.getElementById('standards-hint');
+  if (hint) hint.style.display = all ? 'none' : 'block';
   try {
     if (all) sessionStorage.setItem(STANDARDS_KEY, '1');
     else sessionStorage.removeItem(STANDARDS_KEY);
