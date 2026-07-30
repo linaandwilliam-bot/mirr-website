@@ -617,6 +617,14 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:52px 48p
 /* Keyboard focus — visible outline for tab navigation (a11y) */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 
+/* ── Launch notify (Sprint 68) ── */
+.notify{padding:64px 48px;border-bottom:1px solid var(--line);text-align:center;background:var(--paper)}
+.notify-h{font-family:var(--font-serif);font-size:clamp(22px,3vw,30px);font-weight:500;margin-bottom:10px}
+.notify-sub{font-size:13px;color:var(--ink3);margin-bottom:22px}
+.notify-form{display:flex;gap:10px;justify-content:center;max-width:440px;margin:0 auto;flex-wrap:wrap}
+.notify-note{font-size:12px;margin-top:14px;color:var(--sky-text)}
+@media(max-width:700px){.notify{padding:48px 20px}}
+
 /* Reduced motion — honor the OS preference (WCAG 2.3.3). Additive overrides
    only: decorative animation stops in its resting (visible) state,
    scroll-reveals render immediately, and the hero-demo's simulated loading
@@ -1000,6 +1008,19 @@ document.getElementById('nav-mobile-panel').addEventListener('keydown', function
 </section>
 
 <!-- PRODUCT GRID -->
+<!-- LAUNCH NOTIFY (Sprint 68) — hidden unless notifyInit confirms a live form ID -->
+<section class="notify" id="notify-block" style="display:none">
+  <h2 class="notify-h">Be there when the fitting room opens.</h2>
+  <p class="notify-sub">Leave your email and we'll send exactly one message — when Mirr goes live.</p>
+  <form class="notify-form" id="notify-form" onsubmit="notifySubmit(event)">
+    <input type="hidden" name="type" value="launch-notify">
+    <input type="text" name="_gotcha" style="position:absolute;left:-9999px" aria-hidden="true" tabindex="-1" autocomplete="off">
+    <input type="email" class="cta-input" id="notify-email" name="email" autocomplete="email" placeholder="your email" required aria-label="Your email address">
+    <button class="cta-btn" id="notify-btn" type="submit">NOTIFY ME</button>
+  </form>
+  <p class="notify-note" id="notify-note" role="status" aria-live="polite"></p>
+</section>
+
 <section class="products">
   <div class="products-header rv">
     <div class="products-title">Browse the marketplace</div>
@@ -1535,6 +1556,72 @@ function rwSubmit(ev){
     btn.disabled=false;btn.textContent='JOIN EARLY';
   });
 }
+
+// ── LAUNCH NOTIFY (Sprint 68) ──
+// Uses the site's established shared Formspree form (same inline-key model
+// as every other capture on this page). William: to keep the launch list in
+// its own Formspree inbox, create a new form at formspree.io and put its ID
+// here. If this is ever set to the 'YOUR_FORM_ID' placeholder instead, the
+// whole block hides itself — a broken capture never ships.
+var FORMSPREE_NOTIFY_ID = 'xvznvrdo';
+var NOTIFY_KEY = 'mirr-launch-notify';
+
+function notifyInit() {
+  var block = document.getElementById('notify-block');
+  if (!block) return;
+  if (!FORMSPREE_NOTIFY_ID || /YOUR_FORM_ID/i.test(FORMSPREE_NOTIFY_ID)) {
+    block.style.display = 'none';
+    return;
+  }
+  block.style.display = 'block';
+  var done = false;
+  try { done = localStorage.getItem(NOTIFY_KEY) === '1'; } catch (e) { /* confirm shows per-visit only */ }
+  if (done) notifyConfirm();
+}
+
+function notifyConfirm() {
+  document.getElementById('notify-form').style.display = 'none';
+  var note = document.getElementById('notify-note');
+  note.style.color = 'var(--sky-text)';
+  // Clear-then-set so the live region announces reliably (Sprint 41).
+  note.textContent = '';
+  setTimeout(function() { note.textContent = "✓ You're on the list — one email, at launch."; }, 50);
+}
+
+function notifySubmit(ev) {
+  ev.preventDefault();
+  var email = document.getElementById('notify-email').value.trim();
+  var note = document.getElementById('notify-note');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    note.style.color = 'var(--rose-text)';
+    note.textContent = '';
+    setTimeout(function() { note.textContent = 'Please enter a valid email address.'; }, 50);
+    return;
+  }
+  var btn = document.getElementById('notify-btn');
+  btn.disabled = true;
+  fetch('https://formspree.io/f/' + FORMSPREE_NOTIFY_ID, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      type: 'launch-notify',
+      email: email,
+      _gotcha: document.querySelector('#notify-form input[name="_gotcha"]').value,
+      _subject: 'Launch notify signup — ' + email
+    })
+  }).then(function(res) {
+    if (!res.ok) throw new Error('Formspree returned ' + res.status);
+    try { localStorage.setItem(NOTIFY_KEY, '1'); } catch (e) { /* confirm shows this visit only */ }
+    notifyConfirm();
+  }).catch(function() {
+    btn.disabled = false;
+    note.style.color = 'var(--rose-text)';
+    note.textContent = '';
+    setTimeout(function() { note.textContent = 'Something went wrong — please email hello@trymirr.com directly.'; }, 50);
+  });
+}
+
+notifyInit();
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6fb28a3de5848c8837eaa3d8495d031"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
