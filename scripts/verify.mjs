@@ -15,6 +15,9 @@ import { tmpdir } from 'node:os';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const failures = [];
 const fail = (msg) => failures.push(msg);
+// Warnings surface drift worth a human look but never fail the run.
+const warnings = [];
+const warn = (msg) => warnings.push(msg);
 const read = (f) => readFileSync(join(root, f), 'utf8');
 
 // ── tokens.css defines the design tokens every page depends on ──
@@ -300,6 +303,32 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   }
 }
 
+// ── Sprint 71 warnings: live products without buy_urls; founding-count drift ──
+// Both are warnings, not failures: they flag hand-maintained data that has
+// drifted, which needs a human decision rather than a blocked push.
+{
+  try {
+    const brands = JSON.parse(read('brands.json'));
+    // Every product in brands.json is live on the storefront by definition —
+    // one whose buy_url is missing gives shoppers a BUY button that only
+    // shows a "store link not available" toast.
+    for (const [slug, b] of Object.entries(brands)) {
+      for (const p of Array.isArray(b.products) ? b.products : []) {
+        if (p && p.name && (p.buy_url == null || p.buy_url === '')) {
+          warn(`brands.json: "${slug}" product "${p.name}" has no buy_url — its BUY button only shows a toast; fill it before announcing the brand`);
+        }
+      }
+    }
+    // founding-count.json is hand-maintained; notice when it disagrees with
+    // the actual founding-tier brand count.
+    const foundingSlugs = Object.entries(brands).filter(([, b]) => b.tier === 'founding').map(([s]) => s);
+    const fc = JSON.parse(read('founding-count.json'));
+    if (typeof fc.filled === 'number' && fc.filled !== foundingSlugs.length) {
+      warn(`founding-count.json: filled is ${fc.filled} but brands.json has ${foundingSlugs.length} founding-tier brand(s)${foundingSlugs.length ? ` (${foundingSlugs.join(', ')})` : ''} — update one, or confirm the difference is deliberate (e.g. demo brands don't take a spot)`);
+    }
+  } catch { /* parse failures already reported by the earlier checks */ }
+}
+
 // ── Sprint 55: dashboard + fitting-room invariants ──
 // dashboard.html renders brand-typed data and must stay unindexed, escaped,
 // and honest about analytics; brand-demo's fitting room must keep its
@@ -364,6 +393,11 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   }
 }
 
+if (warnings.length > 0) {
+  console.warn(`⚠ ${warnings.length} warning(s) — drift to review, not failures:\n`);
+  for (const m of warnings) console.warn(`  ${m}`);
+  console.warn('');
+}
 if (failures.length > 0) {
   console.error(`✗ ${failures.length} verification failure(s):\n`);
   for (const m of failures) console.error(`  ${m}`);

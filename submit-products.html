@@ -262,7 +262,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <!-- SUBMIT -->
     <div class="submit-section">
       <div class="submit-section-title">READY TO SUBMIT</div>
-      <div class="submit-section-body">Once you submit, our team will review your products and have them live on Mirr within 3 business days. We'll email you to confirm when each product is available.</div>
+      <!-- "We'll be in touch" deliberately, not "we'll email you": whether a
+           worker-side go-live confirmation email actually sends is unverified
+           from this repo (docs/RUNBOOK.md, FOUND WHILE DOCUMENTING #2) — the
+           founders confirm manually today. If a worker-side go-live email is
+           ever confirmed or built, restore the stronger copy:
+           "We'll email you to confirm when each product is available." -->
+      <div class="submit-section-body">Once you submit, our team will review your products and have them live on Mirr within 3 business days. We'll be in touch to confirm when each product is available.</div>
       <!-- Photo-standards confirm (Sprint 65) — ticked once per session,
            remembered in sessionStorage so repeat submissions are not nagged -->
       <div class="standards-strip" id="standards-strip">
@@ -882,10 +888,12 @@ async function attemptSubmit() {
   const brandEmail = document.getElementById('brand-email').value;
 
   // ── Catalog Worker is the authoritative pipeline record ──
-  // This is what actually tracks submitted → reviewing → live, and what
-  // triggers the automated confirmation email once a brand reviewer marks
-  // a submission live. If this call fails, the submission genuinely has
-  // not entered the pipeline, so we show the honest error state.
+  // This is what actually tracks submitted → reviewing → live. (Whether it
+  // also sends a go-live confirmation email when a reviewer flips status to
+  // live is UNVERIFIED from this repo — see docs/RUNBOOK.md; the page copy
+  // promises "we'll be in touch", which the manual workflow backs.) If this
+  // call fails, the submission genuinely has not entered the pipeline, so we
+  // show the honest error state.
   let ref;
   try {
     const resp = await fetch(CATALOG_WORKER + '/submit', {
