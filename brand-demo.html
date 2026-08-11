@@ -427,6 +427,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .utbtn{padding-top:15px;padding-bottom:15px}
 }
 
+/* ── Fit realism: direction, hem position, image-honesty (Sprint 74) ── */
+.rsq{margin-left:auto;padding-right:8px;font-size:10px;color:var(--ink4);text-align:right}
+.rsq.tight{color:var(--rose-text)}
+.rsq.loose{color:var(--ink3)}
+.hem-note{display:none;font-size:11px;color:var(--ink3);line-height:1.7;background:var(--paper);border:1px solid var(--line2);border-radius:6px;padding:9px 12px;margin:10px 0 12px}
+.render-note{display:none;font-size:10px;color:var(--ink4);text-align:center;margin:6px 0 2px;font-style:italic}
+
 /* ── Instant sample result (Sprint 73) ── */
 .sample-link{display:block;width:100%;background:none;border:none;margin-top:10px;padding:8px 4px;font-family:var(--font-sans);font-size:11px;letter-spacing:.04em;color:var(--sky-text);cursor:pointer;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(123,174,200,.4)}
 .sample-banner{display:none;align-items:center;gap:12px;flex-wrap:wrap;background:var(--sky-bg);border:1px solid var(--sky-brd);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:11px;line-height:1.6;color:var(--sky-text)}
@@ -749,6 +756,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
               <div class="tryon-watermark">trymirr.com</div>
             </div>
           </div>
+          <!-- Image-honesty line (Sprint 74): the render shows the look at the
+               garment's design proportions; the NUMBERS own fit truth. -->
+          <div class="render-note" id="render-note">Rendered at the garment’s design proportions — your fit details are below.</div>
           <div class="tryon-note" id="tryon-note">
             ✓ When live, these two images merge into one — you wearing the garment, fitted to your exact measurements using computer vision.
           </div>
@@ -780,10 +790,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <!-- Shown only for dims products; the fit panel's own "Estimated"
                label already covers the legacy case — never both. -->
           <div class="measured-note" id="measured-note" style="display:none">Fit scores use this garment’s measured dimensions.</div>
-          <div class="rsi"><div class="rsit"><span class="rsin">Chest</span><span class="rsip" id="rp-chest">—</span></div><div class="rsb"><div class="rsbf" id="rb-chest"></div></div></div>
-          <div class="rsi"><div class="rsit"><span class="rsin">Waist</span><span class="rsip" id="rp-waist">—</span></div><div class="rsb"><div class="rsbf" id="rb-waist"></div></div></div>
-          <div class="rsi"><div class="rsit"><span class="rsin">Hips</span><span class="rsip" id="rp-hips">—</span></div><div class="rsb"><div class="rsbf" id="rb-hips"></div></div></div>
-          <div class="rsi" style="border-bottom:none"><div class="rsit"><span class="rsin">Length</span><span class="rsip" id="rp-inseam">—</span></div><div class="rsb"><div class="rsbf" id="rb-inseam"></div></div></div>
+          <div class="rsi"><div class="rsit"><span class="rsin">Chest</span><span class="rsq" id="rq-chest"></span><span class="rsip" id="rp-chest">—</span></div><div class="rsb"><div class="rsbf" id="rb-chest"></div></div></div>
+          <div class="rsi"><div class="rsit"><span class="rsin">Waist</span><span class="rsq" id="rq-waist"></span><span class="rsip" id="rp-waist">—</span></div><div class="rsb"><div class="rsbf" id="rb-waist"></div></div></div>
+          <div class="rsi"><div class="rsit"><span class="rsin">Hips</span><span class="rsq" id="rq-hips"></span><span class="rsip" id="rp-hips">—</span></div><div class="rsb"><div class="rsbf" id="rb-hips"></div></div></div>
+          <div class="rsi" style="border-bottom:none"><div class="rsit"><span class="rsin">Length</span><span class="rsq" id="rq-inseam"></span><span class="rsip" id="rp-inseam">—</span></div><div class="rsb"><div class="rsbf" id="rb-inseam"></div></div></div>
+
+          <!-- Hem/sleeve position (Sprint 74) — dims products only -->
+          <p class="hem-note" id="hem-note"></p>
 
           <div class="rovr">
             <div><div class="rovl">OVERALL FIT</div><div class="rovs" id="rov-sub">Based on your measurements</div></div>
@@ -2211,15 +2224,19 @@ showRealResult = function(resultSrc) {
     sh.style.display = 'none';
   }
   document.getElementById('fitroom-confirm').textContent = '';
+  // Sprint 74: the image-honesty line accompanies every real merged result.
+  document.getElementById('render-note').style.display = 'block';
 };
 var _fitroomShowFallback = showFallbackResult;
 showFallbackResult = function(hadError, errMsg, pixelCode) {
   _fitroomShowFallback(hadError, errMsg, pixelCode);
   // Fallback previews are not saveable, downloadable or shareable — only
-  // real merged results are.
+  // real merged results are. The side-by-side preview is not a render, so
+  // the image-honesty line hides too (Sprint 74).
   document.getElementById('fitroom-save').style.display = 'none';
   document.getElementById('look-dl').style.display = 'none';
   document.getElementById('look-share').style.display = 'none';
+  document.getElementById('render-note').style.display = 'none';
 };
 
 // ── DOWNLOAD MY LOOK (Sprint 57) ──
@@ -2554,20 +2571,126 @@ function renderSizeChart(p) {
   det.style.display = 'block';
 }
 
+// ── Fit realism helpers (Sprint 74) ──
+// Small pure helpers over the engine's OWN constants (FIT_EASE via the same
+// band lookup, GRADE via gradeDims) — the displayed cm is the band-edge
+// distance scoreCirc penalises, so qualifiers can never contradict scores.
+function easeDetail(flatCm, bodyCm, fit) {
+  var band = FIT_EASE[fit] || FIT_EASE.regular;
+  var ease = flatCm * 2 - bodyCm;
+  if (ease < band.min) return { dir: 'tight', cm: band.min - ease };
+  if (ease > band.max) return { dir: 'loose', cm: ease - band.max };
+  return { dir: 'in', cm: 0 };
+}
+
+// Mirrors computeFit's per-dimension routing exactly (bottoms skip chest and
+// default to fitted for waist; length vs inseam by category).
+function fitDetails(product, mcm, sizeLabel) {
+  var fit = product.fit || 'regular';
+  var sample = product.sample_size || 'M';
+  var steps = SIZE_STEPS.indexOf(sizeLabel) - SIZE_STEPS.indexOf(sample);
+  var d = gradeDims(product.dims, steps);
+  var isBottom = product.tryon_cat === 'lowerbody';
+  var out = {};
+  if (d.chest != null && !isBottom) out.chest = easeDetail(d.chest, mcm.chest, fit);
+  if (d.waist != null) out.waist = easeDetail(d.waist, mcm.waist, isBottom ? (product.fit || 'fitted') : fit);
+  if (d.hips != null) out.hips = easeDetail(d.hips, mcm.hips, fit);
+  var lengthDim = isBottom ? d.inseam : d.length;
+  if (lengthDim != null) {
+    var kind = isBottom ? 'inseam' : 'length';
+    out.length = {
+      kind: kind,
+      styleShort: kind === 'inseam' ? lengthDim < 60 : lengthDim < 55,
+      deltaCm: lengthDim - mcm.height * (kind === 'inseam' ? 0.45 : 0.40)
+    };
+  }
+  return out;
+}
+
+function dominantConsequence(det) {
+  var worst = null;
+  ['chest', 'waist', 'hips'].forEach(function(k) {
+    var e = det[k];
+    if (e && e.dir !== 'in' && (!worst || e.cm > worst.cm)) worst = { k: k, dir: e.dir, cm: e.cm };
+  });
+  if (!worst) return 'in range';
+  return worst.k + ' about ' + Math.round(worst.cm) + 'cm ' + (worst.dir === 'tight' ? 'tight' : 'loose');
+}
+
+function renderFitExtras(p) {
+  var det = fitDetails(p, MCM, selectedSize());
+  ['chest', 'waist', 'hips'].forEach(function(k) {
+    var el = document.getElementById('rq-' + k);
+    if (!el) return;
+    var e = det[k];
+    if (!e) { el.textContent = ''; el.className = 'rsq'; return; }
+    if (e.dir === 'in') { el.textContent = 'in range'; el.className = 'rsq'; }
+    else if (e.dir === 'tight') { el.textContent = 'snug — about ' + Math.round(e.cm) + 'cm of stretch needed'; el.className = 'rsq tight'; }
+    else { el.textContent = 'roomy — about ' + Math.round(e.cm) + 'cm loose'; el.className = 'rsq loose'; }
+  });
+  var lenEl = document.getElementById('rq-inseam');
+  var hem = document.getElementById('hem-note');
+  var L = det.length;
+  if (!L) {
+    if (lenEl) { lenEl.textContent = ''; lenEl.className = 'rsq'; }
+    hem.style.display = 'none';
+  } else if (L.styleShort) {
+    // Matches the engine's N/A rule: style length is a choice, not a fit miss.
+    if (lenEl) { lenEl.textContent = 'cut short by design'; lenEl.className = 'rsq'; }
+    hem.textContent = 'Cut short by design — length not scored.';
+    hem.style.display = 'block';
+  } else {
+    var delta = Math.round(L.deltaCm);
+    var abs = Math.abs(delta);
+    if (lenEl) {
+      // 5cm is the engine's own scoring grace zone.
+      lenEl.textContent = abs <= 5 ? 'in range' : (delta > 0 ? 'runs long — about ' + abs + 'cm' : 'runs short — about ' + abs + 'cm');
+      lenEl.className = 'rsq' + (abs <= 5 ? '' : ' loose');
+    }
+    if (L.kind === 'inseam') {
+      hem.textContent = abs <= 2
+        ? 'At your height, this inseam lands right around your ankle.'
+        : delta > 0
+          ? 'At your height, this inseam runs about ' + abs + 'cm past your ankle — expect stacking or covering the top of your foot.'
+          : 'At your height, this inseam ends about ' + abs + 'cm above your ankle.';
+    } else {
+      hem.textContent = abs <= 5
+        ? 'At your height, the hem lands around your hip.'
+        : delta > 0
+          ? 'At your height, the hem lands about ' + abs + 'cm below your hip.'
+          : 'At your height, the hem sits about ' + abs + 'cm above your hip.';
+    }
+    hem.style.display = 'block';
+  }
+}
+
+function clearFitExtras() {
+  ['chest', 'waist', 'hips', 'inseam'].forEach(function(k) {
+    var el = document.getElementById('rq-' + k);
+    if (el) { el.textContent = ''; el.className = 'rsq'; }
+  });
+  var hem = document.getElementById('hem-note');
+  if (hem) hem.style.display = 'none';
+}
+
 function renderFitAcross(p) {
   var wrap = document.getElementById('fas-wrap');
   if (!wrap) return;
   if (!p || !p.dims) { wrap.style.display = 'none'; return; }
   var rec = recommendSize(p, MCM);
+  var recConsequence = 'in range';
   document.getElementById('fas-row').innerHTML = SIZE_STEPS.map(function(s) {
     var r = computeFit(p, MCM, s);
+    // Per-size dominant consequence from the same ease values as the score.
+    var dom = dominantConsequence(fitDetails(p, MCM, s));
+    if (s === rec.size) recConsequence = dom;
     // A size the engine cannot score shows a dash — never an invented number.
     var score = r.overall > 0 ? r.overall + '%' : '—';
-    return '<div class="fas-pill' + (s === rec.size ? ' on' : '') + '">' +
+    return '<div class="fas-pill' + (s === rec.size ? ' on' : '') + '" title="' + esc(s + ' — ' + dom) + '">' +
       '<span class="fas-s">' + s + '</span><span class="fas-p">' + score + '</span></div>';
   }).join('');
   document.getElementById('fas-note').textContent =
-    'Best size ' + rec.size + ' — scored against your measurements.';
+    'Best size ' + rec.size + ' — ' + recConsequence + ', scored against your measurements.';
   wrap.style.display = 'block';
 }
 
@@ -2575,13 +2698,18 @@ var _s66CalcFitReal = calcFitReal;
 calcFitReal = function(p) {
   _s66CalcFitReal(p);
   renderFitAcross(p);
+  // Sprint 74: direction qualifiers + hem position, same triggers as the
+  // fit render (result shown, size change, measurement re-run).
+  renderFitExtras(p);
 };
 var _s66CalcFitLegacy = calcFitLegacy;
 calcFitLegacy = function() {
   _s66CalcFitLegacy();
-  // Legacy (scores-only) products have no per-size truth to show.
+  // Legacy (scores-only) products have no per-size truth to show — and no
+  // measured dims to derive direction or hem position from.
   var wrap = document.getElementById('fas-wrap');
   if (wrap) wrap.style.display = 'none';
+  clearFitExtras();
 };
 
 // ── SHOPPER PHOTO PRE-FLIGHT (Sprint 72) ──
@@ -2714,6 +2842,10 @@ function renderSampleResult() {
   document.getElementById('rverd').style.display = 'none';
   document.getElementById('fas-wrap').style.display = 'none';
   document.getElementById('measured-note').style.display = 'none';
+  // Sprint 74: no visitor fit details in sample mode; the honesty line is
+  // still true for the sample render, so it stays.
+  clearFitExtras();
+  document.getElementById('render-note').style.display = 'block';
   document.getElementById('result-state').style.display = 'block';
   focusResultHeading();
 }
