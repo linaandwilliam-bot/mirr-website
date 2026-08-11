@@ -2570,6 +2570,80 @@ calcFitLegacy = function() {
   if (wrap) wrap.style.display = 'none';
 };
 
+// ── SHOPPER PHOTO PRE-FLIGHT (Sprint 72) ──
+// Catches the objective failures free, before any worker call or credit
+// spend. validatePhoto is protected — extended by reassignment (new checks
+// first, then the original runs unchanged: its 11MB byte cap and landscape
+// warning are untouched; its 400x600 floor is superseded by the stricter
+// 500x700 gate here). Strictly additive: soft background tips ride on an
+// ok result through the existing warn surface and never block.
+function s72BackgroundTip(img) {
+  // Same 64px outer-frame sampling as submit-products' pre-flight, with far
+  // more lenient thresholds — shopper photos legitimately have rooms behind
+  // them. Only genuinely dark scenes or extreme clutter get a tip.
+  var S = 64, B = 6;
+  var c = document.createElement('canvas');
+  c.width = S; c.height = S;
+  var ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, S, S);
+  var d = ctx.getImageData(0, 0, S, S).data;
+  var sum = 0, sumSq = 0, n = 0;
+  for (var y = 0; y < S; y++) {
+    for (var x = 0; x < S; x++) {
+      if (x >= B && x < S - B && y >= B && y < S - B) continue;
+      var i = (y * S + x) * 4;
+      var lum = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+      sum += lum; sumSq += lum * lum; n++;
+    }
+  }
+  var mean = sum / n;
+  var variance = sumSq / n - mean * mean;
+  if (mean < 70) return 'Try-ons work best with even lighting and a plain background.';
+  if (variance > 2500) return 'A busy background can confuse the try-on — a plain wall gives the best result.';
+  return null;
+}
+
+var _s72ValidatePhoto = validatePhoto;
+validatePhoto = function(src, done) {
+  // Type gate straight off the data URL — decodable-but-unsupported formats
+  // would otherwise burn a worker call before the server rejects them.
+  if (!/^data:image\/(jpeg|jpg|png|webp)/i.test(String(src))) {
+    done({ ok: false, msg: 'That file type is not supported — please use a JPEG or PNG photo (most phones can export one). No credits charged.' });
+    return;
+  }
+  var img = new Image();
+  img.onload = function() {
+    var w = img.naturalWidth, h = img.naturalHeight;
+    if (w >= 1 && h >= 1) {
+      if (w < 500 || h < 700) {
+        done({ ok: false, msg: 'This photo is ' + w + ' × ' + h + 'px — try-on needs at least 500 × 700px to render you cleanly. Please use a larger photo. No credits charged.' });
+        return;
+      }
+      var ar = w / h;
+      if (ar > 3 || ar < 1 / 3) {
+        done({ ok: false, msg: 'That photo’s shape is too extreme for try-on — please use a normal portrait photo. No credits charged.' });
+        return;
+      }
+    }
+    // Objective gates passed — the original checks run unchanged; a soft
+    // background tip rides on a clean ok (never overriding an existing warn).
+    _s72ValidatePhoto(src, function(result) {
+      if (result && result.ok && !result.warn) {
+        try {
+          var tip = s72BackgroundTip(img);
+          if (tip) { done({ ok: true, warn: tip }); return; }
+        } catch (e) { /* heuristics only — sampling failure means no tip */ }
+      }
+      done(result);
+    });
+  };
+  img.onerror = function() {
+    // Undecodable — hand straight to the original for its established message.
+    _s72ValidatePhoto(src, done);
+  };
+  img.src = src;
+};
+
 function dismissReturnPrompt() {
   document.getElementById('return-prompt').classList.remove('show');
 }
