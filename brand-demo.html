@@ -427,6 +427,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .utbtn{padding-top:15px;padding-bottom:15px}
 }
 
+/* ── Instant sample result (Sprint 73) ── */
+.sample-link{display:block;width:100%;background:none;border:none;margin-top:10px;padding:8px 4px;font-family:var(--font-sans);font-size:11px;letter-spacing:.04em;color:var(--sky-text);cursor:pointer;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(123,174,200,.4)}
+.sample-banner{display:none;align-items:center;gap:12px;flex-wrap:wrap;background:var(--sky-bg);border:1px solid var(--sky-brd);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:11px;line-height:1.6;color:var(--sky-text)}
+.sample-banner strong{font-family:var(--font-mono);letter-spacing:.12em;font-weight:500}
+.sample-exit{background:var(--sky);color:var(--white);border:none;padding:8px 14px;font-family:var(--font-sans);font-size:10px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px;white-space:nowrap;margin-left:auto}
+
 /* ── Size chart + fit-across-sizes (Sprint 66) — dims products only ── */
 .szchart{margin:14px 0 4px;border:1px solid var(--line);border-radius:8px;background:var(--white)}
 .szchart summary{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--sky-text);padding:10px 14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
@@ -661,6 +667,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <div class="ptip no"><span class="ptip-mark">✗</span>TVs, phones or screens in the background</div>
         </div>
         <div class="snv"><button class="snxt" style="flex:1" onclick="goStep(2)">USE MY PHOTO →</button></div>
+        <!-- Instant sample (Sprint 73) — zero-cost look at a real result -->
+        <button class="sample-link" id="sample-link" type="button" onclick="showSampleResult()">See a sample result first →</button>
       </div>
 
       <!-- STEP 2 -->
@@ -719,6 +727,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <!-- DEMO DISCLAIMER FOR BRANDS -->
           <div style="background:rgba(212,168,152,.08);border:.5px solid rgba(212,168,152,.3);border-radius:6px;padding:10px 12px;margin-bottom:14px;font-size:11px;color:var(--rose-dark);line-height:1.6">
             <strong style="color:var(--ink)">Note for brands:</strong> this demo uses stock lifestyle photos as garment references. Your own flat-lay product photos (garment on plain background, no model) will produce a noticeably cleaner result for your real customers.
+          </div>
+
+          <!-- Sample-mode banner (Sprint 73) -->
+          <div class="sample-banner" id="sample-banner">
+            <span><strong>SAMPLE</strong> — a real Mirr result for our sample shopper. Upload your photo to see yourself.</span>
+            <button class="sample-exit" type="button" onclick="exitSampleMode()">← TRY IT WITH YOUR PHOTO</button>
           </div>
 
           <!-- SIDE BY SIDE PHOTOS -->
@@ -2642,6 +2656,91 @@ validatePhoto = function(src, done) {
     _s72ValidatePhoto(src, done);
   };
   img.src = src;
+};
+
+// ── INSTANT SAMPLE RESULT (Sprint 73) ──
+// A zero-cost, zero-credit look at a REAL finished Mirr result (the same
+// PixelAPI output the homepage hero uses), honestly banner-labelled as a
+// sample. Separate render path reusing the result DOM — runTryOn is
+// protected, so sample mode routes around it via reassignment: goStep(3)
+// keeps all its panel/focus behaviour, but in sample mode the wrapper
+// renders the bundled pair instead of calling the worker. No worker calls,
+// no credits, no fitting-room/measurement writes, and no tryon-completed
+// beacon (showRealResult never runs). Swap sample-shopper.jpg /
+// sample-result.jpg (and SAMPLE_PRODUCT below) to change the sample.
+var SAMPLE_PRODUCT = 2; // Cobalt Zip-Up Jacket — the garment in sample-result.jpg
+var _sampleMode = false;
+var _sampleSaved = null; // originals for exact restore on exit
+
+function showSampleResult() {
+  _sampleMode = true;
+  showDetail(SAMPLE_PRODUCT);
+  goStep(3); // routed to renderSampleResult by the wrapper below
+}
+
+function renderSampleResult() {
+  document.getElementById('proc-state').style.display = 'none';
+  var tags = document.querySelectorAll('.tryon-tag');
+  var noteEl = document.getElementById('tryon-note');
+  var remail = document.querySelector('.remail');
+  if (!_sampleSaved) {
+    _sampleSaved = {
+      tag0: tags[0] ? tags[0].textContent : '',
+      tag1: tags[1] ? tags[1].textContent : '',
+      note: noteEl.textContent,
+      remailDisplay: remail ? remail.style.display : ''
+    };
+  }
+  var userPhotoEl = document.getElementById('user-photo');
+  userPhotoEl.src = '/sample-shopper.jpg';
+  userPhotoEl.style.display = 'block';
+  document.getElementById('r-img').src = '/sample-result.jpg';
+  if (tags[0]) tags[0].textContent = 'SAMPLE SHOPPER';
+  if (tags[1]) tags[1].textContent = 'SAMPLE RESULT';
+  noteEl.textContent = '✓ A real Mirr result — our sample shopper wearing this garment.';
+  document.getElementById('sample-banner').style.display = 'flex';
+  // Nothing about the sample belongs in a visitor's personal fitting room.
+  document.getElementById('fitroom-save').style.display = 'none';
+  document.getElementById('look-dl').style.display = 'none';
+  document.getElementById('look-share').style.display = 'none';
+  if (remail) remail.style.display = 'none';
+  // Scores: honest placeholder — never the visitor's, never fabricated.
+  ['chest', 'waist', 'hips', 'inseam'].forEach(function(d) {
+    document.getElementById('rp-' + d).textContent = '—';
+    document.getElementById('rb-' + d).style.width = '0';
+  });
+  document.getElementById('rov-sub').textContent = 'Your scores appear here after your try-on';
+  document.getElementById('rov-score').textContent = '—';
+  document.getElementById('rverd').style.display = 'none';
+  document.getElementById('fas-wrap').style.display = 'none';
+  document.getElementById('measured-note').style.display = 'none';
+  document.getElementById('result-state').style.display = 'block';
+  focusResultHeading();
+}
+
+function exitSampleMode() {
+  _sampleMode = false;
+  document.getElementById('sample-banner').style.display = 'none';
+  if (_sampleSaved) {
+    var tags = document.querySelectorAll('.tryon-tag');
+    if (tags[0]) tags[0].textContent = _sampleSaved.tag0;
+    if (tags[1]) tags[1].textContent = _sampleSaved.tag1;
+    document.getElementById('tryon-note').textContent = _sampleSaved.note;
+    var remail = document.querySelector('.remail');
+    if (remail) remail.style.display = _sampleSaved.remailDisplay;
+    _sampleSaved = null;
+  }
+  document.getElementById('result-state').style.display = 'none';
+  // Restore the measured-dims note for the current product (hidden above).
+  var p = PRODS[curProd];
+  document.getElementById('measured-note').style.display = (p && p.dims) ? 'block' : 'none';
+  goStep(1);
+}
+
+var _s73RunTryOn = runTryOn;
+runTryOn = function() {
+  if (_sampleMode) { renderSampleResult(); return; }
+  _s73RunTryOn();
 };
 
 function dismissReturnPrompt() {
