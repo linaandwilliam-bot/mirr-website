@@ -12,6 +12,7 @@ There is no build, lint, or test tooling in this repo. Workflow is:
 
 - **Preview locally before committing** — open the HTML file(s) directly in a browser, or serve the directory (e.g. `python -m http.server`) since some pages fetch local JSON (`founding-count.json`) and `fetch()` can behave differently under `file://`.
 - **Check links before every push** — run `node scripts/check-links.mjs`; it verifies every internal href/src in the HTML pages resolves to a real file and exits non-zero listing anything broken.
+- **Test the fit engine before every push** — run `node scripts/fit-engine.test.mjs`; the full pre-push sequence is `node scripts/check-links.mjs && node scripts/verify.mjs && node scripts/fit-engine.test.mjs`.
 - **Verify structure before every push** — run `node scripts/verify.mjs`; it checks the site's structural invariants (design tokens defined, nav variants present, brands.json/founding-count.json valid, tokens.css + analytics beacon on every page, brand-demo's try-on flow anchors, BRAND_ALLOWLIST structure, commitment-consistency of business-day promises, JS syntax of every inline script block, and the schema shape of brands.json — name/valid tier/products — and submissions.json — ref/brand fields/valid status/products) and exits non-zero listing failures.
 - **Deploy** — push to `main`; GitHub Pages publishes within ~1 minute. There is no staging environment, so pushing to `main` is effectively a live deploy.
 
@@ -32,6 +33,9 @@ There's no shared CSS file; every HTML page duplicates its own `:root` design to
 
 ### founding-count.json drives the founding-brands spot tracker
 `founding-brands.html` fetches `/founding-count.json` (`{ filled, total }`) at runtime with `cache: 'no-store'` and renders slot progress, a progress bar, and copy ("N founding spots left at the 8% rate...") from it. Falls back to a safe default (0 filled) if the fetch fails. To update the live counter, edit `founding-count.json`; no code change is needed.
+
+### fit-engine.js is the single source of truth for fit math
+`/fit-engine.js` holds the fit engine — `FIT_EASE`, `SIZE_STEPS`, `GRADE`, `scoreCirc`, `scoreLength`, `gradeDims`, `computeFit`, `recommendSize` — as browser globals with a dual-context `module.exports` for Node. brand-demo.html loads it via `<script src="/fit-engine.js">`; the math is duplicated nowhere and must never be re-inlined (verify.mjs enforces both). Any change to it must keep `node scripts/fit-engine.test.mjs` green.
 
 ### brand-demo.html: try-on flow calls the mirr-tryon-worker
 The live demo flow in `brand-demo.html` posts to a Cloudflare Worker at `https://mirr-tryon-worker.linaandwilliam.workers.dev`:

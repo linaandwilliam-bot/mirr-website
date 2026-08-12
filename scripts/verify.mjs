@@ -349,6 +349,24 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   if (!bd.includes('MEASURED ✓')) fail('brand-demo.html: measured-dimensions badge string "MEASURED ✓" is missing');
 }
 
+// ── Sprint 78: fit engine is a single-source-of-truth module ──
+// The engine must exist, export every function, and never be silently
+// re-inlined into brand-demo (which must load it via script tag instead).
+{
+  if (!existsSync(join(root, 'fit-engine.js'))) {
+    fail('fit-engine.js is missing — the fit math has no source of truth');
+  } else {
+    const fe = read('fit-engine.js');
+    for (const fn of ['scoreCirc', 'scoreLength', 'gradeDims', 'computeFit', 'recommendSize']) {
+      if (!fe.includes('function ' + fn + '(')) fail(`fit-engine.js: function ${fn} is missing`);
+    }
+    if (!fe.includes('module.exports')) fail('fit-engine.js: dual-context module.exports is missing (the test suite cannot load it)');
+    const bd = read('brand-demo.html');
+    if (!bd.includes('src="/fit-engine.js"')) fail('brand-demo.html: does not load /fit-engine.js');
+    if (/function computeFit\(/.test(bd)) fail('brand-demo.html: computeFit is re-inlined — fit-engine.js must stay the only definition');
+  }
+}
+
 // ── Sprint 58: metrics beacon invariants ──
 // The beacons are dormant-safe wrappers; the guard makes sure the wrapper
 // pattern never quietly turns into a body replacement — buyClick's ORIGINAL
