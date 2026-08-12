@@ -617,7 +617,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <!-- Size chart (Sprint 66) — generated from measured dims via the fit
            engine's own grading; hidden entirely for products without dims -->
       <details class="szchart" id="szchart" style="display:none">
-        <summary>SIZE CHART (CM)</summary>
+        <summary id="szchart-summary">SIZE CHART (CM)</summary>
         <div class="szchart-scroll"><table class="szchart-t" id="szchart-t"></table></div>
         <p class="szchart-note" id="szchart-note"></p>
       </details>
@@ -2556,19 +2556,35 @@ function renderSizeChart(p) {
   var LABELS = { chest: 'Chest', waist: 'Waist', hips: 'Hips', length: 'Length', inseam: isBottom ? 'Length' : 'Inseam' };
   var sample = p.sample_size || 'M';
   var sampleIdx = SIZE_STEPS.indexOf(sample);
+  // Display units follow the shopper's toggle (Sprint 75) — the stored dims
+  // stay metric; inches are converted per cell at render time, 1 decimal.
+  var inches = curUnit === 'in';
+  var summaryEl = document.getElementById('szchart-summary');
+  if (summaryEl) summaryEl.textContent = inches ? 'SIZE CHART (IN)' : 'SIZE CHART (CM)';
   var head = '<tr><th></th>' + SIZE_STEPS.map(function(s) {
     return '<th' + (s === sample ? ' class="szchart-sample"' : '') + '>' + s + '</th>';
   }).join('') + '</tr>';
   var rows = Object.keys(p.dims).map(function(k) {
     return '<tr><td>' + esc(LABELS[k] || k) + '</td>' + SIZE_STEPS.map(function(s, i) {
-      var v = Math.round(gradeDims(p.dims, i - sampleIdx)[k] * 10) / 10;
+      var cmv = gradeDims(p.dims, i - sampleIdx)[k];
+      var v = inches ? Math.round((cmv / 2.54) * 10) / 10 : Math.round(cmv * 10) / 10;
       return '<td' + (s === sample ? ' class="szchart-sample"' : '') + '>' + v + '</td>';
     }).join('') + '</tr>';
   }).join('');
   document.getElementById('szchart-t').innerHTML = head + rows;
-  document.getElementById('szchart-note').textContent =
-    'Flat-lay cm, measured by the brand — ' + sample + ' is the measured sample size.';
+  document.getElementById('szchart-note').textContent = inches
+    ? 'Flat-lay inches, converted from the brand’s measured cm — ' + sample + ' is the measured sample size.'
+    : 'Flat-lay cm, measured by the brand — ' + sample + ' is the measured sample size.';
   det.style.display = 'block';
+}
+
+// ── Display-unit formatting (Sprint 75) ──
+// Metric stays the source of truth everywhere; this converts the "about N"
+// quantity at DISPLAY time only, per the shopper's unit toggle. Inches
+// round to the nearest half (4cm -> about 1.5in), cm to whole numbers.
+function fmtAbout(cm) {
+  if (curUnit === 'in') return 'about ' + (Math.round((cm / 2.54) * 2) / 2) + 'in';
+  return 'about ' + Math.round(cm) + 'cm';
 }
 
 // ── Fit realism helpers (Sprint 74) ──
@@ -2614,7 +2630,7 @@ function dominantConsequence(det) {
     if (e && e.dir !== 'in' && (!worst || e.cm > worst.cm)) worst = { k: k, dir: e.dir, cm: e.cm };
   });
   if (!worst) return 'in range';
-  return worst.k + ' about ' + Math.round(worst.cm) + 'cm ' + (worst.dir === 'tight' ? 'tight' : 'loose');
+  return worst.k + ' ' + fmtAbout(worst.cm) + ' ' + (worst.dir === 'tight' ? 'tight' : 'loose');
 }
 
 function renderFitExtras(p) {
@@ -2625,8 +2641,8 @@ function renderFitExtras(p) {
     var e = det[k];
     if (!e) { el.textContent = ''; el.className = 'rsq'; return; }
     if (e.dir === 'in') { el.textContent = 'in range'; el.className = 'rsq'; }
-    else if (e.dir === 'tight') { el.textContent = 'snug — about ' + Math.round(e.cm) + 'cm of stretch needed'; el.className = 'rsq tight'; }
-    else { el.textContent = 'roomy — about ' + Math.round(e.cm) + 'cm loose'; el.className = 'rsq loose'; }
+    else if (e.dir === 'tight') { el.textContent = 'snug — ' + fmtAbout(e.cm) + ' of stretch needed'; el.className = 'rsq tight'; }
+    else { el.textContent = 'roomy — ' + fmtAbout(e.cm) + ' loose'; el.className = 'rsq loose'; }
   });
   var lenEl = document.getElementById('rq-inseam');
   var hem = document.getElementById('hem-note');
@@ -2642,23 +2658,26 @@ function renderFitExtras(p) {
   } else {
     var delta = Math.round(L.deltaCm);
     var abs = Math.abs(delta);
+    // Thresholds stay metric (the engine's own grace zones); only the
+    // displayed quantity converts, via the shared helper.
+    var qty = fmtAbout(Math.abs(L.deltaCm));
     if (lenEl) {
       // 5cm is the engine's own scoring grace zone.
-      lenEl.textContent = abs <= 5 ? 'in range' : (delta > 0 ? 'runs long — about ' + abs + 'cm' : 'runs short — about ' + abs + 'cm');
+      lenEl.textContent = abs <= 5 ? 'in range' : (delta > 0 ? 'runs long — ' + qty : 'runs short — ' + qty);
       lenEl.className = 'rsq' + (abs <= 5 ? '' : ' loose');
     }
     if (L.kind === 'inseam') {
       hem.textContent = abs <= 2
         ? 'At your height, this inseam lands right around your ankle.'
         : delta > 0
-          ? 'At your height, this inseam runs about ' + abs + 'cm past your ankle — expect stacking or covering the top of your foot.'
-          : 'At your height, this inseam ends about ' + abs + 'cm above your ankle.';
+          ? 'At your height, this inseam runs ' + qty + ' past your ankle — expect stacking or covering the top of your foot.'
+          : 'At your height, this inseam ends ' + qty + ' above your ankle.';
     } else {
       hem.textContent = abs <= 5
         ? 'At your height, the hem lands around your hip.'
         : delta > 0
-          ? 'At your height, the hem lands about ' + abs + 'cm below your hip.'
-          : 'At your height, the hem sits about ' + abs + 'cm above your hip.';
+          ? 'At your height, the hem lands ' + qty + ' below your hip.'
+          : 'At your height, the hem sits ' + qty + ' above your hip.';
     }
     hem.style.display = 'block';
   }
@@ -2873,6 +2892,23 @@ var _s73RunTryOn = runTryOn;
 runTryOn = function() {
   if (_sampleMode) { renderSampleResult(); return; }
   _s73RunTryOn();
+};
+
+// ── IMPERIAL DISPLAY RE-RENDER (Sprint 75) ──
+// setUnit is already wrapped by Sprint 56 (persistence); this chains on top
+// so every unit-bearing surface re-renders when the toggle flips: the size
+// chart always, and the fit qualifiers/hem/across-sizes strip when a real
+// result is on screen. Sample mode shows no visitor fit details to convert.
+var _s75SetUnit = setUnit;
+setUnit = function(u) {
+  _s75SetUnit(u);
+  var p = PRODS[curProd];
+  if (!p || !p.dims) return;
+  renderSizeChart(p);
+  if (document.getElementById('result-state').style.display === 'block' && !_sampleMode) {
+    renderFitExtras(p);
+    renderFitAcross(p);
+  }
 };
 
 function dismissReturnPrompt() {
