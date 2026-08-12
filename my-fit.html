@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="robots" content="noindex, nofollow">
+<title>My fit profile — Mirr</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-weight:300;line-height:1.6}
+@media(prefers-color-scheme:dark){html,body{background:var(--page)!important;color:var(--ink)!important}}
+
+nav{border-bottom:1px solid var(--line);padding:0 48px;background:var(--page)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{display:flex;align-items:baseline;text-decoration:none}
+.logo-word{font-family:var(--font-mono);font-size:20px;font-weight:500;letter-spacing:3px;color:var(--ink)}
+.logo-flip{display:inline-block;transform:scaleX(-1);color:var(--sky)}
+.nav-back{font-size:12px;color:var(--ink3);text-decoration:none}
+
+.page{max-width:760px;margin:0 auto;padding:40px 24px 80px}
+.eyebrow{font-size:10px;letter-spacing:.24em;color:var(--ink4);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:16px;height:.5px;background:var(--sky)}
+.title{font-family:var(--font-serif);font-size:clamp(26px,4vw,34px);font-weight:500;margin-bottom:8px;line-height:1.15}
+.sub{font-size:13px;color:var(--ink3);line-height:1.8;margin-bottom:28px;max-width:560px}
+
+.section-label{font-size:10px;letter-spacing:.2em;color:var(--sky);margin:26px 0 10px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:20px}
+.empty-note{font-size:13px;color:var(--ink3)}
+.empty-note a{color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)}
+
+/* Measurements editor — same 30–250cm sanity bounds as the fitting room */
+.m-rows{display:flex;flex-direction:column}
+.m-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line2)}
+.m-row:last-of-type{border-bottom:none}
+.m-name{font-size:13px;color:var(--ink2)}
+.m-right{display:flex;align-items:center;gap:8px}
+.m-input{width:76px;height:40px;border:1.5px solid var(--line);border-radius:6px;font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--ink);text-align:center;background:var(--page);outline:none;-webkit-appearance:none;appearance:none}
+.m-input:focus{border-color:var(--sky)}
+.m-unit{font-family:var(--font-mono);font-size:11px;color:var(--ink4);width:22px}
+.m-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.btn-primary{background:var(--sky);color:var(--white);border:none;padding:11px 20px;font-family:var(--font-sans);font-size:11px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px;transition:opacity .2s}
+.btn-primary:hover{opacity:.88}
+.m-msg{font-size:12px;color:var(--sky-text)}
+.m-msg.err{color:var(--rose-text)}
+.m-source{font-size:10px;color:var(--ink4);margin-top:10px}
+
+/* Saved looks — same visual language as the demo's fitting room */
+.looks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.look-card{background:var(--white);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.look-imgwrap{position:relative;width:100%;aspect-ratio:3/4;background:var(--cream)}
+.look-imgwrap img{width:100%;height:100%;object-fit:cover;display:block}
+.look-wm{position:absolute;bottom:8px;right:8px;background:rgba(123,174,200,.92);color:var(--white);font-family:var(--font-mono);font-size:8px;letter-spacing:.08em;padding:3px 7px;border-radius:999px;pointer-events:none}
+.look-body{padding:10px 12px 12px}
+.look-name{font-size:12px;color:var(--ink);font-weight:400;line-height:1.4}
+.look-meta{font-family:var(--font-mono);font-size:10px;color:var(--ink4);margin:3px 0 9px}
+.look-remove{background:none;border:1px solid var(--line);border-radius:4px;padding:6px 10px;font-family:var(--font-sans);font-size:9px;letter-spacing:.08em;color:var(--ink3);cursor:pointer}
+.look-remove:hover{border-color:var(--sky);color:var(--sky-text)}
+.looks-count{font-family:var(--font-mono);font-size:11px;color:var(--ink4);margin-bottom:12px}
+
+/* Privacy + clear all — inline confirm, no window.confirm */
+.privacy-card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:20px;margin-top:32px}
+.privacy-title{font-size:10px;letter-spacing:.2em;color:var(--sky);margin-bottom:10px}
+.privacy-body{font-size:13px;color:var(--ink2);line-height:1.8;margin-bottom:14px}
+.btn-danger{background:none;border:1px solid var(--rose-text);color:var(--rose-text);padding:10px 16px;font-family:var(--font-sans);font-size:10px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px}
+.confirm-row{display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--ink2)}
+.confirm-row button{padding:9px 14px;font-family:var(--font-sans);font-size:10px;letter-spacing:.08em;font-weight:500;cursor:pointer;border-radius:4px}
+.confirm-yes{background:var(--rose-text);color:var(--white);border:none}
+.confirm-no{background:none;border:1px solid var(--line);color:var(--ink3)}
+
+.live-region{position:absolute;left:-9999px}
+
+@media(max-width:640px){
+  nav{padding:0 20px}
+  .page{padding:32px 16px 60px}
+}
+/* Keyboard focus — visible outline for tab navigation (a11y) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<noscript><div style="max-width:680px;margin:24px auto;padding:14px 18px;background:var(--rose-bg);border:1px solid rgba(212,168,152,.35);border-radius:8px;font-size:13px;color:var(--rose-dark)">Your fit profile lives in this browser and needs JavaScript to display.</div></noscript>
+
+<div id="nav"><noscript><div style="padding:14px 24px;border-bottom:1px solid var(--line);font-size:13px"><a href="/" style="color:var(--sky-text);text-decoration:none">← Mirr home</a></div></noscript></div>
+<script src="/nav.js"></script>
+
+<div class="page">
+
+  <div class="eyebrow">YOUR FIT PROFILE</div>
+  <h1 class="title">My fit.</h1>
+  <p class="sub">Your measurements and saved try-ons, in one place. Everything here lives in this browser on this device — nothing is uploaded, synced, or sent to Mirr.</p>
+
+  <!-- MY MEASUREMENTS -->
+  <div class="section-label">MY MEASUREMENTS</div>
+  <div class="card" id="measure-card">
+    <p class="empty-note" id="measure-empty" style="display:none">No measurements saved yet — set them in <a href="/brand-demo">the fitting room</a> and they will appear here.</p>
+    <div id="measure-edit" style="display:none">
+      <div class="m-rows" id="m-rows"></div>
+      <div class="m-actions">
+        <button class="btn-primary" id="m-save" type="button" onclick="saveProfile()">SAVE CHANGES</button>
+        <span class="m-msg" id="m-msg" role="status" aria-live="polite"></span>
+      </div>
+      <p class="m-source">Stored as centimetres internally — the fitting room and fit scores read these values directly.</p>
+    </div>
+  </div>
+
+  <!-- MY FITTING ROOM -->
+  <div class="section-label">MY FITTING ROOM</div>
+  <div class="card" id="looks-card">
+    <p class="empty-note" id="looks-empty" style="display:none">Your fitting room is empty — <a href="/brand-demo">try something on</a>.</p>
+    <div id="looks-wrap" style="display:none">
+      <div class="looks-count" id="looks-count"></div>
+      <div class="looks-grid" id="looks-grid"></div>
+    </div>
+  </div>
+  <p class="live-region" id="looks-live" role="status" aria-live="polite"></p>
+
+  <!-- PRIVACY + CLEAR ALL -->
+  <div class="privacy-card">
+    <div class="privacy-title">PRIVACY</div>
+    <p class="privacy-body">Everything on this page lives in this browser on this device. Nothing is uploaded, synced, or sent to Mirr — clearing your browser data also clears it.</p>
+    <button class="btn-danger" id="clear-all" type="button" onclick="askClearAll()">CLEAR ALL FIT DATA</button>
+    <div class="confirm-row" id="clear-confirm">
+      <span>This removes your measurements and all saved looks from this browser.</span>
+      <button class="confirm-yes" id="clear-yes" type="button" onclick="doClearAll()">YES, CLEAR ALL</button>
+      <button class="confirm-no" type="button" onclick="cancelClearAll()">CANCEL</button>
+    </div>
+    <p class="live-region" id="clear-live" role="status" aria-live="polite"></p>
+  </div>
+
+</div>
+
+<script>
+// Personal data page — everything rendered goes through esc(), everything
+// read from storage is validated, and both keys are written back in EXACTLY
+// the shapes brand-demo's readers expect:
+//   mirr-measurements  -> { mcm: {height,chest,waist,hips,inseam}, unit, at }
+//   mirr-fitting-room  -> array of saved-look objects, cap 6
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+var MEASURE_KEY = 'mirr-measurements';
+var FITROOM_KEY = 'mirr-fitting-room';
+var M_KEYS = ['height', 'chest', 'waist', 'hips', 'inseam'];
+var M_LABELS = { height: 'Height', chest: 'Chest', waist: 'Waist', hips: 'Hips', inseam: 'Inseam' };
+var _unit = 'cm';
+
+function loadMeasurements() {
+  try {
+    var m = JSON.parse(localStorage.getItem(MEASURE_KEY));
+    if (m && typeof m === 'object' && m.mcm && typeof m.mcm === 'object') return m;
+  } catch (e) { /* garbage JSON renders the empty state */ }
+  return null;
+}
+
+function loadLooks() {
+  try {
+    var a = JSON.parse(localStorage.getItem(FITROOM_KEY));
+    if (Array.isArray(a)) return a;
+  } catch (e) { /* garbage JSON renders the empty state */ }
+  return [];
+}
+
+function renderMeasurements() {
+  var saved = loadMeasurements();
+  var any = false;
+  if (saved) {
+    _unit = saved.unit === 'in' ? 'in' : 'cm';
+    var rows = M_KEYS.map(function(k) {
+      var cm = Number(saved.mcm[k]);
+      if (!Number.isFinite(cm) || cm < 30 || cm > 250) return '';
+      any = true;
+      var v = _unit === 'in' ? Math.round(cm / 2.54 * 10) / 10 : cm;
+      return '<div class="m-row"><span class="m-name">' + M_LABELS[k] + '</span>' +
+        '<span class="m-right"><input type="number" class="m-input" id="mf-' + k + '" value="' + v + '"' +
+        (_unit === 'in' ? ' step="0.1"' : ' step="1"') + ' aria-label="' + M_LABELS[k] + '"><span class="m-unit">' + _unit + '</span></span></div>';
+    }).join('');
+    if (any) document.getElementById('m-rows').innerHTML = rows;
+  }
+  document.getElementById('measure-empty').style.display = any ? 'none' : 'block';
+  document.getElementById('measure-edit').style.display = any ? 'block' : 'none';
+}
+
+function saveProfile() {
+  var saved = loadMeasurements();
+  if (!saved) return;
+  var msg = document.getElementById('m-msg');
+  var mcm = {};
+  for (var i = 0; i < M_KEYS.length; i++) {
+    var k = M_KEYS[i];
+    var el = document.getElementById('mf-' + k);
+    if (!el) { // key was invalid in storage — keep whatever was there
+      if (saved.mcm[k] != null) mcm[k] = saved.mcm[k];
+      continue;
+    }
+    var raw = parseFloat(el.value);
+    var cm = _unit === 'in' ? Math.round(raw * 2.54) : Math.round(raw);
+    if (!Number.isFinite(cm) || cm < 30 || cm > 250) {
+      msg.className = 'm-msg err';
+      msg.textContent = '';
+      var label = M_LABELS[k];
+      setTimeout(function() { msg.textContent = label + ' looks off — enter a value between 30 and 250cm (12 and 98in).'; }, 50);
+      el.focus();
+      return;
+    }
+    mcm[k] = cm;
+  }
+  try {
+    // Exact writer shape brand-demo's reader expects.
+    localStorage.setItem(MEASURE_KEY, JSON.stringify({ mcm: mcm, unit: _unit, at: Date.now() }));
+    msg.className = 'm-msg';
+    msg.textContent = '';
+    setTimeout(function() { msg.textContent = '✓ Saved — the fitting room now uses these values.'; }, 50);
+  } catch (e) {
+    msg.className = 'm-msg err';
+    msg.textContent = '';
+    setTimeout(function() { msg.textContent = 'Could not save on this device — storage is unavailable.'; }, 50);
+  }
+}
+
+function lookCardHTML(x, i) {
+  var when = '';
+  try { when = new Date(x.at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }); } catch (e) { /* cosmetic */ }
+  var meta = [x.brand ? esc(x.brand) : '', x.size ? 'size ' + esc(x.size) : '', when].filter(Boolean).join(' · ');
+  return '<div class="look-card">' +
+    '<div class="look-imgwrap"><img src="' + esc(x.img) + '" alt="Saved try-on: ' + esc(x.product) + '" loading="lazy"><div class="look-wm">trymirr.com</div></div>' +
+    '<div class="look-body">' +
+      '<div class="look-name">' + esc(x.product) + '</div>' +
+      '<div class="look-meta">' + meta + '</div>' +
+      '<button class="look-remove" type="button" onclick="removeLook(' + i + ')" aria-label="Remove ' + esc(x.product) + ' from fitting room">REMOVE</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function renderLooks() {
+  var arr = loadLooks();
+  var has = arr.length > 0;
+  document.getElementById('looks-empty').style.display = has ? 'none' : 'block';
+  document.getElementById('looks-wrap').style.display = has ? 'block' : 'none';
+  if (!has) return;
+  // Newest first, same as the demo's grid; indexes map through the reversal.
+  document.getElementById('looks-grid').innerHTML = arr.map(lookCardHTML).reverse().join('');
+  document.getElementById('looks-count').textContent = arr.length + ' OF 6 SAVED';
+}
+
+function removeLook(i) {
+  var arr = loadLooks();
+  if (!arr[i]) return;
+  var name = arr[i].product;
+  arr.splice(i, 1);
+  try { localStorage.setItem(FITROOM_KEY, JSON.stringify(arr)); } catch (e) { /* degrade silently */ }
+  renderLooks();
+  var live = document.getElementById('looks-live');
+  live.textContent = '';
+  setTimeout(function() { live.textContent = 'Removed ' + name + ' from your fitting room.'; }, 50);
+}
+
+function askClearAll() {
+  document.getElementById('clear-confirm').style.display = 'flex';
+  document.getElementById('clear-yes').focus();
+}
+
+function cancelClearAll() {
+  document.getElementById('clear-confirm').style.display = 'none';
+  document.getElementById('clear-all').focus();
+}
+
+function doClearAll() {
+  try { localStorage.removeItem(MEASURE_KEY); } catch (e) { /* nothing to clear */ }
+  try { localStorage.removeItem(FITROOM_KEY); } catch (e) { /* nothing to clear */ }
+  document.getElementById('clear-confirm').style.display = 'none';
+  renderMeasurements();
+  renderLooks();
+  var live = document.getElementById('clear-live');
+  live.textContent = '';
+  setTimeout(function() { live.textContent = 'All fit data cleared from this browser.'; }, 50);
+  document.getElementById('clear-all').focus();
+}
+
+renderMeasurements();
+renderLooks();
+</script>
+
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6fb28a3de5848c8837eaa3d8495d031"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
