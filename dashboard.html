@@ -39,6 +39,13 @@ nav{border-bottom:1px solid var(--line);padding:0 48px;background:var(--page)}
 .founding-line{font-size:12px;color:var(--ink3);background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:8px;padding:11px 16px;margin-bottom:26px;display:none}
 .founding-line strong{color:var(--sky-text);font-weight:500}
 
+/* Live activity (Sprint 76) — counts of demo events, never revenue claims */
+.live-card{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-bottom:14px}
+.live-grid{display:none;grid-template-columns:repeat(3,1fr);gap:14px}
+.la-small{font-size:13px;font-family:var(--font-sans);color:var(--ink4);line-height:1.5;padding-top:6px}
+.live-fallback{display:none;font-size:12px;color:var(--ink3)}
+@media(max-width:640px){.live-grid{grid-template-columns:1fr}}
+
 .section-label{font-size:10px;letter-spacing:.2em;color:var(--sky);margin:26px 0 10px}
 .pcard-list{background:var(--white);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .prow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line2);flex-wrap:wrap}
@@ -110,6 +117,30 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
 
     <div class="founding-line" id="d-founding"></div>
+
+    <!-- Live activity (Sprint 76): real counts from the metrics worker only —
+         no invented zeros; unreachable worker shows the honest fallback. -->
+    <div class="section-label">LIVE ACTIVITY</div>
+    <div class="live-card">
+      <div class="live-grid" id="live-grid">
+        <div>
+          <div class="meta-label">TRY-ONS COMPLETED</div>
+          <div class="meta-value" id="la-tryons"></div>
+          <div class="meta-note">since launch</div>
+        </div>
+        <div>
+          <div class="meta-label">BUY CLICKS</div>
+          <div class="meta-value" id="la-buys"></div>
+          <div class="meta-note">clicks toward your store</div>
+        </div>
+        <div>
+          <div class="meta-label">CONVERSION</div>
+          <div class="meta-value" id="la-conv"></div>
+          <div class="meta-note" id="la-conv-note"></div>
+        </div>
+      </div>
+      <p class="live-fallback" id="live-fallback">Live counts arrive once tracking is deployed.</p>
+    </div>
 
     <div class="section-label">YOUR PRODUCTS</div>
     <div class="pcard-list" id="d-plist"></div>
@@ -191,6 +222,33 @@ function render(brand, subs, fc, metrics) {
   } else {
     document.getElementById('d-tryons').textContent = (brand.tryons_count != null ? brand.tryons_count : '—');
     document.getElementById('d-tryons-note').textContent = 'as of listing';
+  }
+
+  // Live activity panel (Sprint 76): needs BOTH tryons and buys to be real
+  // numbers — anything less shows the fallback, never invented zeros.
+  // Conversion is buys per completed try-on, and a tiny sample rendered as
+  // a percentage is a lie of small numbers: below 10 try-ons it says
+  // "collecting data" instead.
+  var laTryons = metrics && Number(metrics.tryons);
+  var laBuys = metrics && Number(metrics.buys);
+  if (Number.isFinite(laTryons) && Number.isFinite(laBuys)) {
+    document.getElementById('la-tryons').textContent = laTryons;
+    document.getElementById('la-buys').textContent = laBuys;
+    var convEl = document.getElementById('la-conv');
+    if (laTryons >= 10) {
+      convEl.textContent = Math.round((laBuys / laTryons) * 100) + '%';
+      convEl.className = 'meta-value';
+      document.getElementById('la-conv-note').textContent = 'buy clicks per completed try-on';
+    } else {
+      convEl.textContent = 'collecting data';
+      convEl.className = 'meta-value la-small';
+      document.getElementById('la-conv-note').textContent = 'shown once 10+ try-ons are in';
+    }
+    document.getElementById('live-grid').style.display = 'grid';
+    document.getElementById('live-fallback').style.display = 'none';
+  } else {
+    document.getElementById('live-grid').style.display = 'none';
+    document.getElementById('live-fallback').style.display = 'block';
   }
 
   // Founding-spot context — straight from founding-count.json, no invention.
