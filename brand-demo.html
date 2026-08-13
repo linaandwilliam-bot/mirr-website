@@ -427,6 +427,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .utbtn{padding-top:15px;padding-bottom:15px}
 }
 
+/* ── Example-store credibility (Sprint 79) ── */
+.bstats-note{font-size:10px;color:var(--ink4);font-style:italic;margin-top:6px}
+
 /* ── Fit realism: direction, hem position, image-honesty (Sprint 74) ── */
 .rsq{margin-left:auto;padding-right:8px;font-size:10px;color:var(--ink4);text-align:right}
 .rsq.tight{color:var(--rose-text)}
@@ -961,6 +964,9 @@ function renderBrandHeader(brand) {
       '<div><div class="bsn">' + esc(brand.rating) + '</div><div class="bsl">RATING</div></div>' +
       '<div><div class="bsn">' + esc(brand.tryons_count) + '</div><div class="bsl">TRY-ONS</div></div>' +
     '</div>' +
+    // example: true (brands.json) — fabricated numbers never sit unlabelled
+    // beside a verified tick (Sprint 79); real brands show no such line.
+    (brand.example ? '<div class="bstats-note">Rating and try-on figures are illustrative for this example store.</div>' : '') +
     '<div class="bdesc">' + esc(brand.description) + '</div>' +
     '<div class="btags">' + (brand.tags || []).map(function(t) { return '<div class="btag">' + esc(t) + '</div>'; }).join('') + '</div>';
 }
@@ -2830,6 +2836,32 @@ var _s73RunTryOn = runTryOn;
 runTryOn = function() {
   if (_sampleMode) { renderSampleResult(); return; }
   _s73RunTryOn();
+};
+
+// ── EXAMPLE-STORE BUY INTERCEPT (Sprint 79) ──
+// The example store's buy_urls point at example.com placeholders; letting
+// the funnel's most important button land on IANA's "Example Domain" page
+// reads as broken. buyClick is protected — this wrapper is defined after
+// the Sprint 58 metrics wrapper, so it runs OUTERMOST: an example-store
+// click shows an honest toast and never navigates, never fires the
+// buy-clicked beacon (a dead demo click is not real buy intent). Real
+// buy_urls pass through to today's exact behaviour, UTM attribution intact.
+function isExampleStoreUrl(url) {
+  try {
+    var host = new URL(url).hostname;
+    return host === 'example.com' || host.slice(-12) === '.example.com';
+  } catch (e) { return false; }
+}
+
+var _s79BuyClick = buyClick;
+buyClick = function() {
+  var p = PRODS[curProd];
+  var url = (p && p.buy_url) || (currentBrand && currentBrand.store_url);
+  if (url && isExampleStoreUrl(url)) {
+    showToast('This is an example store. Real brands link here to their own checkout.');
+    return;
+  }
+  _s79BuyClick();
 };
 
 // ── IMPERIAL DISPLAY RE-RENDER (Sprint 75) ──

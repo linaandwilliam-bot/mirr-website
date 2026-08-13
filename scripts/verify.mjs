@@ -214,6 +214,11 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
     for (const [slug, b] of Object.entries(brands)) {
       if (!b.name || typeof b.name !== 'string') fail(`brands.json: "${slug}" is missing name`);
       if (!VALID_TIERS.includes(b.tier)) fail(`brands.json: "${slug}" tier must be one of ${VALID_TIERS.join('/')} (got ${JSON.stringify(b.tier)})`);
+      // example is optional (Sprint 79): flags demo/example brands so real
+      // metrics rules and the founding-spot count skip them.
+      if (b.example != null && typeof b.example !== 'boolean') {
+        fail(`brands.json: "${slug}" example must be a boolean when present (got ${JSON.stringify(b.example)})`);
+      }
       if (!Array.isArray(b.products) || b.products.length === 0) {
         fail(`brands.json: "${slug}" needs a non-empty products array`);
       } else if (!b.products.some((p) => p && p.name && p.price)) {
@@ -320,8 +325,10 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
       }
     }
     // founding-count.json is hand-maintained; notice when it disagrees with
-    // the actual founding-tier brand count.
-    const foundingSlugs = Object.entries(brands).filter(([, b]) => b.tier === 'founding').map(([s]) => s);
+    // the actual founding-tier brand count. Example brands (example: true)
+    // never occupy a founding spot, so they are excluded — a warning that
+    // fires on every run is a dead warning (Sprint 79).
+    const foundingSlugs = Object.entries(brands).filter(([, b]) => b.tier === 'founding' && b.example !== true).map(([s]) => s);
     const fc = JSON.parse(read('founding-count.json'));
     if (typeof fc.filled === 'number' && fc.filled !== foundingSlugs.length) {
       warn(`founding-count.json: filled is ${fc.filled} but brands.json has ${foundingSlugs.length} founding-tier brand(s)${foundingSlugs.length ? ` (${foundingSlugs.join(', ')})` : ''} — update one, or confirm the difference is deliberate (e.g. demo brands don't take a spot)`);
