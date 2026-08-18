@@ -28,8 +28,17 @@ to `main` is live within ~1 minute. Cloudflare Workers exist around the site (§
 
 ## 2. Cloudflare Workers inventory
 
-These live in the Cloudflare account (linaandwilliam), **outside this repo**. Code for
-them is not in this repo; only client-side calls to them are.
+These live in the Cloudflare account (linaandwilliam). Their source is being brought
+under version control in **`/workers/<name>/`** (Sprint 80) — one folder per worker,
+each with a README covering purpose, endpoints, secret **names**, and deploy command.
+As of 2026-08-12 all four folders are gap-READMEs awaiting the copied source (the
+metrics worker's source exists as a zip in William's other Claude chat; the other
+three must be copied from each Worker's editor in the dashboard).
+
+**Caveat: the repo copy may lag the deployed version.** The dashboard is the runtime
+truth — before editing or redeploying from the repo, open the Worker's editor in the
+dashboard and diff it against `/workers/<name>/src/`. verify.mjs scans the whole
+`/workers/` tree and fails the run on anything resembling a committed credential.
 
 | Worker | Called from | Purpose | Secrets required (names only) |
 |---|---|---|---|

@@ -356,6 +356,28 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   if (!bd.includes('MEASURED ✓')) fail('brand-demo.html: measured-dimensions badge string "MEASURED ✓" is missing');
 }
 
+// ── Sprint 80: no credentials under /workers/ ──
+// Worker source is versioned here with a hard rule: secret NAMES only.
+// Conservative heuristic (false failures are worse than none): a key-ish
+// variable name assigned a 32+ character literal fails the run.
+{
+  const wdir = join(root, 'workers');
+  if (existsSync(wdir)) {
+    const scanDir = (dir) => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const p = join(dir, entry.name);
+        if (entry.isDirectory()) { scanDir(p); continue; }
+        const text = readFileSync(p, 'utf8');
+        const hit = text.match(/(?:key|token|secret|password|credential)[\w-]*["']?\s*[:=]\s*["'][A-Za-z0-9_\-]{32,}["']/i);
+        if (hit) {
+          fail(`workers/: possible committed credential in ${p.slice(root.length + 1).replace(/\\/g, '/')} — "${hit[0].slice(0, 48)}…" (secret NAMES only in this tree)`);
+        }
+      }
+    };
+    scanDir(wdir);
+  }
+}
+
 // ── Sprint 78: fit engine is a single-source-of-truth module ──
 // The engine must exist, export every function, and never be silently
 // re-inlined into brand-demo (which must load it via script tag instead).
