@@ -806,7 +806,10 @@ function validate() {
   return ok;
 }
 
-// UPLOAD photo to imgbb, return URL
+// UPLOAD photo to imgbb, return its display URL + delete link. The delete
+// link is recorded in the submission payload (Sprint 85) — before this it
+// was discarded, so orphaned or superseded uploads could only be removed
+// by hand from the IMGBB account dashboard.
 async function uploadToImgbb(file) {
   const b64 = await new Promise((res, rej) => {
     const r = new FileReader();
@@ -820,7 +823,7 @@ async function uploadToImgbb(file) {
     method: 'POST', body: form
   });
   const data = await resp.json();
-  return data.data.url;
+  return { url: data.data.url, delete_url: data.data.delete_url || '' };
 }
 
 // SUBMIT
@@ -849,16 +852,18 @@ async function attemptSubmit() {
     const id = card.id.replace('product-', '');
     btn.textContent = `UPLOADING PRODUCT ${id} OF ${cards.length}...`;
 
-    let frontUrl = '', backUrl = '';
+    let frontUrl = '', backUrl = '', frontDeleteUrl = '', backDeleteUrl = '';
     const pname = document.getElementById('pname-' + id)?.value || ('Product ' + id);
 
     // Upload photos to imgbb
     try {
       if (productData[id]?.frontFile) {
-        frontUrl = await uploadToImgbb(productData[id].frontFile);
+        const up = await uploadToImgbb(productData[id].frontFile);
+        frontUrl = up.url; frontDeleteUrl = up.delete_url;
       }
       if (productData[id]?.backFile) {
-        backUrl = await uploadToImgbb(productData[id].backFile);
+        const up = await uploadToImgbb(productData[id].backFile);
+        backUrl = up.url; backDeleteUrl = up.delete_url;
       }
     } catch (e) {
       console.warn('Photo upload error:', e);
@@ -880,6 +885,11 @@ async function attemptSubmit() {
       description: document.getElementById('pdesc-' + id)?.value || '',
       front_photo: frontUrl,
       back_photo: backUrl,
+      // Deletion links for the uploads above (Sprint 85) — recorded with the
+      // submission so images can be removed later; visiting the link deletes
+      // the image. No automated deletion happens anywhere yet, by design.
+      front_delete_url: frontDeleteUrl,
+      back_delete_url: backDeleteUrl,
       sizes_in_stock: productData[id]?.sizes.join(', ') || '',
       dim_chest_cm: document.getElementById('dim-chest-' + id)?.value || '',
       dim_waist_cm: document.getElementById('dim-waist-' + id)?.value || '',

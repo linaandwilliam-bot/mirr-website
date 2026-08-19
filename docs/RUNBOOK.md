@@ -143,8 +143,12 @@ uploaded.** The page then:
    window. If this
    call fails the brand gets an honest error screen with retry — the
    submission did NOT enter the pipeline. Note the photos DID already reach
-   IMGBB in that case, and a retry uploads them again — orphaned images can
-   only be removed from the IMGBB account dashboard (FOUND #6).
+   IMGBB in that case, and a retry uploads them again. Since Sprint 85 every
+   successful submission records per-photo deletion links
+   (`front_delete_url` / `back_delete_url` on each product in
+   submissions.json — opening the link in a browser deletes that image;
+   nothing deletes automatically). Images stranded by a FAILED attempt
+   still lose their links and need the IMGBB dashboard (FOUND #6).
 3. Fires a **courtesy Formspree notification** to the inbox with the full
    product JSON — non-blocking, informational only; `submissions.json` is the
    source of truth.
@@ -301,12 +305,19 @@ Still open:
    recommendation names the best AVAILABLE size with its consequence, and
    says so plainly when no stocked size fits closely. Products without a
    `sizes` array (the example store) behave exactly as before.
-6. **IMGBB uploads are unmanaged.** (Sprint 83 rehearsal.) The upload
-   response's `delete_url` is discarded, a failed submission strands
-   already-uploaded photos, and a retry re-uploads them. Orphans are only
-   removable via the IMGBB account dashboard. The 2026-08-19 rehearsal left
-   four fixture images there (all watermarked "REHEARSAL FIXTURE — NOT A
-   REAL PRODUCT") — delete them from the dashboard when convenient.
+6. **IMGBB uploads are unmanaged.** (Sprint 83 rehearsal; PARTIALLY FIXED
+   in Sprint 85.) Successful submissions now record a deletion link per
+   photo — `front_delete_url` / `back_delete_url` on each product in
+   submissions.json; opening the link in a browser deletes that image, and
+   nothing deletes automatically (deliberate — deletion tooling is a later
+   decision). Still open: a FAILED attempt's uploads lose their links when
+   the brand leaves the page (retry re-uploads), so those orphans still
+   need the IMGBB account dashboard. Whether the catalog worker passes the
+   new fields through into submissions.json is passthrough-by-observation
+   (the S83 submission mirrored the payload exactly) — confirm on the next
+   real submission. The 2026-08-19 rehearsal's four fixture images (all
+   watermarked "REHEARSAL FIXTURE — NOT A REAL PRODUCT") predate the fix —
+   delete them from the dashboard when convenient.
 7. **promote-submission's dry-run "diff" prints the entire brands.json
    twice** (before and after) instead of just the touched brand — with the
    example brand's inline base64 SVGs that's hundreds of unreadable lines.

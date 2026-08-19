@@ -261,9 +261,22 @@ if (notes.length > 0) {
   for (const nte of notes) console.log(`  • ${nte}`);
   console.log('');
 }
-console.log('Proposed brands.json diff:\n');
-console.log(diffLines(brandsText, proposedText));
+// Scope the printed diff to the promoted brand's block (Sprint 85) — the
+// old full-file diff re-serialised everything, so the example brand's
+// inline base64 SVGs produced hundreds of unreadable lines a human could
+// not actually review before writing.
+const beforeBlock = brands[slug] ? JSON.stringify({ [slug]: brands[slug] }, null, 2) : '(brand not present yet)';
+const afterBlock = JSON.stringify({ [slug]: proposed[slug] }, null, 2);
+console.log(`Proposed brands.json diff — "${slug}" block only (no other brand is touched):\n`);
+console.log(diffLines(beforeBlock, afterBlock));
 console.log('');
+// The write still re-serialises the whole file; if the stored file isn't in
+// canonical 2-space formatting, the real diff would exceed the block shown.
+// Line endings are normalised first — git's autocrlf gives the working copy
+// CRLF on Windows, which isn't formatting drift.
+if (JSON.stringify(brands, null, 2) + '\n' !== brandsText.replace(/\r\n/g, '\n')) {
+  console.log('Note: brands.json is not currently in canonical 2-space JSON formatting — the write will also reformat the rest of the file (content unchanged).\n');
+}
 
 if (!WRITE) {
   console.log('DRY RUN — nothing written. Re-run with --write to apply.');
