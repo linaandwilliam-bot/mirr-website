@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>For brands — Mirr</title>
+<meta name="description" content="What Mirr is, what we need from you, what it costs, and what happens next — the sixty-second answer for clothing brands considering virtual try-on.">
+<link rel="canonical" href="https://www.trymirr.com/for-brands">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mirr">
+<meta property="og:title" content="For brands — Mirr">
+<meta property="og:description" content="What Mirr is, what we need from you, what it costs, and what happens next — the sixty-second answer for clothing brands considering virtual try-on.">
+<meta property="og:url" content="https://www.trymirr.com/for-brands">
+<meta property="og:image" content="https://www.trymirr.com/og-image.png">
+<meta property="og:locale" content="en_AU">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+/* Skip link (Sprint 81) — hidden off-screen until keyboard focus lands on it */
+.skip-link{position:absolute;left:-9999px;top:0;z-index:2000;background:var(--sky-text);color:var(--white);padding:10px 18px;font-size:12px;letter-spacing:.06em;font-weight:500;text-decoration:none;border-radius:0 0 6px 0}
+.skip-link:focus{left:0}
+main{display:block}
+#main:focus{outline:none}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-weight:300;line-height:1.7}
+@media(prefers-color-scheme:dark){html,body{background:var(--page)!important;color:var(--ink)!important}}
+
+.hero{max-width:720px;margin:0 auto;padding:72px 24px 48px;text-align:center}
+.eyebrow{font-size:10px;letter-spacing:.24em;color:var(--ink4);margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px}
+.eyebrow::before,.eyebrow::after{content:"";width:16px;height:.5px;background:var(--sky)}
+.hero-title{font-family:var(--font-serif);font-size:clamp(30px,4.5vw,44px);font-weight:500;line-height:1.2;margin-bottom:20px}
+.hero-title em{font-style:italic;color:var(--sky-text)}
+.hero-sub{font-size:16px;color:var(--ink2);line-height:1.85;max-width:580px;margin:0 auto 26px}
+.demo-link{display:inline-block;background:var(--sky-text);color:var(--white);text-decoration:none;padding:14px 26px;border-radius:4px;font-size:12px;letter-spacing:.08em;font-weight:500;transition:background .2s}
+.demo-link:hover{background:var(--sky)}
+.demo-note{font-size:11px;color:var(--ink4);margin-top:10px}
+
+.section{max-width:680px;margin:0 auto;padding:0 24px}
+.divider-wide{height:1px;background:var(--line);margin:48px auto;max-width:680px}
+.s-label{font-size:10px;letter-spacing:.2em;color:var(--sky-text);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.s-label::before{content:"";width:16px;height:.5px;background:var(--sky)}
+.s-title{font-family:var(--font-serif);font-size:24px;font-weight:500;margin-bottom:18px;line-height:1.3}
+.s-body{font-size:15px;color:var(--ink2);line-height:1.9;margin-bottom:16px}
+.s-body strong{color:var(--ink);font-weight:500}
+.s-body a{color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.35);padding-bottom:1px}
+
+.step-list{display:flex;flex-direction:column;gap:22px;margin:26px 0 8px}
+.step-item{display:flex;gap:18px;align-items:flex-start}
+.step-num{font-family:var(--font-mono);font-size:13px;color:var(--sky-text);flex:none;padding-top:2px}
+.step-content{flex:1}
+.step-title{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:5px}
+.step-desc{font-size:14px;color:var(--ink3);line-height:1.8}
+.step-desc a{color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.35);padding-bottom:1px}
+
+.cost-table{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:24px 0 12px}
+.cost-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--white)}
+.cost-row:last-child{border-bottom:none}
+.cost-row.hl{background:var(--paper)}
+.cost-what{font-size:13px;color:var(--ink2)}
+.cost-what small{display:block;font-size:11px;color:var(--ink4);margin-top:1px}
+.cost-num{font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap}
+.cost-num.accent{color:var(--sky-text)}
+.cost-note{font-size:12px;color:var(--ink4);line-height:1.7}
+.cost-note a{color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.35)}
+
+.honest{background:var(--paper);border-left:2px solid var(--sky);border-radius:0 8px 8px 0;padding:26px 28px;margin:26px 0 8px}
+.honest-item{font-size:14px;color:var(--ink2);line-height:1.85;padding-left:16px;position:relative;margin-bottom:14px}
+.honest-item:last-child{margin-bottom:0}
+.honest-item::before{content:"—";position:absolute;left:0;color:var(--sky-text)}
+.honest-item strong{color:var(--ink);font-weight:500}
+
+.next-box{margin:24px 0 8px}
+.next-item{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.next-item:last-child{margin-bottom:0}
+.next-mark{font-family:var(--font-mono);font-size:13px;color:var(--sky-text);flex:none;padding-top:2px}
+.next-text{font-size:14px;color:var(--ink2);line-height:1.8}
+.next-text a{color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.35);padding-bottom:1px}
+
+.cta-section{background:var(--ink);color:var(--white);padding:56px 24px;text-align:center;margin-top:56px}
+.cta-title{font-family:var(--font-serif);font-size:25px;font-weight:500;margin-bottom:12px}
+.cta-sub{font-size:14px;color:rgba(255,255,255,.65);margin-bottom:26px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.8}
+.cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-btn{padding:14px 26px;border-radius:4px;font-size:12px;letter-spacing:.08em;font-weight:500;text-decoration:none;transition:opacity .2s,background .2s}
+.cta-btn:hover{opacity:.85}
+.cta-btn-primary{background:var(--sky-text);color:var(--white)}
+.cta-btn-primary:hover{background:var(--sky);opacity:1}
+.cta-btn-secondary{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.3)}
+
+footer{padding:32px 24px;text-align:center}
+.footer-note{font-size:12px;color:var(--ink4)}
+.footer-note a{color:var(--sky-text);text-decoration:none}
+
+@media(max-width:640px){
+  .hero{padding:48px 20px 36px}
+  .cost-row{flex-direction:column;gap:2px}
+}
+/* Keyboard focus — visible outline for tab navigation (a11y) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div id="nav"><noscript><div style="padding:14px 24px;border-bottom:1px solid var(--line);font-size:13px"><a href="/" style="color:var(--sky-text);text-decoration:none">← Mirr home</a></div></noscript></div>
+<script src="/nav.js"></script>
+
+<main id="main" tabindex="-1">
+
+<div class="hero">
+  <div class="eyebrow">FOR CLOTHING BRANDS</div>
+  <h1 class="hero-title">Mirr is a marketplace where shoppers<br>see your clothes <em>on their own body</em> —<br>and check the fit — before they buy.</h1>
+  <p class="hero-sub">This page answers the questions you'd actually ask: what we need from you, what it costs, and what happens next. Ninety seconds, no pitch.</p>
+  <a href="/brand-demo" class="demo-link">SEE IT WORKING →</a>
+  <div class="demo-note">60 seconds, no signup — a live storefront with the real try-on flow</div>
+</div>
+
+<div class="divider-wide"></div>
+
+<div class="section">
+  <div class="s-label">THE PROBLEM</div>
+  <p class="s-title">You already know what returns cost you.</p>
+  <p class="s-body">Online fashion return rates regularly sit between <strong>20&ndash;40%</strong>, and most of those returns come down to size and fit, not product quality. Every one costs you shipping twice, handling, and often a customer who won't order again.</p>
+  <p class="s-body">Mirr exists to <strong>reduce return rates</strong> — not eliminate them; nothing eliminates them — by letting a shopper see your garment on their own body and check the fit against your garment's real measurements before the order is placed, instead of after the parcel arrives.</p>
+</div>
+
+<div class="divider-wide"></div>
+
+<div class="section">
+  <div class="s-label">HOW IT WORKS FOR YOU</div>
+  <p class="s-title">Three steps, one of which is real work.</p>
+  <div class="step-list">
+    <div class="step-item">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">Send product photos and garment measurements</div>
+        <div class="step-desc">Front-facing photos on a plain background, plus flat-lay measurements of each style. We'll be straight with you: measuring garments is real work — a tape measure and a few minutes per style. It's one-time, per style, and it's what makes the fit scores honest. <a href="/how-to-measure#garments">Here's exactly how to measure →</a></div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">We list you</div>
+        <div class="step-desc">We build your storefront on Mirr — your products, your prices, your branding. No integration work on your side and nothing to install on your own site.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">Shoppers try on, check their fit, and buy</div>
+        <div class="step-desc">A shopper uploads one photo of themselves, sees your garment on their own body, and gets a per-measurement fit score with a size recommendation — then buys with a clearer idea of what will arrive.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider-wide"></div>
+
+<div class="section">
+  <div class="s-label">WHAT IT COSTS</div>
+  <p class="s-title">Commission on sales. Nothing else.</p>
+  <div class="cost-table">
+    <div class="cost-row hl">
+      <div class="cost-what">Founding brand commission<small>Locked for 12 months — the lowest rate we're offering at launch</small></div>
+      <div class="cost-num accent">8%</div>
+    </div>
+    <div class="cost-row">
+      <div class="cost-what">Standard commission<small>After the founding spots fill</small></div>
+      <div class="cost-num">12%</div>
+    </div>
+    <div class="cost-row">
+      <div class="cost-what">Monthly fee</div>
+      <div class="cost-num">$0</div>
+    </div>
+    <div class="cost-row">
+      <div class="cost-what">Setup cost</div>
+      <div class="cost-num">$0</div>
+    </div>
+    <div class="cost-row">
+      <div class="cost-what">Per-try-on charge</div>
+      <div class="cost-num">$0</div>
+    </div>
+    <div class="cost-row">
+      <div class="cost-what">Lock-in contract</div>
+      <div class="cost-num">None</div>
+    </div>
+  </div>
+  <p class="cost-note">At the founding rate, we take 8&cent; in the dollar on sales that come through Mirr — you keep 92&cent;. The 12-month rate lock is a benefit, not a commitment: there's no exit fee and you can pause or close your listing at any time. Full offer details on the <a href="/founding-brands">founding brands page</a>.</p>
+</div>
+
+<div class="divider-wide"></div>
+
+<div class="section">
+  <div class="s-label">WHAT WE ARE HONEST ABOUT</div>
+  <p class="s-title">The part most pitches leave out.</p>
+  <div class="honest">
+    <div class="honest-item"><strong>Mirr is pre-launch.</strong> We are onboarding our first brands now. Joining today means a founding rate and a real say in what gets built — not an established audience. We'd rather you know that from this page than find out after you've measured your range.</div>
+    <div class="honest-item"><strong>What the try-on does and doesn't do.</strong> The try-on shows your garment on the shopper's body at its design proportions — it's the seeing half. The sizing half is done by the fit scores, which compare your garment's measurements against the shopper's, measurement by measurement.</div>
+    <div class="honest-item"><strong>Fit guidance is guidance.</strong> It reduces guesswork; it is not a guarantee. Shoppers see it framed that way too — we don't oversell it to them, and we won't oversell it to you.</div>
+  </div>
+</div>
+
+<div class="divider-wide"></div>
+
+<div class="section">
+  <div class="s-label">WHAT HAPPENS NEXT</div>
+  <p class="s-title">Two ways forward, both low-effort.</p>
+  <div class="next-box">
+    <div class="next-item">
+      <div class="next-mark">a.</div>
+      <div class="next-text">If this page reached you by email, <strong>just reply</strong> — a person reads it, and we'll be in touch within 3 business days.</div>
+    </div>
+    <div class="next-item">
+      <div class="next-mark">b.</div>
+      <div class="next-text">Or read the <a href="/founding-brands">founding offer</a> and apply from there — same 3-business-day response either way.</div>
+    </div>
+  </div>
+</div>
+
+<div class="cta-section">
+  <div class="cta-title">Still weighing it up? Watch it work first.</div>
+  <p class="cta-sub">The live demo is the whole product — a storefront, a try-on, a fit score. No signup, nothing to install.</p>
+  <div class="cta-buttons">
+    <a href="/brand-demo" class="cta-btn cta-btn-primary">SEE THE LIVE DEMO →</a>
+    <a href="/founding-brands" class="cta-btn cta-btn-secondary">THE FOUNDING OFFER</a>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <div class="footer-note">Questions? <a href="/contact">Get in touch</a> — or email <a href="mailto:hello@trymirr.com">hello@trymirr.com</a></div>
+</footer>
+
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6fb28a3de5848c8837eaa3d8495d031"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
