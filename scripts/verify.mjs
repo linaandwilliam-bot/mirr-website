@@ -245,6 +245,18 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
         if (p.sample_size != null && !VALID_SAMPLE_SIZES.includes(p.sample_size)) {
           fail(`${label} sample_size must be one of ${VALID_SAMPLE_SIZES.join('/')} (got ${JSON.stringify(p.sample_size)})`);
         }
+        // sizes is optional (Sprint 84): the stocked-size array carried from
+        // the submission — the size row and recommendSize are limited to it.
+        if (p.sizes != null) {
+          if (!Array.isArray(p.sizes) || p.sizes.length === 0) {
+            fail(`${label} sizes must be a non-empty array of stocked sizes`);
+          } else {
+            for (const s of p.sizes) {
+              if (!VALID_SAMPLE_SIZES.includes(s)) fail(`${label} sizes entry ${JSON.stringify(s)} must be one of ${VALID_SAMPLE_SIZES.join('/')}`);
+            }
+            if (new Set(p.sizes).size !== p.sizes.length) fail(`${label} sizes contains duplicates`);
+          }
+        }
       }
     }
   } catch { /* parse failure already reported by the earlier brands.json check */ }

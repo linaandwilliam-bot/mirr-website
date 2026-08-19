@@ -634,7 +634,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <p class="szchart-note" id="szchart-note"></p>
       </details>
       <div class="slbl">SELECT SIZE</div>
-      <div class="sgrid">
+      <div class="sgrid" id="sgrid">
         <div class="sbtn" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selSz(this)">XS</div>
         <div class="sbtn on" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selSz(this)">S</div>
         <div class="sbtn" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selSz(this)">M</div>
@@ -1015,7 +1015,7 @@ async function initBrand() {
   currentBrand = brand;
 
   PRODS = brand.products.map(function(p) {
-    return { cat: p.cat, name: p.name, price: p.price, old: p.old, desc: p.desc, scores: p.scores, tryon_cat: p.tryon_cat, image: p.image, buy_url: p.buy_url, dims: p.dims, fit: p.fit, sample_size: p.sample_size };
+    return { cat: p.cat, name: p.name, price: p.price, old: p.old, desc: p.desc, scores: p.scores, tryon_cat: p.tryon_cat, image: p.image, buy_url: p.buy_url, dims: p.dims, fit: p.fit, sample_size: p.sample_size, sizes: p.sizes };
   });
   REAL_IMGS = brand.products.map(function(p) { return p.image; });
   SVG_IMGS = brand.products.map(function(p) { return p.fallback_svg; });
@@ -1222,6 +1222,9 @@ function showDetail(idx) {
   // Size chart + fit-across-sizes follow the same condition (Sprint 66);
   // the strip re-renders with the result, so switching products clears it.
   renderSizeChart(p);
+  // Stocked sizes only in the SELECT SIZE row (Sprint 84); legacy products
+  // keep the static row untouched.
+  renderSizeRow(p);
   var fasEl = document.getElementById('fas-wrap');
   if (fasEl) fasEl.style.display = 'none';
   resetRemail();
@@ -1614,6 +1617,45 @@ function selectedSize() {
   return on ? on.textContent.trim() : (PRODS[curProd].sample_size || 'M');
 }
 
+// ── Stocked sizes (Sprint 84) ──
+// A product may carry a `sizes` array (stocked sizes, carried from the
+// brand's submission by promote-submission). Returns the valid engine
+// sizes in SIZE_STEPS order, or null when the product has no usable array —
+// null means "behave exactly as before this sprint existed".
+function stockedSizes(p) {
+  if (!p || !Array.isArray(p.sizes)) return null;
+  var valid = SIZE_STEPS.filter(function (s) { return p.sizes.indexOf(s) !== -1; });
+  return valid.length > 0 ? valid : null;
+}
+
+// Rebuilds the SELECT SIZE row to show ONLY stocked sizes (the consistent
+// rule for this sprint: unstocked sizes do not render anywhere — not shown
+// as available, not shown greyed). Products WITHOUT a sizes array keep the
+// static row untouched, so the example store renders exactly as today; the
+// original row is captured once and restored when navigating from a
+// stocked-sizes product back to a legacy one.
+var szrowDefaultHTML = null;
+var szrowCustom = false;
+function renderSizeRow(p) {
+  var grid = document.getElementById('sgrid');
+  if (!grid) return;
+  if (szrowDefaultHTML === null) szrowDefaultHTML = grid.innerHTML;
+  var stocked = stockedSizes(p);
+  if (!stocked) {
+    if (szrowCustom) { grid.innerHTML = szrowDefaultHTML; szrowCustom = false; }
+    return;
+  }
+  var def = (p.sample_size && stocked.indexOf(p.sample_size) !== -1)
+    ? p.sample_size
+    : stocked[Math.floor((stocked.length - 1) / 2)];
+  grid.innerHTML = stocked.map(function (s) {
+    return '<div class="sbtn' + (s === def ? ' on' : '') + '" tabindex="0" role="button" ' +
+      'onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();this.click()}" ' +
+      'onclick="selSz(this)">' + esc(s) + '</div>';
+  }).join('');
+  szrowCustom = true;
+}
+
 function calcFit() {
   var p = PRODS[curProd];
   if (p.dims) { calcFitReal(p); } else { calcFitLegacy(); }
@@ -1622,7 +1664,10 @@ function calcFit() {
 function calcFitReal(p) {
   var size = selectedSize();
   var r = computeFit(p, MCM, size);
-  var rec = recommendSize(p, MCM);
+  // Recommendations never leave the brand's stocked range (Sprint 84);
+  // stocked is null for products without a sizes array → full range, as before.
+  var stocked = stockedSizes(p);
+  var rec = recommendSize(p, MCM, stocked || undefined);
   ['chest','waist','hips','inseam'].forEach(function(d) {
     var pe = document.getElementById('rp-' + d);
     var be = document.getElementById('rb-' + d);
@@ -1644,9 +1689,22 @@ function calcFitReal(p) {
     document.getElementById('rov-score').textContent = r.overall + '%';
     document.getElementById('rverd').style.display = 'block';
     var t = document.getElementById('rv-t'), b = document.getElementById('rv-b');
-    var recLine = (rec.size === size)
-      ? ' Size ' + size + ' is your best fit for this garment.'
-      : ' Your best size for this garment: ' + rec.size + ' (' + rec.overall + '% match).';
+    var recLine;
+    if (stocked) {
+      // Stocked-sizes product (Sprint 84): the recommendation is the best
+      // AVAILABLE size, and its consequence is stated rather than hidden —
+      // "Best available size: L — waist about 6cm loose", never a silent
+      // pretence that the constrained best is a perfect fit.
+      var recDom = dominantConsequence(fitDetails(p, MCM, rec.size));
+      recLine = ' Best available size: ' + rec.size +
+        (recDom === 'in range' ? '' : ' — ' + recDom) +
+        (rec.size === size ? ' (selected).' : ' (' + rec.overall + '% match).');
+      if (rec.overall < 80) recLine += ' This brand doesn’t stock a size that fits you closely.';
+    } else {
+      recLine = (rec.size === size)
+        ? ' Size ' + size + ' is your best fit for this garment.'
+        : ' Your best size for this garment: ' + rec.size + ' (' + rec.overall + '% match).';
+    }
     if (r.overall >= 90) {
       t.textContent = '✓ Excellent fit for your body';
       b.textContent = 'Scored against this garment’s measured dimensions.' + recLine;
@@ -1656,6 +1714,9 @@ function calcFitReal(p) {
     } else if (rec.overall >= 80 && rec.size !== size) {
       t.textContent = '⚠ Try size ' + rec.size + ' instead';
       b.textContent = 'Size ' + size + ' scores ' + r.overall + '% for your measurements, but size ' + rec.size + ' scores ' + rec.overall + '%.';
+    } else if (stocked) {
+      t.textContent = '⚠ No stocked size fits you closely';
+      b.textContent = 'Best available size: ' + rec.size + ' — it scores ' + rec.overall + '% for your measurements. This brand doesn’t stock a size that fits you closely; the honest answer is another garment may fit better.';
     } else {
       t.textContent = '⚠ This cut may not suit your measurements';
       b.textContent = 'Even its best size (' + rec.size + ') scores ' + rec.overall + '% — the honest answer is another garment may fit better.';
@@ -1950,7 +2011,7 @@ function fitroomSave() {
       overall: document.getElementById('rov-score').textContent,
       sub: document.getElementById('rov-sub').textContent,
       size: (typeof selectedSize === 'function') ? selectedSize() : 'M',
-      rec: (p.dims && typeof recommendSize === 'function') ? recommendSize(p, MCM).size : null,
+      rec: (p.dims && typeof recommendSize === 'function') ? recommendSize(p, MCM, stockedSizes(p) || undefined).size : null,
       at: Date.now()
     };
     var arr = fitroomLoad();
@@ -2264,7 +2325,7 @@ function buildLookExport(done) {
         var fitBits = [];
         var overall = document.getElementById('rov-score').textContent;
         if (/\d/.test(overall)) fitBits.push('Fit ' + overall);
-        var best = p.dims ? recommendSize(p, MCM).size : selectedSize();
+        var best = p.dims ? recommendSize(p, MCM, stockedSizes(p) || undefined).size : selectedSize();
         if (best) fitBits.push('Best size ' + best);
         var right = fitBits.join(' · ');
         ctx.font = '500 ' + ftFont + 'px "DM Mono", monospace';
@@ -2655,9 +2716,14 @@ function renderFitAcross(p) {
   var wrap = document.getElementById('fas-wrap');
   if (!wrap) return;
   if (!p || !p.dims) { wrap.style.display = 'none'; return; }
-  var rec = recommendSize(p, MCM);
+  // Stocked-sizes products (Sprint 84) show ONLY stocked sizes — the same
+  // rule as the SELECT SIZE row; Sprint 74's per-size consequences follow
+  // automatically since they render per pill. Legacy products keep XS–XL.
+  var stocked = stockedSizes(p);
+  var pool = stocked || SIZE_STEPS;
+  var rec = recommendSize(p, MCM, stocked || undefined);
   var recConsequence = 'in range';
-  document.getElementById('fas-row').innerHTML = SIZE_STEPS.map(function(s) {
+  document.getElementById('fas-row').innerHTML = pool.map(function(s) {
     var r = computeFit(p, MCM, s);
     // Per-size dominant consequence from the same ease values as the score.
     var dom = dominantConsequence(fitDetails(p, MCM, s));
@@ -2668,7 +2734,7 @@ function renderFitAcross(p) {
       '<span class="fas-s">' + s + '</span><span class="fas-p">' + score + '</span></div>';
   }).join('');
   document.getElementById('fas-note').textContent =
-    'Best size ' + rec.size + ' — ' + recConsequence + ', scored against your measurements.';
+    (stocked ? 'Best available size ' : 'Best size ') + rec.size + ' — ' + recConsequence + ', scored against your measurements.';
   wrap.style.display = 'block';
 }
 

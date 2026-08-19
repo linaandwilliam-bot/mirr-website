@@ -212,6 +212,60 @@ recommendSize(TEE, DEMO);
 eq(JSON.stringify(TEE.dims), dimsBefore, 'product dims not mutated');
 eq(JSON.stringify(DEMO), mcmBefore, 'measurements not mutated');
 
+// ── 10. recommendSize allowed-sizes parameter (Sprint 84) ──
+// (a) Regression lock: with the parameter OMITTED, outputs are exactly what
+// the engine returned before the parameter existed — recorded 2026-08-19
+// from the pre-change engine for the three demo products × three bodies.
+const LOCKED = [
+  [TEE, DEMO, 'M', 93], [TEE, LARGE, 'XL', 95], [TEE, SMALL, 'XS', 86],
+  [SHORTS, DEMO, 'L', 97], [SHORTS, LARGE, 'XL', 73], [SHORTS, SMALL, 'XS', 97],
+  [JACKET, DEMO, 'S', 96], [JACKET, LARGE, 'XL', 97], [JACKET, SMALL, 'XS', 86],
+];
+for (let li = 0; li < LOCKED.length; li++) {
+  const [p, m, sz, ov] = LOCKED[li];
+  const r = recommendSize(p, m);
+  eq(r.size, sz, 'S84 regression lock #' + li + ' size unchanged with param omitted');
+  eq(r.overall, ov, 'S84 regression lock #' + li + ' overall unchanged with param omitted');
+}
+// (b) Constrained pool: never recommends outside the allowed set, for any
+// product × body combination.
+for (const pn of Object.keys(PRODUCTS)) {
+  for (const bn of Object.keys(BODIES)) {
+    const r = recommendSize(PRODUCTS[pn], BODIES[bn], ['M', 'L']);
+    assert(r.size === 'M' || r.size === 'L', 'allowed [M,L] returns only M or L: ' + pn + '/' + bn + ' got ' + r.size);
+    assert(r.overall === computeFit(PRODUCTS[pn], BODIES[bn], r.size).overall,
+      'constrained recommendation overall equals computeFit of that size: ' + pn + '/' + bn);
+  }
+}
+// The rehearsal case that motivated this sprint: a small frame constrained
+// to [M,L] must get M (the closer stocked size), never XS.
+eq(recommendSize(TEE, SMALL, ['M', 'L']).size, 'M', 'S84: small frame constrained to [M,L] gets M, not XS');
+// (c) Fallbacks: empty array, garbage, and no-valid-entries all behave
+// exactly like the omitted parameter — and never throw.
+for (const pn of Object.keys(PRODUCTS)) {
+  const base = JSON.stringify(recommendSize(PRODUCTS[pn], DEMO));
+  eq(JSON.stringify(recommendSize(PRODUCTS[pn], DEMO, [])), base, 'allowed [] falls back to full range: ' + pn);
+  eq(JSON.stringify(recommendSize(PRODUCTS[pn], DEMO, ['ZZZ', 'XXXL'])), base, 'allowed with no valid entries falls back: ' + pn);
+  eq(JSON.stringify(recommendSize(PRODUCTS[pn], DEMO, 'garbage')), base, 'non-array string falls back: ' + pn);
+  eq(JSON.stringify(recommendSize(PRODUCTS[pn], DEMO, { M: true })), base, 'non-array object falls back: ' + pn);
+  eq(JSON.stringify(recommendSize(PRODUCTS[pn], DEMO, null)), base, 'null falls back: ' + pn);
+  eq(JSON.stringify(recommendSize(PRODUCTS[pn], DEMO, undefined)), base, 'undefined behaves as omitted: ' + pn);
+}
+// (d) Pool order follows SIZE_STEPS regardless of input order, mixed
+// invalid entries are ignored, and the allowed array is never mutated.
+const unordered = ['L', 'ZZZ', 'M'];
+const unorderedBefore = JSON.stringify(unordered);
+eq(recommendSize(TEE, SMALL, unordered).size, 'M', 'unordered/mixed allowed list still constrains correctly');
+eq(JSON.stringify(unordered), unorderedBefore, 'allowed array not mutated');
+// (e) Near-tie window still resolves toward the sample cut WITHIN the pool:
+// the jacket ties across sizes for the demo body; constrained to [XS,S] it
+// must pick S (nearer the M sample), not XS.
+eq(recommendSize(JACKET, DEMO, ['XS', 'S']).size, 'S', 'near-tie inside constrained pool resolves toward sample');
+// (f) Single-size pool returns that size with its honest (possibly low) score.
+const only = recommendSize(SHORTS, LARGE, ['XS']);
+eq(only.size, 'XS', 'single-size pool returns that size');
+eq(only.overall, computeFit(SHORTS, LARGE, 'XS').overall, 'single-size pool reports its true score');
+
 // ── Summary — ALWAYS the last statements in this file ──
 const total = passed + failures.length;
 if (failures.length > 0) {

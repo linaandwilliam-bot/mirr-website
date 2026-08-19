@@ -60,11 +60,21 @@ function computeFit(product, mcm, sizeLabel) {
 
 // Ties break toward the sample size (a relaxed jacket can tie across XS–L;
 // recommending XS when M fits equally well is bad advice).
-function recommendSize(product, mcm) {
+// allowedSizes (optional, Sprint 84): when a non-empty subset of SIZE_STEPS
+// is supplied, only those sizes are evaluated — a brand stocking M/L must
+// never have XS recommended. Anything else (omitted, empty array, garbage,
+// no valid entries) falls back to the full range; this never throws, and
+// with the parameter omitted the behaviour is identical to before.
+function recommendSize(product, mcm, allowedSizes) {
+  var pool = SIZE_STEPS;
+  if (Array.isArray(allowedSizes)) {
+    var valid = SIZE_STEPS.filter(function (s) { return allowedSizes.indexOf(s) !== -1; });
+    if (valid.length > 0) pool = valid;
+  }
   var sampleIdx = SIZE_STEPS.indexOf(product.sample_size || 'M');
   var results = [];
-  for (var i = 0; i < SIZE_STEPS.length; i++) {
-    results.push({ size: SIZE_STEPS[i], overall: computeFit(product, mcm, SIZE_STEPS[i]).overall, dist: Math.abs(i - sampleIdx) });
+  for (var i = 0; i < pool.length; i++) {
+    results.push({ size: pool[i], overall: computeFit(product, mcm, pool[i]).overall, dist: Math.abs(SIZE_STEPS.indexOf(pool[i]) - sampleIdx) });
   }
   var top = 0;
   for (var j = 0; j < results.length; j++) { if (results[j].overall > top) top = results[j].overall; }

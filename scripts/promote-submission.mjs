@@ -115,6 +115,19 @@ function mapProduct(p, i) {
   };
   if (Object.keys(dims).length > 0) out.dims = dims;
   if (sampleSize) out.sample_size = sampleSize;
+  // Carry stocked sizes into brands.json (Sprint 84) — the detail page's size
+  // row and recommendSize respect this array, so a shopper is never offered
+  // or recommended a size the brand doesn't stock. Only the fit engine's
+  // XS–XL range is carried; larger submitted sizes are noted and dropped.
+  const engineSizes = sizes.filter((s) => VALID_SAMPLE.includes(s));
+  const droppedSizes = sizes.filter((s) => !VALID_SAMPLE.includes(s));
+  if (engineSizes.length > 0) {
+    out.sizes = engineSizes;
+    note(`${label}: carried stocked sizes [${engineSizes.join(', ')}] into brands.json — the size row and recommendation are limited to these`);
+  }
+  if (droppedSizes.length > 0) {
+    note(`${label}: submitted size(s) ${droppedSizes.join(', ')} are outside the fit engine's XS–XL range — dropped from the sizes array; those shoppers can't be scored or offered these sizes yet`);
+  }
   // fit is deliberately left unset (engine defaults to regular) — whether a
   // garment is compression/fitted/relaxed is a human judgment call.
   if (p.sku) out.sku = p.sku;
@@ -194,6 +207,13 @@ brand.products_count = brand.products.length;
       }
       if (p.fit != null && !VALID_FITS.includes(p.fit)) failures.push(`${label} fit "${p.fit}" invalid`);
       if (p.sample_size != null && !VALID_SAMPLE.includes(p.sample_size)) failures.push(`${label} sample_size "${p.sample_size}" invalid`);
+      if (p.sizes != null) {
+        if (!Array.isArray(p.sizes) || p.sizes.length === 0) failures.push(`${label} sizes must be a non-empty array`);
+        else {
+          for (const s of p.sizes) if (!VALID_SAMPLE.includes(s)) failures.push(`${label} sizes entry "${s}" must be one of ${VALID_SAMPLE.join('/')}`);
+          if (new Set(p.sizes).size !== p.sizes.length) failures.push(`${label} sizes contains duplicates`);
+        }
+      }
     }
   }
   if (failures.length > 0) {
