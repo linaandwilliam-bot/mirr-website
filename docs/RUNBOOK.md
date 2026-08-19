@@ -293,15 +293,14 @@ Still open:
    detects that flip (webhook? poll?) can't be confirmed from client code.
    Until verified in the worker, SEND THE GO-LIVE EMAIL YOURSELF
    (first-brand checklist step 13).
-5. **Stocked sizes are collected, then dropped.** (Sprint 83 rehearsal.)
-   submit-products collects `sizes_in_stock`, but promote-submission doesn't
-   carry it into brands.json, the detail page's size buttons are the same
-   static XS–XL row (XXL hardcoded sold) for every product, and
-   `recommendSize` spans all of SIZE_STEPS — the rehearsal brand stocked
-   only M/L shorts and the engine happily recommended XL. Real shoppers can
-   select and be recommended sizes the brand doesn't stock. Large fix
-   (touches promote-submission, the detail render, selSz re-scoring, and
-   recommendSize) — deliberately not squeezed into Sprint 83.
+5. ~~Stocked sizes are collected, then dropped.~~ **FIXED in Sprint 84:**
+   promote-submission now carries `sizes_in_stock` into brands.json as a
+   `sizes` array (XS–XL only; larger sizes are dropped with a review note),
+   the detail page's size row and the fit-across-sizes strip render only
+   stocked sizes, and recommendSize takes an allowed-sizes pool — the
+   recommendation names the best AVAILABLE size with its consequence, and
+   says so plainly when no stocked size fits closely. Products without a
+   `sizes` array (the example store) behave exactly as before.
 6. **IMGBB uploads are unmanaged.** (Sprint 83 rehearsal.) The upload
    response's `delete_url` is discarded, a failed submission strands
    already-uploaded photos, and a retry re-uploads them. Orphans are only
