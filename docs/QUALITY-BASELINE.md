@@ -72,6 +72,42 @@ build; expect ~94 live after deploy).
    deliberately, then re-run this baseline. brand-demo and founding-brands
    share the same gap (their a11y scores absorb it at 90/94).
 
+## CONTENT FINDINGS — Sprint 86 integrity sweep (2026-08-19, for William to rule on)
+
+Full-site cold read, all 18 pages. Small unambiguous fixes were applied in
+the Sprint 86 commit; these remaining items are judgment calls about
+positioning or legal copy, deliberately NOT changed:
+
+1. **Launch-state language varies by page.** index says "Mirr launches
+   soon" (waitlist copy); founding-brands says "Mirr has just launched";
+   about says "Mirr launched with front-facing virtual try-on…". A stranger
+   can't tell if Mirr is live. Pick one narrative (suggest: "live for
+   brands, shopper marketplace opens soon") and align all three.
+2. **index describes at-launch marketplace mechanics as present fact.**
+   "Automatic Stripe payouts within 2 business days", "you receive order
+   details", FAQ "Mirr handles payment and commission" / "commission on
+   that transaction is reversed automatically" — while founding-brands'
+   FAQ honestly says the payment schedule is still being finalised, and
+   today's BUY button links out to the brand's own store (utm-tagged).
+   Either qualify index with "at launch" or accept it as launch-model
+   marketing; currently the two pages disagree.
+3. **terms.html has the same tension in legal form** — §3 "purchase
+   products directly through the Platform", §5 orders/Stripe/fulfilment.
+   Legal copy describing a checkout that doesn't exist yet is a
+   lawyer/founder call, not an editor's.
+4. **"Create your free brand account — sign up in under 2 minutes."**
+   (index, twice.) No accounts exist: the real flow is the
+   list-your-brand form, then an emailed access code after review.
+   "Account" overpromises; consider "Tell us about your brand".
+5. **Tone flag:** "No other online marketplace offers this combination"
+   (index) — an unverifiable absolute; the site's voice elsewhere avoids
+   these. Suggest "We haven't found another marketplace that offers it".
+6. **privacy/terms retain forward-looking account/order/payment sections**
+   (conditionally phrased, so not false — Sprint 86 fixed the parts that
+   were actually wrong). A two-line "pre-launch status" preamble in each
+   would make both documents strictly accurate today; drafting that is a
+   legal-copy decision.
+
 ## Performance notes (recorded, not in scope to fix)
 
 - index (72) and brand-demo (73) are held down mostly by render-blocking

@@ -112,6 +112,10 @@ function brandCardHTML(slug, brand) {
         '<div>' +
           '<div class="brand-name">' + brand.name +
             (brand.verified ? '<span class="brand-verified">✓ VERIFIED</span>' : '') +
+            // example: true (Sprint 79 flag) — the storefront labels example
+            // brands, and the directory card must too (Sprint 86 audit): a
+            // stranger should never read the demo store as a real brand.
+            (brand.example ? '<span class="brand-verified" style="color:var(--rose-text);background:rgba(212,168,152,.12);border-color:rgba(212,168,152,.35)">EXAMPLE STORE</span>' : '') +
           '</div>' +
           '<div class="brand-loc">' + brand.location + '</div>' +
         '</div>' +

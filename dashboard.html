@@ -227,7 +227,9 @@ function render(brand, subs, fc, metrics) {
     document.getElementById('d-tryons-note').textContent = 'since launch';
   } else {
     document.getElementById('d-tryons').textContent = (brand.tryons_count != null ? brand.tryons_count : '—');
-    document.getElementById('d-tryons-note').textContent = 'as of listing';
+    // example: true brands carry fabricated fixture counts (Sprint 79) — the
+    // storefront labels them illustrative, so this stat must too (Sprint 86).
+    document.getElementById('d-tryons-note').textContent = brand.example ? 'illustrative — example brand' : 'as of listing';
   }
 
   // Live activity panel (Sprint 76): needs BOTH tryons and buys to be real
