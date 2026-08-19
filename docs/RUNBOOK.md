@@ -5,6 +5,62 @@ against the code as it exists today. Repo-internal; not linked from any page.
 No secrets, no access codes, no real brand emails in this file — secret **names**
 only (the same rule as DISASTER-RECOVERY.md, which covers hosting incidents).
 
+**Rehearsed end to end 2026-08-19 (Sprint 83)** with a fixture brand: every step
+below was executed once for real (including a live catalog-worker submission,
+promotion, and render checks). Timings in the checklist are measured, not guessed.
+
+---
+
+## FIRST-BRAND CHECKLIST — the exact sequence with a real brand on the phone
+
+Total hands-on time excluding the brand's own form-filling: ~15 minutes.
+
+1. **Before the call:** have the ADMIN_KEY at hand (it's the secret set on
+   mirr-brand-setup-worker — Cloudflare never shows secret values again, so it
+   must come from your password store; if it's lost, use the manual fallback in
+   §1 step 5 or set a new secret on the worker). `git pull` your clone.
+2. Open `/new-brand`. Fill brand name, contact email, tier. Tick the three
+   verification checks (ABN, web presence, Stripe-KYC acknowledgment) — GENERATE
+   stays disabled until all three.
+3. GENERATE CODE + EMAIL. Then ADD TO GITHUB (enter ADMIN_KEY when prompted;
+   a 401 means wrong key — it re-prompts). If the worker call fails, paste the
+   shown one-line snippet into `BRAND_ALLOWLIST` in submit-products.html
+   yourself, push, and click "I'VE ADDED IT MANUALLY".
+4. **Wait for the deploy, then PROVE the code works before sending it:**
+   ~60–90 s after the commit, open trymirr.com/submit-products yourself and
+   enter the brand's email + code. Seeing the product form = safe to send.
+   (Measured: entry live and gate passing in under 2 minutes.)
+5. SEND THIS EMAIL (delivers to hello@trymirr.com — forward it), or use
+   "OPEN IN MY MAIL APP". The email includes the measuring-guide links and the
+   3-business-day promise. Tell the brand on the phone: photos (≥800×1000 px,
+   flat-lay, light background), a **short description per product** (required),
+   dims of the smallest stocked size, prices, sizes.
+6. The brand submits. **This only works on trymirr.com** — the catalog worker's
+   CORS rejects every other origin, so never try to test a submission from
+   localhost. Success shows a `MIRR-…` reference and the submission lands as a
+   commit on `main` within seconds (measured: ~7 s click-to-commit).
+7. `git pull`, open `/submissions-review`, check photos + dims against
+   `/how-to-measure#photos`. Flip status to `reviewing` (hand edit, push).
+8. `node scripts/promote-submission.mjs <ref>` (dry run) — read the review
+   notes. Then `--write`. (Measured: instant; the printed diff is the whole
+   file both ways — scan for the `rehearsal`/brand slug block, see FOUND #7.)
+9. Fill the human fields in brands.json: `location`, `description`, `tags`,
+   `store_url`, per-product `buy_url` (get real product URLs from the brand —
+   verify.mjs warns until they exist), `fit` (judgment call, §3 step 5),
+   `tier` if founding, `verified: true` only if §1 checks are truly done, and
+   resolve the sample-size note (re-measure middle size or set `sample_size`
+   to the smallest stocked size).
+10. Flip the submission's status to `live`. If founding: `founding-count.json`
+    `filled` +1.
+11. `node scripts/check-links.mjs && node scripts/verify.mjs` — green AND
+    zero warnings. Push.
+12. §4 verify on the live site: storefront header (no EXAMPLE STORE badge, no
+    empty rating), MEASURED ✓ badges, size chart matches dims at sample size,
+    BUY opens the real product page with `utm_source=mirr`, dashboard payout %
+    matches tier, `/brands` lists the brand.
+13. Email the brand that they're live (the promised confirmation email — its
+    automated trigger is still unverified, FOUND #2, so send it yourself).
+
 House rules that apply everywhere below:
 
 - **Machine-managed, never hand-edit:** `BRAND_ALLOWLIST` (in submit-products.html)
@@ -39,9 +95,15 @@ brand name and contact email.
 5. **ADD TO GITHUB** — POSTs `{email, code, brandName}` to
    `mirr-brand-setup-worker` with the admin key (`X-Admin-Key`; the worker's
    `ADMIN_KEY` secret — prompted once, then kept in your browser's localStorage
-   as `mirr_admin_key`; a 401 clears it and re-prompts). The worker commits the
+   as `mirr_admin_key`; a 401 clears it and re-prompts). Cloudflare cannot show
+   you a secret's value after it's set, so the key must come from your own
+   password store — if it's lost, either use the manual fallback below or set a
+   new `ADMIN_KEY` on the worker. (Rehearsal-verified: the worker is deployed
+   and 401s bad keys.) The worker commits the
    entry into `BRAND_ALLOWLIST` in submit-products.html on `main`. **Wait 1–2
-   minutes for Pages to redeploy before the brand tries the code.**
+   minutes for Pages to redeploy, then prove the code works by passing the
+   submit-products gate yourself before the brand tries it** (measured
+   2026-08-19: entry live in under 2 minutes).
    - If the worker call fails, the tool shows a manual-fallback snippet: paste
      that exact line into `BRAND_ALLOWLIST` yourself and click "I'VE ADDED IT
      MANUALLY". This is the *only* sanctioned hand edit of the allowlist.
@@ -51,9 +113,9 @@ brand name and contact email.
    brand, or use "OPEN IN MY MAIL APP" to send it directly. The email contains
    the /submit-products link, their code, dims/photo requirements, and the
    dashboard links.
-7. Also send the brand **`/how-to-measure#garments`** — the measuring +
-   photo-standards guide. (The generated welcome email predates the guide and
-   does not include this link yet — see FOUND WHILE DOCUMENTING.)
+7. The generated welcome email links **`/how-to-measure#garments`** and
+   `#photos` (added in Sprint 71) and lists what to prepare, including the
+   required short description per product (added in Sprint 83).
 
 ---
 
@@ -61,19 +123,28 @@ brand name and contact email.
 
 What happens without you: the brand passes the submit-products gate (email +
 code checked client-side against `BRAND_ALLOWLIST` — a "keep honest people
-out" gate, not security), fills in products, passes the photo pre-flight
+out" gate, not security), fills in products (name, category, price, and a
+short **description** are required per product — validation blocks submission
+without them), passes the photo pre-flight
 (hard fails: wrong type / >10MB / under 800×1000px / aspect beyond 3:1; soft
 warnings for dark or cluttered backgrounds), confirms the photo-standards
-checkboxes, and submits. The page then:
+checkboxes, and submits. **The submission only works from trymirr.com — the
+catalog worker's CORS policy rejects every other origin (rehearsal-verified),
+so localhost tests always fail at the final step, after photos have already
+uploaded.** The page then:
 
 1. Uploads photos to **IMGBB** (inline key — same not-real-security model).
 2. POSTs `{brand_name, brand_email, products}` to
    **`mirr-catalog-worker` `/submit`** — the authoritative pipeline record.
    The worker **commits the submission into `submissions.json` on `main`**
    (a real commit; this is why you pull before hand edits) and returns a
-   reference (`ref`), which the brand sees on their success screen. If this
+   reference (`ref`), which the brand sees on their success screen. Measured
+   2026-08-19: click-to-success ~7 s, with the commit on `main` in the same
+   window. If this
    call fails the brand gets an honest error screen with retry — the
-   submission did NOT enter the pipeline.
+   submission did NOT enter the pipeline. Note the photos DID already reach
+   IMGBB in that case, and a retry uploads them again — orphaned images can
+   only be removed from the IMGBB account dashboard (FOUND #6).
 3. Fires a **courtesy Formspree notification** to the inbox with the full
    product JSON — non-blocking, informational only; `submissions.json` is the
    source of truth.
@@ -202,25 +273,47 @@ Cloudflare "connect" or auto-deploy this repo.
 
 ---
 
-## FOUND WHILE DOCUMENTING (not fixed in this sprint)
+## FOUND WHILE DOCUMENTING
 
-1. **Welcome email doesn't link the measuring guide.** new-brand.html's
-   generated email predates Sprint 67's /how-to-measure and still explains
-   dims/photos inline without linking `#garments` — §1 step 7 papers over
-   this manually. Fix: add the link to the email template.
+Fixed since first recorded: **#1** (welcome email now links the measuring
+guide — Sprint 71), **#3** (verify.mjs warns on live brands with null
+buy_url — Sprint 71), **#4** (verify.mjs warns on founding-count drift,
+excluding `example: true` brands — Sprint 71). Fixed by the Sprint 83
+rehearsal itself: the unconditional EXAMPLE STORE badge and the empty
+RATING stat on brand-demo headers, and the welcome email's prep list
+missing the required per-product description.
+
+Still open:
+
 2. **The go-live confirmation email is promised but its trigger is
    unverifiable from this repo.** submit-products.html tells brands "We'll
    email you to confirm when each product is available", and a code comment
    says the catalog worker sends it when a submission is marked live — but
    the status flip is a manual GitHub edit, and whether the worker actually
    detects that flip (webhook? poll?) can't be confirmed from client code.
-   Verify in the worker; if no mechanism exists, the promise is unbacked and
-   either the worker or the copy must change.
-3. **Nothing guards `buy_url` before go-live.** promote-submission writes
-   `buy_url: null` and verify.mjs doesn't require it, so a brand can ship
-   with a BUY button that only shows a toast. The runbook makes it a manual
-   gate (§3 step 2); a verify.mjs warning for live brands with null buy_urls
-   would make it structural.
-4. **`founding-count.json` can drift from reality.** It's hand-maintained
-   and verify.mjs only checks `filled <= total` — nothing ties `filled` to
-   the actual number of founding-tier brands in brands.json.
+   Until verified in the worker, SEND THE GO-LIVE EMAIL YOURSELF
+   (first-brand checklist step 13).
+5. **Stocked sizes are collected, then dropped.** (Sprint 83 rehearsal.)
+   submit-products collects `sizes_in_stock`, but promote-submission doesn't
+   carry it into brands.json, the detail page's size buttons are the same
+   static XS–XL row (XXL hardcoded sold) for every product, and
+   `recommendSize` spans all of SIZE_STEPS — the rehearsal brand stocked
+   only M/L shorts and the engine happily recommended XL. Real shoppers can
+   select and be recommended sizes the brand doesn't stock. Large fix
+   (touches promote-submission, the detail render, selSz re-scoring, and
+   recommendSize) — deliberately not squeezed into Sprint 83.
+6. **IMGBB uploads are unmanaged.** (Sprint 83 rehearsal.) The upload
+   response's `delete_url` is discarded, a failed submission strands
+   already-uploaded photos, and a retry re-uploads them. Orphans are only
+   removable via the IMGBB account dashboard. The 2026-08-19 rehearsal left
+   four fixture images there (all watermarked "REHEARSAL FIXTURE — NOT A
+   REAL PRODUCT") — delete them from the dashboard when convenient.
+7. **promote-submission's dry-run "diff" prints the entire brands.json
+   twice** (before and after) instead of just the touched brand — with the
+   example brand's inline base64 SVGs that's hundreds of unreadable lines.
+   Scope the printed diff to the promoted brand's block.
+8. **`/submissions-review` and status flips assume repo access.** Flipping
+   status is "edit the file on GitHub or locally, push" — fine for us, but
+   the rehearsal confirms there is no tooling guard against typos in the
+   status value (verify.mjs does validate status against the allowed set,
+   so run it after every flip).

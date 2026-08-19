@@ -965,13 +965,18 @@ function renderBrandHeader(brand) {
       '<div>' +
         '<div class="bname">' + esc(brand.name) +
           (brand.verified ? ' <span class="bverified">✓ VERIFIED BRAND</span>' : '') +
-          ' <span class="bdemo-badge">EXAMPLE STORE</span></div>' +
+          // Badge only for example: true brands (Sprint 83 rehearsal finding —
+          // this was unconditional, so every real brand would have launched
+          // labelled EXAMPLE STORE).
+          (brand.example ? ' <span class="bdemo-badge">EXAMPLE STORE</span>' : '') + '</div>' +
         '<div class="bloc">' + esc(brand.location) + '</div>' +
       '</div>' +
     '</div>' +
     '<div class="bstats">' +
       '<div><div class="bsn">' + esc(brand.products_count) + '</div><div class="bsl">PRODUCTS</div></div>' +
-      '<div><div class="bsn">' + esc(brand.rating) + '</div><div class="bsl">RATING</div></div>' +
+      // No rating mechanism exists yet, so new brands have no rating field —
+      // hide the stat instead of rendering an empty cell (Sprint 83 finding).
+      (brand.rating ? '<div><div class="bsn">' + esc(brand.rating) + '</div><div class="bsl">RATING</div></div>' : '') +
       '<div><div class="bsn">' + esc(brand.tryons_count) + '</div><div class="bsl">TRY-ONS</div></div>' +
     '</div>' +
     // example: true (brands.json) — fabricated numbers never sit unlabelled
