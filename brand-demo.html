@@ -23,6 +23,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
+/* Skip link (Sprint 81) — hidden off-screen until keyboard focus lands on it */
+.skip-link{position:absolute;left:-9999px;top:0;z-index:2000;background:var(--sky-text);color:var(--white);padding:10px 18px;font-size:12px;letter-spacing:.06em;font-weight:500;text-decoration:none;border-radius:0 0 6px 0}
+.skip-link:focus{left:0}
+main{display:block}
+#main:focus{outline:none}
 /* ── RESET ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{color-scheme:light only}
@@ -61,7 +66,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 .fbar{background:var(--paper);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;gap:8px;overflow-x:auto;width:100%}
 .fbar::-webkit-scrollbar{display:none}
 .fpill{white-space:nowrap;font-size:11px;padding:6px 14px;border-radius:999px;border:.5px solid var(--line);background:var(--white);color:var(--ink3);cursor:pointer;flex:none;transition:all .2s}
-.fpill.on{background:var(--sky);border-color:var(--sky);color:var(--white)}
+.fpill.on{background:var(--sky-text);border-color:var(--sky-text);color:var(--white)}
 
 /* ── PRODUCT GRID ── */
 .pgrid{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
@@ -74,7 +79,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 .pbadge{position:absolute;top:8px;left:8px;font-size:8px;letter-spacing:.1em;padding:3px 7px;border-radius:2px;font-weight:500;color:var(--white)}
 .b-new{background:var(--brand)}
 .b-best{background:var(--ink)}
-.b-sale{background:var(--rose)}
+.b-sale{background:var(--rose-text)}
 .mcchip{position:absolute;bottom:8px;right:8px;background:rgba(123,174,200,.92);color:var(--white);font-size:8px;letter-spacing:.1em;padding:4px 8px;border-radius:999px;display:flex;align-items:center;gap:4px}
 .chdot{width:4px;height:4px;background:var(--white);border-radius:50%;animation:blk 2s infinite}
 @keyframes blk{0%,100%{opacity:1}50%{opacity:.3}}
@@ -555,6 +560,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
 <!-- MIRR BAR -->
 <div class="mbar">
@@ -568,6 +574,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <noscript><div style="max-width:680px;margin:24px auto;padding:14px 18px;background:var(--rose-bg);border:1px solid rgba(212,168,152,.35);border-radius:8px;font-size:13px;color:var(--rose-dark)">This page requires JavaScript — the storefront and virtual try-on can't load without it.</div></noscript>
 
 <!-- ═══ LIST PAGE ═══ -->
+<main id="main" tabindex="-1">
+
 <div id="page-list">
 
   <div class="bhdr" id="bhdr"></div>
@@ -890,6 +898,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <button class="rp-btn" onclick="answerReturnPrompt('no')">NO</button>
   </div>
 </div>
+
+</main>
 
 <!-- Metrics beacons (Sprint 58): anonymous usage counts only — event name,
      brand slug, product index, timestamp. Never measurements, never photos,

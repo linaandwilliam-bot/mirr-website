@@ -22,6 +22,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
+/* Skip link (Sprint 81) — hidden off-screen until keyboard focus lands on it */
+.skip-link{position:absolute;left:-9999px;top:0;z-index:2000;background:var(--sky-text);color:var(--white);padding:10px 18px;font-size:12px;letter-spacing:.06em;font-weight:500;text-decoration:none;border-radius:0 0 6px 0}
+.skip-link:focus{left:0}
+main{display:block}
+#main:focus{outline:none}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-weight:300;line-height:1.7}
 @media(prefers-color-scheme:dark){html,body{background:var(--page)!important;color:var(--ink)!important}}
@@ -36,7 +41,7 @@ nav{border-bottom:1px solid var(--line);padding:0 48px;position:sticky;top:0;bac
 .eyebrow{font-size:10px;letter-spacing:.24em;color:var(--ink4);margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px}
 .eyebrow::before,.eyebrow::after{content:"";width:16px;height:.5px;background:var(--sky)}
 .hero-title{font-family:var(--font-serif);font-size:clamp(32px,4.5vw,46px);font-weight:500;line-height:1.15;margin-bottom:18px}
-.hero-title em{font-style:italic;color:var(--sky)}
+.hero-title em{font-style:italic;color:var(--sky-text)}
 .hero-sub{font-size:15px;color:var(--ink3);line-height:1.85;max-width:540px;margin:0 auto}
 
 /* PROGRESS TRACKER */
@@ -52,7 +57,7 @@ nav{border-bottom:1px solid var(--line);padding:0 48px;position:sticky;top:0;bac
 
 /* EMPTY STATE / FOUNDING SLOTS */
 .section{max-width:680px;margin:0 auto;padding:0 24px 64px}
-.s-label{font-size:10px;letter-spacing:.2em;color:var(--sky);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.s-label{font-size:10px;letter-spacing:.2em;color:var(--sky-text);margin-bottom:16px;display:flex;align-items:center;gap:10px}
 .s-label::before{content:"";width:16px;height:.5px;background:var(--sky)}
 
 .slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:32px}
@@ -71,7 +76,7 @@ nav{border-bottom:1px solid var(--line);padding:0 48px;position:sticky;top:0;bac
 /* WHAT FOUNDING MEANS */
 .perks-list{display:flex;flex-direction:column;gap:18px}
 .perk-item{display:flex;gap:16px;align-items:flex-start;background:var(--paper);border-radius:8px;padding:18px 20px}
-.perk-num{font-family:var(--font-serif);font-size:22px;color:var(--sky);font-weight:500;flex:none;line-height:1}
+.perk-num{font-family:var(--font-serif);font-size:22px;color:var(--sky-text);font-weight:500;flex:none;line-height:1}
 .perk-content{flex:1}
 .perk-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px}
 .perk-desc{font-size:13px;color:var(--ink3);line-height:1.7}
@@ -79,7 +84,7 @@ nav{border-bottom:1px solid var(--line);padding:0 48px;position:sticky;top:0;bac
 .cta-section{background:var(--ink);color:var(--white);padding:56px 24px;text-align:center}
 .cta-title{font-family:var(--font-serif);font-size:26px;font-weight:500;margin-bottom:12px}
 .cta-sub{font-size:14px;color:rgba(255,255,255,.65);margin-bottom:26px;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.8}
-.cta-btn{display:inline-block;background:var(--sky);color:var(--white);text-decoration:none;padding:15px 30px;border-radius:4px;font-size:12px;letter-spacing:.08em;font-weight:500;transition:opacity .2s}
+.cta-btn{display:inline-block;background:var(--sky-text);color:var(--white);text-decoration:none;padding:15px 30px;border-radius:4px;font-size:12px;letter-spacing:.08em;font-weight:500;transition:opacity .2s}
 .cta-btn:hover{opacity:.85}
 
 footer{padding:32px 24px;text-align:center}
@@ -97,10 +102,10 @@ footer{padding:32px 24px;text-align:center}
 .compare-founding{background:var(--paper)}
 .compare-standard{background:var(--white)}
 .compare-tag{font-size:9px;letter-spacing:.2em;font-weight:500;margin-bottom:12px}
-.compare-founding .compare-tag{color:var(--sky)}
+.compare-founding .compare-tag{color:var(--sky-text)}
 .compare-standard .compare-tag{color:var(--ink4)}
 .compare-rate{font-family:var(--font-serif);font-size:42px;font-weight:500;line-height:1;margin-bottom:4px}
-.compare-founding .compare-rate{color:var(--sky)}
+.compare-founding .compare-rate{color:var(--sky-text)}
 .compare-standard .compare-rate{color:var(--ink4)}
 .compare-period{font-size:11px;color:var(--ink4);margin-bottom:18px}
 .compare-items{display:flex;flex-direction:column;gap:8px}
@@ -108,7 +113,7 @@ footer{padding:32px 24px;text-align:center}
 .compare-founding .compare-item{color:var(--ink)}
 .compare-standard .compare-item{color:var(--ink4)}
 .compare-standard .compare-item.keep{color:var(--ink4)}
-.compare-lock{font-size:10px;letter-spacing:.08em;font-weight:500;color:var(--sky);margin-top:16px;display:inline-block;background:var(--sky-bg);padding:4px 10px;border-radius:4px}
+.compare-lock{font-size:10px;letter-spacing:.08em;font-weight:500;color:#446C84;margin-top:16px;display:inline-block;background:var(--sky-bg);padding:4px 10px;border-radius:4px} /* #446C84: --sky-text darkened a step — 4.8:1 on the tinted chip, where --sky-text itself lands 4.35 */
 .faq-section{max-width:680px;margin:0 auto;padding:0 24px 64px}
 
 /* ── Launch notify (Sprint 68) ── */
@@ -119,7 +124,7 @@ footer{padding:32px 24px;text-align:center}
 .notify-form{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .notify-input{flex:1;min-width:200px;max-width:280px;border:1px solid var(--line);background:var(--page);padding:12px 14px;font-family:var(--font-sans);font-size:13px;color:var(--ink);border-radius:4px;outline:none}
 .notify-input:focus{border-color:var(--sky)}
-.notify-btn{background:var(--sky);color:var(--white);border:none;padding:12px 22px;font-family:var(--font-sans);font-size:11px;letter-spacing:.1em;font-weight:500;cursor:pointer;border-radius:4px;transition:opacity .2s}
+.notify-btn{background:var(--sky-text);color:var(--white);border:none;padding:12px 22px;font-family:var(--font-sans);font-size:11px;letter-spacing:.1em;font-weight:500;cursor:pointer;border-radius:4px;transition:opacity .2s}
 .notify-btn:hover{opacity:.88}
 .notify-btn:disabled{opacity:.6;cursor:default}
 .notify-note{font-size:12px;margin-top:14px;color:var(--sky-text)}
@@ -199,6 +204,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 </script>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
 <nav>
   <div class="nav-inner">
@@ -209,6 +215,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
   </div>
 </nav>
+
+<main id="main" tabindex="-1">
 
 <div class="hero">
   <div class="eyebrow">FOUNDING BRANDS</div>
@@ -335,6 +343,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   <p class="cta-sub">Submit your details and we'll be in touch within 3 business days to get your products live on Mirr.</p>
   <a href="/list-your-brand" class="cta-btn">LIST YOUR BRAND →</a>
 </div>
+
+</main>
 
 <footer>
   <div class="footer-note">Questions? <a href="/contact">Get in touch</a> — or email <a href="mailto:hello@trymirr.com">hello@trymirr.com</a></div>

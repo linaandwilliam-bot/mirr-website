@@ -22,6 +22,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
+/* Skip link (Sprint 81) — hidden off-screen until keyboard focus lands on it */
+.skip-link{position:absolute;left:-9999px;top:0;z-index:2000;background:var(--sky-text);color:var(--white);padding:10px 18px;font-size:12px;letter-spacing:.06em;font-weight:500;text-decoration:none;border-radius:0 0 6px 0}
+.skip-link:focus{left:0}
+main{display:block}
+#main:focus{outline:none}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-weight:300;height:100%}
 @media(prefers-color-scheme:dark){html,body{background:var(--page)!important;color:var(--ink)!important}}
@@ -53,9 +58,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div id="nav"><noscript><div style="padding:14px 24px;border-bottom:1px solid var(--line);font-size:13px"><a href="/" style="color:var(--sky-text);text-decoration:none">← Mirr home</a></div></noscript></div>
 <script src="/nav.js"></script>
-<div class="wrap">
+<main class="wrap" id="main" tabindex="-1">
   <div class="card">
     <div class="eyebrow">GET IN TOUCH</div>
     <h1 class="title">Let's talk.</h1>
@@ -77,7 +83,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <a href="/founding-brands" class="ql-link">See our founding brands</a>
     </div>
   </div>
-</div>
+</main>
 <footer style="padding:32px 24px;text-align:center">
   <p style="font-size:12px;color:var(--ink4)">
     <a href="/privacy" style="color:var(--sky-text);text-decoration:none">Privacy Policy</a>
