@@ -2966,6 +2966,57 @@ function dismissReturnPrompt() {
   document.getElementById('return-prompt').classList.remove('show');
 }
 
+// ── FUNNEL BEACONS (Sprint 87) — the three events Sprint 58 left unsent ──
+// The metrics worker accepts five event types; until now the site sent only
+// tryon-completed and buy-clicked, so attempts and failures were invisible.
+// Same rules as Sprint 58: sendMetric only (fire-and-forget, silent-fail,
+// anonymous payload), protected functions extended by reassignment only.
+// The Sprint 79 example-store buy intercept stays outermost on buyClick, so
+// example-store clicks still never fire buy-clicked — a dead demo click is
+// not real buy intent, and consistency matters more than volume.
+
+// demo-started — CHOICE: fired PER TRY-ON SUBMISSION, not once per session,
+// so demos:completions reads as a true attempt/completion ratio (a shopper
+// trying three garments is three attempts, each ending in a completion or a
+// failure). Fired only when the run will genuinely submit: not in sample
+// mode, and only with a validated photo present — this mirrors the exact
+// hasPhoto condition inside the protected runTryOn (prev-img src is a
+// data-URL over 200 chars); if that check ever changes, change this one
+// too. No beacon on page load: Cloudflare Analytics already counts visits.
+var _s87RunTryOn = runTryOn;
+runTryOn = function() {
+  try {
+    if (!_sampleMode) {
+      var prevSrc = document.getElementById('prev-img').src;
+      if (prevSrc && prevSrc.length > 200 && prevSrc.startsWith('data:image')) {
+        sendMetric('demo-started');
+      }
+    }
+  } catch (e) { /* metrics must never affect the shopper */ }
+  _s87RunTryOn();
+};
+
+// tryon-failed — only when a REAL error occurred (hadError true): the
+// PixelAPI/worker failure rate. Backing out without a photo calls
+// showFallbackResult(false) and fires nothing; client-side pre-flight
+// rejections never reach showFallbackResult at all (they cost no credits
+// and are already surfaced to the shopper).
+var _s87ShowFallback = showFallbackResult;
+showFallbackResult = function(hadError, errMsg, pixelCode) {
+  if (hadError) sendMetric('tryon-failed');
+  _s87ShowFallback(hadError, errMsg, pixelCode);
+};
+
+// sample-viewed — fires each time Sprint 73's sample mode renders (per
+// view, matching demo-started's per-attempt semantics). Sample mode's ONLY
+// event: it never emits tryon-completed (showRealResult never runs in
+// sample mode — Sprint 73 invariant, unchanged here).
+var _s87RenderSample = renderSampleResult;
+renderSampleResult = function() {
+  _s87RenderSample();
+  sendMetric('sample-viewed');
+};
+
 // Handle resize — switch layout if user rotates device
 window.addEventListener('resize', () => {
   const list = document.getElementById('page-list');
