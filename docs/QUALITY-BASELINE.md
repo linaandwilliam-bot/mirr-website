@@ -72,41 +72,40 @@ build; expect ~94 live after deploy).
    deliberately, then re-run this baseline. brand-demo and founding-brands
    share the same gap (their a11y scores absorb it at 90/94).
 
-## CONTENT FINDINGS — Sprint 86 integrity sweep (2026-08-19, for William to rule on)
+## CONTENT FINDINGS — Sprint 86 integrity sweep (2026-08-19)
 
 Full-site cold read, all 18 pages. Small unambiguous fixes were applied in
-the Sprint 86 commit; these remaining items are judgment calls about
-positioning or legal copy, deliberately NOT changed:
+the Sprint 86 commit. Sprint 88 (same day) settled the launch-state
+narrative — decision applied: **Mirr is pre-launch; the demo is live and
+real; the marketplace is not open; no checkout exists.** Status of each
+finding:
 
-1. **Launch-state language varies by page.** index says "Mirr launches
-   soon" (waitlist copy); founding-brands says "Mirr has just launched";
-   about says "Mirr launched with front-facing virtual try-on…". A stranger
-   can't tell if Mirr is live. Pick one narrative (suggest: "live for
-   brands, shopper marketplace opens soon") and align all three.
-2. **index describes at-launch marketplace mechanics as present fact.**
-   "Automatic Stripe payouts within 2 business days", "you receive order
-   details", FAQ "Mirr handles payment and commission" / "commission on
-   that transaction is reversed automatically" — while founding-brands'
-   FAQ honestly says the payment schedule is still being finalised, and
-   today's BUY button links out to the brand's own store (utm-tagged).
-   Either qualify index with "at launch" or accept it as launch-model
-   marketing; currently the two pages disagree.
-3. **terms.html has the same tension in legal form** — §3 "purchase
-   products directly through the Platform", §5 orders/Stripe/fulfilment.
-   Legal copy describing a checkout that doesn't exist yet is a
-   lawyer/founder call, not an editor's.
-4. **"Create your free brand account — sign up in under 2 minutes."**
-   (index, twice.) No accounts exist: the real flow is the
-   list-your-brand form, then an emailed access code after review.
-   "Account" overpromises; consider "Tell us about your brand".
-5. **Tone flag:** "No other online marketplace offers this combination"
-   (index) — an unverifiable absolute; the site's voice elsewhere avoids
-   these. Suggest "We haven't found another marketplace that offers it".
-6. **privacy/terms retain forward-looking account/order/payment sections**
-   (conditionally phrased, so not false — Sprint 86 fixed the parts that
-   were actually wrong). A two-line "pre-launch status" preamble in each
-   would make both documents strictly accurate today; drafting that is a
-   legal-copy decision.
+1. ~~Launch-state language varies by page.~~ **RESOLVED in Sprint 88:**
+   about now says "Mirr starts with…" (capability, no launch claim),
+   founding-brands says "Mirr is pre-launch and onboarding its first
+   brands" (static + JS render), index's "launches soon" was already
+   correct. Dashboard's live-counter label became "since tracking began" —
+   nothing has launched, the counter starts at the worker's deploy date.
+2. ~~index describes at-launch mechanics as present fact.~~ **RESOLVED in
+   Sprint 88:** every payout/order/fulfilment claim now carries "From
+   launch" (both step-04 blocks, the founding-perks list, and the three
+   FAQ answers — visible copy and FAQPage JSON-LD kept verbatim-identical).
+3. **terms.html legal substance** — MITIGATED in Sprint 88: §3 and §5 now
+   open with a clearly-marked pre-launch note ("describes how Mirr will
+   operate once checkout goes live; does not apply today; BUY takes you to
+   the brand's own store"). The underlying legal text is unchanged —
+   rewriting it remains a lawyer/founder task.
+4. ~~"Create your free brand account."~~ **RESOLVED in Sprint 88:** now
+   "Tell us about your brand — free", and the two "ACCOUNT VERIFIED" stat
+   labels (index hero, list-your-brand) read "BRAND VERIFIED".
+5. ~~Unverifiable absolute.~~ **RESOLVED in Sprint 88:** "We haven't found
+   another marketplace that offers this combination."
+6. **privacy/terms forward-looking sections** — MITIGATED in Sprint 88:
+   privacy §1 and §5 carry the same pre-launch notes (accounts/orders
+   apply from launch; today measurements and saved looks stay on the
+   shopper's device). Full recast of the legal documents stays on the
+   founders' list, alongside the still-unverified go-live confirmation
+   email (RUNBOOK FOUND #2).
 
 ## Performance notes (recorded, not in scope to fix)
 

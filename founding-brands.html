@@ -263,7 +263,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="progress-label">FOUNDING SPOTS FILLED</div>
     </div>
     <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div class="progress-note" id="progressNote">Mirr has just launched — these 20 spots are open now. Once filled, new brands join at the standard 12% rate.</div>
+    <div class="progress-note" id="progressNote">Mirr is pre-launch and onboarding its first brands — these 20 spots are open now. Once filled, new brands join at the standard 12% rate.</div>
   </div>
 </div>
 
@@ -377,7 +377,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     var note = document.getElementById('progressNote');
     var remaining = total - filled;
     if (filled <= 0) {
-      note.textContent = 'Mirr has just launched — these ' + total + ' spots are open now. Once filled, new brands join at the standard 12% rate.';
+      note.textContent = 'Mirr is pre-launch and onboarding its first brands — these ' + total + ' spots are open now. Once filled, new brands join at the standard 12% rate.';
     } else if (remaining > 0) {
       note.textContent = remaining + ' founding spot' + (remaining === 1 ? '' : 's') + ' left at the 8% rate. Once filled, new brands join at the standard 12% rate.';
     } else {

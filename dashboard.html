@@ -132,7 +132,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div>
           <div class="meta-label">TRY-ONS COMPLETED</div>
           <div class="meta-value" id="la-tryons"></div>
-          <div class="meta-note">since launch</div>
+          <div class="meta-note">since tracking began</div>
         </div>
         <div>
           <div class="meta-label">BUY CLICKS</div>
@@ -224,7 +224,9 @@ function render(brand, subs, fc, metrics) {
   var liveTryons = metrics && Number(metrics.tryons);
   if (Number.isFinite(liveTryons)) {
     document.getElementById('d-tryons').textContent = liveTryons;
-    document.getElementById('d-tryons-note').textContent = 'since launch';
+    // "since tracking began", not "since launch" — the counter's lifetime
+    // starts when the metrics worker went live (2026-08-19), pre-launch.
+    document.getElementById('d-tryons-note').textContent = 'since tracking began';
   } else {
     document.getElementById('d-tryons').textContent = (brand.tryons_count != null ? brand.tryons_count : '—');
     // example: true brands carry fabricated fixture counts (Sprint 79) — the
