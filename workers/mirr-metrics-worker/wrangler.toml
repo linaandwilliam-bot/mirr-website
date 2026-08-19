@@ -1,0 +1,18 @@
+name = "mirr-metrics-worker"
+main = "worker.js"
+compatibility_date = "2026-07-01"
+
+# Storage is Cloudflare D1 (not a Durable Object): the dashboard can create
+# and bind D1 without a wrangler migration, which is how this was deployed
+# on 2026-08-19. Database: mirr-metrics (id below).
+[[d1_databases]]
+binding = "DB"
+database_name = "mirr-metrics"
+database_id = "9df7e8f4-b905-4c7a-9782-22b3a78ba14d"
+
+# Schema (already applied via the D1 console):
+#   CREATE TABLE IF NOT EXISTS counts (
+#     brand TEXT NOT NULL, event TEXT NOT NULL, day TEXT NOT NULL,
+#     n INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (brand, event, day));
+#
+# Secret (set via dashboard or `wrangler secret put`): ADMIN_KEY — guards /stats.

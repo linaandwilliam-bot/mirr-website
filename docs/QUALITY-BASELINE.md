@@ -104,8 +104,9 @@ finding:
    privacy §1 and §5 carry the same pre-launch notes (accounts/orders
    apply from launch; today measurements and saved looks stay on the
    shopper's device). Full recast of the legal documents stays on the
-   founders' list, alongside the still-unverified go-live confirmation
-   email (RUNBOOK FOUND #2).
+   founders' list. (The go-live confirmation email question was answered
+   in Sprint 89 — the worker source confirms it is manual by design;
+   RUNBOOK FOUND #2.)
 
 ## Performance notes (recorded, not in scope to fix)
 

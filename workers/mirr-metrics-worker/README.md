@@ -1,41 +1,74 @@
 # mirr-metrics-worker
 
-> **SOURCE NOT YET IMPORTED.** The source for this worker exists as a zip
-> delivered in William's other Claude (browser) chat — extract it into this
-> folder (`src/index.js` + `wrangler.toml`). A search of Downloads,
-> Documents and Desktop on this machine (2026-08-12) found no local copy.
-> Do not reconstruct the code — import the delivered source.
+**Source imported 2026-08-20** — from the worker's deployment (deployed
+2026-08-19), together with its real `wrangler.toml`. The repo copy must
+match the deployment byte-for-byte: never "tidy" it here. If the
+dashboard's Edit code view differs from this file, the dashboard is the
+source of truth — re-export (DISASTER-RECOVERY.md §2).
 
-**What it does:** counts anonymous demo events per brand and serves the
-counts back to the brand dashboard. Payloads carry no PII by design —
-event name, brand slug, product index, timestamp only (see the beacon
-comment in brand-demo.html).
+**What it does:** counts anonymous funnel events per brand and serves the
+counts back to the brand dashboard. Privacy by construction: it stores
+ONLY aggregate counters keyed by brand/event/UTC-day — the beacon's
+`product` and `at` fields are accepted but discarded, and no IPs, user
+agents, measurements, photos, or emails are ever stored.
 
-## Endpoints (client-side contract the site already speaks)
+## Architecture — Cloudflare D1, and why not a Durable Object
 
-- `POST /` — body `{ event, brand, product, at }` where event is
-  `tryon-completed` or `buy-clicked` (site sends fire-and-forget,
-  silent-fail; example-store buy clicks are deliberately not sent).
-- `GET /counts?brand=<slug>` — `{ tryons, buys, demos, samples }`.
-  dashboard.html needs numeric `tryons` for the try-on card and BOTH
-  numeric `tryons` and `buys` for the LIVE ACTIVITY panel; `demos` and
-  `samples` arrive but are not yet displayed.
+Storage is **Cloudflare D1** (binding `DB`, database `mirr-metrics`).
+A Durable Object was the textbook fit for an atomic counter, but a DO
+class cannot be deployed from the Cloudflare dashboard — it needs a
+wrangler migration, and this worker was deployed dashboard-only with no
+CLI access. D1 can be created and bound entirely in the dashboard, and
+the ingest uses an atomic upsert, so nothing is lost by the substitution.
 
-The site is dormant-safe in both directions: failing beacons and count
-fetches are the expected state until this worker answers.
+The full schema, exactly as applied via the D1 console (reproducible):
 
-## Secrets (names only — never values, never in this repo)
+```sql
+CREATE TABLE IF NOT EXISTS counts (
+  brand TEXT NOT NULL,
+  event TEXT NOT NULL,
+  day   TEXT NOT NULL,
+  n     INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (brand, event, day)
+);
+```
 
-- Unknown until the source is imported — likely a KV/D1 binding rather
-  than a secret. Record binding/secret NAMES here on import.
+Ingest is `INSERT ... ON CONFLICT(brand, event, day) DO UPDATE SET n = n + 1`.
 
-## Deploy
+## Endpoints (match the deployed source)
 
-Once source + `wrangler.toml` are imported into THIS folder:
+- `POST /` — body `{ event, brand, product, at }` (≤512 bytes). Events
+  allowlisted to the five the site sends: `demo-started`,
+  `tryon-completed`, `tryon-failed`, `buy-clicked`, `sample-viewed`
+  (all five wired site-side since Sprint 87). Brands validated against
+  `^[a-z0-9][a-z0-9-]{0,39}$`. Origin must be a production origin — OR
+  the request may present `X-Admin-Key`, a side door for
+  verification/testing without an Origin header.
+- `GET /counts?brand=<slug>` — `{ tryons, buys, demos, samples }`
+  (60s public cache). dashboard.html needs numeric `tryons` for the
+  try-on card and BOTH `tryons` and `buys` for the LIVE ACTIVITY panel;
+  `demos`/`samples` are collected but not yet displayed anywhere.
+- `GET /stats` — full per-day breakdown; requires `X-Admin-Key`.
+- Anything else → `{ ok: true, service: 'mirr-metrics-worker' }`.
+
+## Secrets and bindings (names only — never values, never in this repo)
+
+- `ADMIN_KEY` (secret) — guards `/stats` and the no-Origin ingest side
+  door.
+- `DB` (D1 binding) — database `mirr-metrics` (id recorded in
+  `wrangler.toml`; a D1 database id is configuration, not a credential).
+
+## Redeploy
+
+This folder carries the real `wrangler.toml`, so:
 
 ```
 cd workers/mirr-metrics-worker && wrangler deploy
 ```
+
+`wrangler secret put ADMIN_KEY` sets the secret separately. The D1
+database must exist first (dashboard → D1 → create `mirr-metrics`, run
+the CREATE TABLE above, bind as `DB`).
 
 **Standing rule (July 2026 incident, DISASTER-RECOVERY.md §4):** wrangler
 config lives INSIDE this subfolder only — never at the repo root.

@@ -58,8 +58,8 @@ Total hands-on time excluding the brand's own form-filling: ~15 minutes.
     empty rating), MEASURED ✓ badges, size chart matches dims at sample size,
     BUY opens the real product page with `utm_source=mirr`, dashboard payout %
     matches tier, `/brands` lists the brand.
-13. Email the brand that they're live (the promised confirmation email — its
-    automated trigger is still unverified, FOUND #2, so send it yourself).
+13. Email the brand that they're live. This is a manual step by design —
+    the catalog worker sends no emails (confirmed in its source, FOUND #2).
 
 House rules that apply everywhere below:
 
@@ -289,14 +289,14 @@ missing the required per-product description.
 
 Still open:
 
-2. **The go-live confirmation email is promised but its trigger is
-   unverifiable from this repo.** submit-products.html tells brands "We'll
-   email you to confirm when each product is available", and a code comment
-   says the catalog worker sends it when a submission is marked live — but
-   the status flip is a manual GitHub edit, and whether the worker actually
-   detects that flip (webhook? poll?) can't be confirmed from client code.
-   Until verified in the worker, SEND THE GO-LIVE EMAIL YOURSELF
-   (first-brand checklist step 13).
+2. ~~The go-live confirmation email trigger is unverifiable.~~ **ANSWERED
+   2026-08-20 (Sprint 89), by the worker source now in
+   workers/mirr-catalog-worker/:** the catalog worker sends no email of
+   any kind and has no mechanism that detects a status flip — its own
+   header says statuses are moved by hand. The go-live email is a purely
+   manual step, permanently: first-brand checklist step 13 ("send it
+   yourself") is the real and only mechanism, and the site copy's "our
+   team will let you know" wording matches that truth.
 5. ~~Stocked sizes are collected, then dropped.~~ **FIXED in Sprint 84:**
    promote-submission now carries `sizes_in_stock` into brands.json as a
    `sizes` array (XS–XL only; larger sizes are dropped with a review note),

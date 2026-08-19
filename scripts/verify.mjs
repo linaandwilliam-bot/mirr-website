@@ -390,6 +390,46 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   }
 }
 
+// ── Sprint 89: worker source must be real and complete ──
+// Every folder under workers/ carries BOTH worker.js and README.md, and
+// worker.js must be non-empty and parse as a JS module — a zero-byte or
+// truncated dashboard export must fail the push (this exact failure has
+// happened once). Also reject leftover multipart boundaries from a
+// dashboard export (a line starting with -- followed by a long hex run).
+{
+  const wdir = join(root, 'workers');
+  if (existsSync(wdir)) {
+    const tmp = mkdtempSync(join(tmpdir(), 'mirr-verify-worker-'));
+    try {
+      for (const entry of readdirSync(wdir, { withFileTypes: true })) {
+        if (!entry.isDirectory()) continue;
+        const folder = `workers/${entry.name}`;
+        const workerPath = join(wdir, entry.name, 'worker.js');
+        const readmePath = join(wdir, entry.name, 'README.md');
+        if (!existsSync(readmePath)) fail(`${folder}: README.md is missing`);
+        if (!existsSync(workerPath)) { fail(`${folder}: worker.js is missing`); continue; }
+        const src = readFileSync(workerPath, 'utf8');
+        if (!src.trim()) { fail(`${folder}: worker.js is empty — a truncated or zero-byte export`); continue; }
+        const boundary = src.split('\n').find((l) => /^--[0-9a-f]{20,}/.test(l.trim()));
+        if (boundary) {
+          fail(`${folder}: worker.js contains a multipart boundary line ("${boundary.trim().slice(0, 40)}…") — a dashboard export artefact, re-export cleanly`);
+        }
+        // Workers are ES modules — check via a .mjs temp file so node
+        // parses `export default` correctly.
+        const tmpFile = join(tmp, `${entry.name}.mjs`);
+        writeFileSync(tmpFile, src);
+        const res = spawnSync(process.execPath, ['--check', tmpFile], { encoding: 'utf8' });
+        if (res.status !== 0) {
+          const errLine = (res.stderr || '').split('\n').find((l) => l.trim()) || 'syntax error';
+          fail(`${folder}: worker.js does not parse as JavaScript — ${errLine.replace(tmp, '').trim()}`);
+        }
+      }
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  }
+}
+
 // ── Sprint 78: fit engine is a single-source-of-truth module ──
 // The engine must exist, export every function, and never be silently
 // re-inlined into brand-demo (which must load it via script tag instead).

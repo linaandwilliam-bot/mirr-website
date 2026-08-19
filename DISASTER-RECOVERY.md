@@ -28,23 +28,26 @@ to `main` is live within ~1 minute. Cloudflare Workers exist around the site (§
 
 ## 2. Cloudflare Workers inventory
 
-These live in the Cloudflare account (linaandwilliam). Their source is being brought
-under version control in **`/workers/<name>/`** (Sprint 80) — one folder per worker,
-each with a README covering purpose, endpoints, secret **names**, and deploy command.
-As of 2026-08-12 all four folders are gap-READMEs awaiting the copied source (the
-metrics worker's source exists as a zip in William's other Claude chat; the other
-three must be copied from each Worker's editor in the dashboard).
+These live in the Cloudflare account (linaandwilliam). **Since 2026-08-20 (Sprint 89)
+every worker's real source lives in `/workers/<name>/worker.js`**, with a README per
+folder covering purpose, endpoints, secret **names**, export date, and how to
+redeploy. The metrics worker also carries its real `wrangler.toml` (D1 binding).
 
-**Caveat: the repo copy may lag the deployed version.** The dashboard is the runtime
-truth — before editing or redeploying from the repo, open the Worker's editor in the
-dashboard and diff it against `/workers/<name>/src/`. verify.mjs scans the whole
-`/workers/` tree and fails the run on anything resembling a committed credential.
+**Caveat: the repo copy can lag the deployed version.** The dashboard's Edit code
+view is the runtime source of truth. The one-line check before editing or
+redeploying from the repo: open the Worker's editor in the dashboard and compare it
+against `/workers/<name>/worker.js` — **if they differ, re-export from the dashboard
+first**; never assume the repo copy wins. verify.mjs guards the tree: no
+credential-shaped literals anywhere under `/workers/`, every folder must hold both
+`worker.js` and `README.md`, every `worker.js` must be non-empty and parse as a JS
+module, and multipart-boundary artefacts from a dashboard export fail the run.
 
 | Worker | Called from | Purpose | Secrets required (names only) |
 |---|---|---|---|
-| `mirr-tryon-worker.linaandwilliam.workers.dev` | brand-demo.html | Proxies try-on jobs to PixelAPI (`POST /` submit, `GET /status` poll) | Its PixelAPI credentials (API key) |
+| `mirr-tryon-worker.linaandwilliam.workers.dev` | brand-demo.html | Proxies try-on jobs to PixelAPI (`POST /` submit, `GET /status` poll); KV garment cache (`GARMENT_CACHE`) | `PIXEL_KEY`, `IMGBB_KEY` (bound, currently unused) |
 | `mirr-brand-setup-worker.linaandwilliam.workers.dev` | new-brand.html (internal tool) | Commits new brand allowlist entries to submit-products.html on GitHub | `ADMIN_KEY` (shared admin key; also kept in the operator's browser localStorage as `mirr_admin_key`), `GITHUB_TOKEN` (repo write) |
-| `mirr-catalog-worker.linaandwilliam.workers.dev` | submit-products.html (`POST /submit`) | Registers product submissions | Not documented here — check the Worker's own config |
+| `mirr-catalog-worker.linaandwilliam.workers.dev` | submit-products.html (`POST /submit`) | Registers product submissions by committing submissions.json to `main` | `GITHUB_TOKEN` (repo write; per-worker secret) |
+| `mirr-metrics-worker.linaandwilliam.workers.dev` | brand-demo.html (beacons), dashboard.html (`GET /counts`) | Anonymous funnel counters in D1 (binding `DB`, database `mirr-metrics`) | `ADMIN_KEY` (guards `/stats` and the no-Origin ingest side door) |
 
 If a Worker is down: brand-demo's try-on falls back to a side-by-side preview (site
 otherwise fine); new-brand's GitHub auto-commit fails with a manual-fallback snippet
