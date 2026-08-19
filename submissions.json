@@ -1,1 +1,41 @@
-[]
+[
+  {
+    "ref": "MIRR-MSZM2IQZ-1PE6",
+    "brand_name": "Rehearsal Test Co",
+    "brand_email": "products@rehearsal-test-co.example",
+    "status": "submitted",
+    "submitted_at": "2026-08-19T04:48:20.843Z",
+    "products": [
+      {
+        "name": "Rehearsal Fixture Tee",
+        "category": "Tops",
+        "price": "49.99",
+        "sku": "",
+        "material": "100% Cotton (fixture)",
+        "description": "Rehearsal fixture product for the Sprint 83 onboarding dry run. Not a real garment.",
+        "front_photo": "https://i.ibb.co/23XR9QPL/8a17e998bf6f.jpg",
+        "back_photo": "",
+        "sizes_in_stock": "S, M, L",
+        "dim_chest_cm": "52",
+        "dim_waist_cm": "50",
+        "dim_length_cm": "70",
+        "dim_inseam_cm": ""
+      },
+      {
+        "name": "Rehearsal Fixture Shorts",
+        "category": "Bottoms",
+        "price": "39.99",
+        "sku": "",
+        "material": "Cotton blend (fixture)",
+        "description": "Second rehearsal fixture product for the Sprint 83 onboarding dry run. Not a real garment.",
+        "front_photo": "https://i.ibb.co/rKkMW29R/768910dc402e.jpg",
+        "back_photo": "",
+        "sizes_in_stock": "M, L",
+        "dim_chest_cm": "",
+        "dim_waist_cm": "40",
+        "dim_length_cm": "45",
+        "dim_inseam_cm": "15"
+      }
+    ]
+  }
+]
