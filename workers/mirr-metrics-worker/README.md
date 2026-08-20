@@ -51,7 +51,22 @@ Ingest is `INSERT ... ON CONFLICT(brand, event, day) DO UPDATE SET n = n + 1`.
 - `GET /stats` — full per-day breakdown; requires `X-Admin-Key`.
 - Anything else → `{ ok: true, service: 'mirr-metrics-worker' }`.
 
-## Secrets and bindings (names only — never values, never in this repo)
+## KNOWN ISSUE (found 2026-08-20, Sprint 90) — /stats is curl-only until a one-line deploy
+
+`cors()` returns `Access-Control-Allow-Headers: Content-Type`, so a browser
+preflight for the `X-Admin-Key` header is rejected **even from the
+production origin** — metrics.html (the founder view) cannot reach /stats
+from any browser. The fix is one line in the deployed worker, in `cors()`:
+
+```
+'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key',
+```
+
+(exactly what mirr-brand-setup-worker already allows). Deploy that change,
+then update this folder's `worker.js` to match — in that order, so the repo
+copy never claims something the deployment doesn't do. Until then /stats
+works only from non-browser clients (curl sends no preflight), and
+metrics.html shows its honest "worker didn't respond" state.
 
 - `ADMIN_KEY` (secret) — guards `/stats` and the no-Origin ingest side
   door.
