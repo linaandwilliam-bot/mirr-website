@@ -112,6 +112,32 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   }
 }
 
+// ── Sprint 90: internal tools stay unlinked and unindexed ──
+// The DO NOT LINK set, made enforceable (Sprint 86's orphan check treated
+// these as deliberate orphans; this is the durable list it consults).
+// Each must carry the internal banner + noindex, appear in no page's or
+// nav.js's hrefs, and never enter sitemap.xml.
+{
+  const INTERNAL_TOOLS = ['new-brand', 'submissions-review', 'metrics'];
+  const nav = read('nav.js');
+  const sitemap = existsSync(join(root, 'sitemap.xml')) ? read('sitemap.xml') : '';
+  for (const slug of INTERNAL_TOOLS) {
+    const page = `${slug}.html`;
+    if (existsSync(join(root, page))) {
+      const src = read(page);
+      if (!/name="robots" content="noindex/.test(src)) fail(`${page}: internal tool is missing its noindex robots meta`);
+      if (!src.includes('DO NOT LINK')) fail(`${page}: internal tool is missing its DO NOT LINK banner`);
+    }
+    const linkRe = new RegExp(`href="/${slug}(?:\\.html)?["#?]`);
+    for (const f of htmlFiles) {
+      if (f === page) continue;
+      if (linkRe.test(read(f))) fail(`${f}: links to internal tool /${slug} — internal tools must stay unlinked`);
+    }
+    if (linkRe.test(nav)) fail(`nav.js: links to internal tool /${slug}`);
+    if (sitemap.includes(`/${slug}<`)) fail(`sitemap.xml: lists internal tool /${slug}`);
+  }
+}
+
 // ── brand-demo.html try-on flow regression guard ──
 {
   const bd = read('brand-demo.html');

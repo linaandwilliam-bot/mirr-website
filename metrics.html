@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="robots" content="noindex, nofollow">
+<title>Funnel metrics — Mirr</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<style>
+/* Skip link (Sprint 81) — hidden off-screen until keyboard focus lands on it */
+.skip-link{position:absolute;left:-9999px;top:0;z-index:2000;background:var(--sky-text);color:var(--white);padding:10px 18px;font-size:12px;letter-spacing:.06em;font-weight:500;text-decoration:none;border-radius:0 0 6px 0}
+.skip-link:focus{left:0}
+main{display:block}
+#main:focus{outline:none}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-weight:300;line-height:1.6}
+@media(prefers-color-scheme:dark){html,body{background:var(--page)!important;color:var(--ink)!important}}
+
+.banner{background:var(--ink);color:var(--white);text-align:center;padding:8px 16px;font-size:11px;letter-spacing:.08em}
+
+.page{max-width:860px;margin:0 auto;padding:40px 24px 80px}
+.eyebrow{font-size:10px;letter-spacing:.24em;color:var(--ink4);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:16px;height:.5px;background:var(--sky)}
+.title{font-family:var(--font-serif);font-size:clamp(26px,4vw,34px);font-weight:500;margin-bottom:8px;line-height:1.15}
+.sub{font-size:13px;color:var(--ink3);line-height:1.8;margin-bottom:28px;max-width:600px}
+
+/* Key box */
+.key-box{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:28px}
+.key-label{font-size:10px;letter-spacing:.16em;color:var(--ink4);margin-bottom:8px}
+.key-row{display:flex;gap:8px;flex-wrap:wrap}
+.key-input{flex:1;min-width:220px;height:42px;border:1.5px solid var(--line);border-radius:6px;font-family:var(--font-mono);font-size:13px;padding:0 12px;background:var(--page);color:var(--ink);outline:none}
+.key-input:focus{border-color:var(--sky);box-shadow:0 0 0 3px var(--sky-bg)}
+.key-btn{height:42px;padding:0 22px;background:var(--sky-text);color:var(--white);border:none;border-radius:6px;font-family:var(--font-sans);font-size:12px;letter-spacing:.08em;font-weight:500;cursor:pointer;transition:background .2s}
+.key-btn:hover{background:var(--sky)}
+.key-btn:disabled{opacity:.5;cursor:default}
+.key-remember{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink3);margin-top:10px}
+.key-note{font-size:11px;color:var(--ink4);margin-top:8px;line-height:1.7}
+
+/* States */
+.state{display:none;font-size:14px;line-height:1.8;padding:22px 20px;border-radius:10px;margin-bottom:28px}
+.state-err{background:var(--rose-bg);border:1px solid rgba(212,168,152,.35);color:var(--rose-dark)}
+.state-info{background:var(--paper);border:1px solid var(--line);color:var(--ink2)}
+
+/* Tables */
+.s-label{font-size:10px;letter-spacing:.2em;color:var(--sky-text);margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.s-label::before{content:"";width:16px;height:.5px;background:var(--sky)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--white);margin-bottom:30px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{font-size:9px;letter-spacing:.12em;color:var(--ink4);text-align:right;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;font-weight:500}
+th:first-child,td:first-child{text-align:left}
+td{padding:9px 12px;border-bottom:1px solid var(--line2);font-family:var(--font-mono);color:var(--ink2);text-align:right;white-space:nowrap}
+td:first-child{font-family:var(--font-sans);color:var(--ink)}
+tr:last-child td{border-bottom:none}
+.rate{color:var(--sky-text);font-weight:500}
+.collecting{font-family:var(--font-sans);font-size:11px;color:var(--ink4);font-style:italic}
+.trunc-note{font-size:11px;color:var(--ink4);margin:-22px 0 30px;padding:0 4px}
+
+@media(max-width:640px){ .page{padding:32px 16px 60px} }
+/* Keyboard focus — visible outline for tab navigation (a11y) */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="banner">INTERNAL TOOL — NOT PART OF THE PUBLIC SITE — DO NOT LINK</div>
+<noscript><div style="max-width:680px;margin:24px auto;padding:14px 18px;background:var(--rose-bg);border:1px solid rgba(212,168,152,.35);border-radius:8px;font-size:13px;color:var(--rose-dark)">This internal tool requires JavaScript.</div></noscript>
+
+<div id="nav"><noscript><div style="padding:14px 24px;border-bottom:1px solid var(--line);font-size:13px"><a href="/" style="color:var(--sky-text);text-decoration:none">← Mirr home</a></div></noscript></div>
+<script src="/nav.js"></script>
+
+<main class="page" id="main" tabindex="-1">
+
+  <div class="eyebrow">FOUNDER METRICS</div>
+  <h1 class="title">The funnel, in five seconds.</h1>
+  <p class="sub">Live counters from the metrics worker: who started a try-on, who finished, who failed, who only looked at the sample, and who clicked buy. Anonymous aggregates only — the worker stores nothing else.</p>
+
+  <div class="key-box">
+    <div class="key-label">ADMIN KEY (X-Admin-Key on the /stats request — sent nowhere else)</div>
+    <div class="key-row">
+      <input type="password" class="key-input" id="key-input" autocomplete="off" placeholder="Paste the metrics worker's ADMIN_KEY" onkeydown="if(event.key==='Enter')loadStats()">
+      <button class="key-btn" id="load-btn" type="button" onclick="loadStats()">LOAD METRICS →</button>
+    </div>
+    <label class="key-remember"><input type="checkbox" id="key-remember"> Remember on this device (localStorage <code>mirr_admin_key</code> — the same key the brand-setup tool caches)</label>
+    <p class="key-note">The key is a credential: it is held in memory (and localStorage only if you tick the box), never put in a URL, never logged, and sent only as the <code>X-Admin-Key</code> header to the metrics worker.</p>
+  </div>
+
+  <div class="state state-err" id="err-key" role="alert">That key was not accepted (the worker answered 401). Check it against the ADMIN_KEY secret on mirr-metrics-worker.</div>
+  <div class="state state-err" id="err-net" role="alert">The metrics worker didn't respond — it may be unreachable from this network, or down. No numbers to show; nothing here is a zero.</div>
+  <div class="state state-info" id="empty-note">No events recorded yet. The counters are live — this page fills as shoppers use the demo.</div>
+  <div class="state state-info" id="loading-note">Loading…</div>
+
+  <div id="results" style="display:none">
+    <div class="s-label">TOTALS BY BRAND</div>
+    <div class="tbl-wrap"><table id="totals-t" aria-label="Event totals per brand"></table></div>
+
+    <div class="s-label">DAILY BREAKDOWN — NEWEST FIRST</div>
+    <div class="tbl-wrap"><table id="daily-t" aria-label="Daily event counts"></table></div>
+    <p class="trunc-note" id="trunc-note" style="display:none"></p>
+  </div>
+
+</main>
+
+<script src="/error-report.js"></script>
+<script>
+var METRICS_WORKER = 'https://mirr-metrics-worker.linaandwilliam.workers.dev';
+// Same localStorage name new-brand.html uses, so the founders paste the key
+// once per device across internal tools. Clearly named, clearable from
+// devtools or by unticking the box and loading again.
+var KEY_STORAGE = 'mirr_admin_key';
+
+var EVENTS = ['demo-started', 'tryon-completed', 'tryon-failed', 'sample-viewed', 'buy-clicked'];
+var EVENT_LABELS = { 'demo-started': 'STARTED', 'tryon-completed': 'COMPLETED', 'tryon-failed': 'FAILED', 'sample-viewed': 'SAMPLE', 'buy-clicked': 'BUY CLICKS' };
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function show(id, on) { document.getElementById(id).style.display = on ? 'block' : 'none'; }
+function hideAllStates() { ['err-key', 'err-net', 'empty-note', 'loading-note'].forEach(function (id) { show(id, false); }); }
+
+// Sprint 76 small-sample rule: a rate is only a rate when the denominator
+// is at least 10 — never restate 1-of-2 as 50%.
+function rateCell(numerator, denominator) {
+  if (denominator >= 10) return '<span class="rate">' + Math.round((numerator / denominator) * 100) + '%</span>';
+  return '<span class="collecting">collecting data</span>';
+}
+
+function render(data) {
+  var totals = data.totals || {};
+  var daily = Array.isArray(data.daily) ? data.daily : [];
+  var brands = Object.keys(totals).sort();
+
+  if (brands.length === 0 && daily.length === 0) {
+    show('empty-note', true);
+    show('results', false);
+    return;
+  }
+
+  var head = '<tr><th>BRAND</th>' + EVENTS.map(function (e) { return '<th>' + EVENT_LABELS[e] + '</th>'; }).join('') +
+    '<th>COMPLETION</th><th>BUY RATE</th></tr>';
+  var rows = brands.map(function (b) {
+    var t = totals[b] || {};
+    var started = Number(t['demo-started']) || 0;
+    var completed = Number(t['tryon-completed']) || 0;
+    var buys = Number(t['buy-clicked']) || 0;
+    return '<tr><td>' + esc(b) + '</td>' +
+      EVENTS.map(function (e) { return '<td>' + (Number(t[e]) || 0) + '</td>'; }).join('') +
+      '<td>' + rateCell(completed, started) + '</td>' +
+      '<td>' + rateCell(buys, completed) + '</td></tr>';
+  }).join('');
+  document.getElementById('totals-t').innerHTML = head + rows;
+
+  // Daily table — the worker returns rows ordered day DESC already; sort
+  // defensively anyway so "newest first" never depends on the worker.
+  var sorted = daily.slice().sort(function (a, b) { return a.day < b.day ? 1 : a.day > b.day ? -1 : 0; });
+  var CAP = 200;
+  var shown = sorted.slice(0, CAP);
+  document.getElementById('daily-t').innerHTML =
+    '<tr><th>DAY</th><th>BRAND</th><th>EVENT</th><th>COUNT</th></tr>' +
+    shown.map(function (r) {
+      return '<tr><td>' + esc(r.day) + '</td><td style="text-align:left;font-family:var(--font-sans)">' + esc(r.brand) + '</td>' +
+        '<td style="text-align:left">' + esc(r.event) + '</td><td>' + (Number(r.n) || 0) + '</td></tr>';
+    }).join('');
+  var trunc = document.getElementById('trunc-note');
+  if (sorted.length > CAP) {
+    trunc.textContent = 'Showing the newest ' + CAP + ' of ' + sorted.length + ' daily rows.';
+    trunc.style.display = 'block';
+  } else {
+    trunc.style.display = 'none';
+  }
+
+  show('results', true);
+}
+
+async function loadStats() {
+  var input = document.getElementById('key-input');
+  var key = (input.value || '').trim();
+  if (!key) { input.focus(); return; }
+
+  var remember = document.getElementById('key-remember').checked;
+  try {
+    if (remember) localStorage.setItem(KEY_STORAGE, key);
+    else localStorage.removeItem(KEY_STORAGE);
+  } catch (e) { /* private mode — key just lives in memory this visit */ }
+
+  hideAllStates();
+  show('results', false);
+  show('loading-note', true);
+  var btn = document.getElementById('load-btn');
+  btn.disabled = true;
+
+  try {
+    var resp = await fetch(METRICS_WORKER + '/stats', {
+      headers: { 'X-Admin-Key': key },
+      cache: 'no-store'
+    });
+    if (resp.status === 401) {
+      hideAllStates();
+      show('err-key', true);
+      return;
+    }
+    if (!resp.ok) throw new Error('worker answered ' + resp.status);
+    var data = await resp.json();
+    hideAllStates();
+    render(data);
+  } catch (e) {
+    // Network failure or unexpected status — the honest state is "unknown",
+    // never a fabricated zero.
+    hideAllStates();
+    show('err-net', true);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Prefill from a previously-remembered key and load straight away — the
+// founder shouldn't retype it every visit.
+(function init() {
+  try {
+    var saved = localStorage.getItem(KEY_STORAGE);
+    if (saved) {
+      document.getElementById('key-input').value = saved;
+      document.getElementById('key-remember').checked = true;
+      loadStats();
+    }
+  } catch (e) { /* storage unavailable — manual paste still works */ }
+}());
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c6fb28a3de5848c8837eaa3d8495d031"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
