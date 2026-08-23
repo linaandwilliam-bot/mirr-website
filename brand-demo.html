@@ -557,6 +557,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .rsbf,.proc-bar{transition:none}
   .fitroom-save-btn,.fitroom-card-actions button,.fitroom-overlay-view{transition:none}
 }
+
+/* == Sprint 93: mobile floors (inputs >=16px, text >=11px, tap targets) == */
+@media(max-width:768px){
+input,textarea,select{font-size:16px !important}
+[style*="font-size:8px"],[style*="font-size:9px"],[style*="font-size:10px"]{font-size:11px !important}
+.mbar-btn,.bverified,.bdemo-badge,.bloc,.bsl,.bstats-note,.btag,.pbadge,.mcchip,.pcat,.measured-badge,.pview,.pprice-old,.powered{font-size:11px !important}
+.mbar-logo{padding:10px 8px;margin:-10px -8px}.mbar-link{padding:14px 10px;margin:-14px -10px}.mbar-btn{padding:10px 14px;margin:-3px 0}.fpill{padding:9px 14px}
+}
 </style>
 </head>
 <body>

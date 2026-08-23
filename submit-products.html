@@ -175,6 +175,13 @@ textarea{resize:vertical;min-height:72px;line-height:1.6}
 }
 /* Keyboard focus — visible outline for tab navigation (a11y) */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+
+/* == Sprint 93: mobile floors (inputs >=16px, text >=11px, tap targets) == */
+@media(max-width:768px){
+input,textarea,select{font-size:16px !important}
+[style*="font-size:8px"],[style*="font-size:9px"],[style*="font-size:10px"]{font-size:11px !important}
+.page-eyebrow,.strip-label{font-size:11px !important}
+}
 </style>
 </head>
 <body>

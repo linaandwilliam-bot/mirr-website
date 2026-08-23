@@ -72,6 +72,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .btn:disabled:hover{background:var(--ink)}
 /* Keyboard focus — visible outline for tab navigation (a11y) */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+
+/* == Sprint 93: mobile floors (inputs >=16px, text >=11px, tap targets) == */
+@media(max-width:768px){
+input,textarea,select{font-size:16px !important}
+.eyebrow,.card-label,.vlist-title{font-size:11px !important}
+}
 </style>
 </head>
 <body>

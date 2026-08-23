@@ -641,6 +641,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .rv,.rvl{opacity:1;transform:none;transition:none}
   .hero-fit-fill,.hd-upload-fill{transition:none}
 }
+
+/* == Sprint 93: mobile floors (inputs >=16px, text >=11px, tap targets) == */
+@media(max-width:768px){
+input,textarea,select{font-size:16px !important}
+[style*="font-size:8px"],[style*="font-size:9px"],[style*="font-size:10px"]{font-size:11px !important}
+.hero-eyebrow,.hero-stat-label,.hero-stat-source,.marquee-item,.section-eyebrow,.how-step-tag,.product-tag,.mirror-pill-label,.product-cat,.model-card-head,.model-stat-label,.ps-tag,.perks-head-title,.perks-founding,.fitting-card-title,.fitting-card-live,.fit-result-head,.rwd-eyebrow,.footer-col-head{font-size:11px !important}
+footer a{display:inline-block;padding:8px 2px}
+}
+@media(max-width:480px){.hero-left-bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px 12px}}
 </style>
 <noscript><style>.rv,.rvl{opacity:1;transform:none}</style></noscript>
 <script type="application/ld+json">

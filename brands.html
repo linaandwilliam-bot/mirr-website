@@ -72,6 +72,12 @@ footer{padding:32px 24px;text-align:center}
 }
 /* Keyboard focus — visible outline for tab navigation (a11y) */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+
+/* == Sprint 93: mobile floors (inputs >=16px, text >=11px, tap targets) == */
+@media(max-width:768px){
+[style*="font-size:8px"],[style*="font-size:9px"],[style*="font-size:10px"]{font-size:11px !important}
+.eyebrow,.brand-verified,.brand-loc,.brand-tag{font-size:11px !important}
+}
 </style>
 </head>
 <body>
