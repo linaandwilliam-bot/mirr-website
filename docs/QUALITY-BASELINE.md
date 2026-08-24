@@ -19,6 +19,14 @@ that changes page structure and update this file (rule recorded in CLAUDE.md).
   `EPERM … lighthouse.<n>` temp-dir cleanup error AFTER the report is
   written. Ignore the exit code; check the JSON exists.
 
+**Sprint 97 spot-check (2026-08-22, post-residue-sweep deploy):** index
+88 / a11y 100, brand-demo 76 / a11y 96 — inside the Sprint 94 bands,
+nothing regressed by the tap-area, label-floor, thumbnail-dimension, and
+per-page OG-card changes. The residue list is now empty: what remains
+open needs founder decisions (CONTENT FINDINGS above, RUNBOOK FOUND #2
+mechanism, brand-demo's two pre-existing a11y findings) or customers,
+not code.
+
 ## Baseline — 2026-08-22 (live site, post-Sprint-94 deploy; two runs on the changed pages)
 
 | Page | Perf (runs) | A11y | Best practices | SEO | Weight |
