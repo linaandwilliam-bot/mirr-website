@@ -182,6 +182,10 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 .minput{width:68px;height:40px;border:1.5px solid var(--line);border-radius:6px;font-family:var(--font-mono);font-size:15px;font-weight:500;color:var(--ink);text-align:center;background:var(--white);outline:none;padding:0 4px;-webkit-appearance:none;appearance:none}
 .minput:focus{border-color:var(--sky);box-shadow:0 0 0 3px var(--sky-bg)}
 .minput::-webkit-inner-spin-button,.minput::-webkit-outer-spin-button{-webkit-appearance:none}
+/* Sprint 98: measurement validation — reuses the rose error tokens */
+.minput-bad{border-color:var(--rose) !important;background:var(--rose-bg)}
+.minput-err{display:none;font-size:11px;color:var(--rose-text);line-height:1.5;text-align:right;margin:4px 0 2px}
+.measure-gate{display:none;font-size:13px;color:var(--ink3);line-height:1.7;padding:16px 0 20px}
 .mvu{font-size:10px;letter-spacing:.08em;color:var(--ink4);width:24px}
 
 /* ── STEP 3 RESULTS ── */
@@ -731,11 +735,16 @@ input,textarea,select{font-size:16px !important}
         </div>
         <p class="msaved-live" id="msaved-live" role="status" aria-live="polite"></p>
         <div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Height</div><div class="mht">Floor to top of head</div></div><div class="mrgt"><input type="number" class="minput" id="m-height" aria-label="Height" value="178" oninput="updM('height',this.value)"><div class="mvu" id="u-height">cm</div></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Chest</div><div class="mht">Fullest part of chest</div></div><div class="mrgt"><input type="number" class="minput" id="m-chest" aria-label="Chest" value="96" oninput="updM('chest',this.value)"><div class="mvu" id="u-chest">cm</div></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Waist</div><div class="mht">Natural waistline</div></div><div class="mrgt"><input type="number" class="minput" id="m-waist" aria-label="Waist" value="82" oninput="updM('waist',this.value)"><div class="mvu" id="u-waist">cm</div></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Hips</div><div class="mht">Widest part of hips</div></div><div class="mrgt"><input type="number" class="minput" id="m-hips" aria-label="Hips" value="100" oninput="updM('hips',this.value)"><div class="mvu" id="u-hips">cm</div></div></div>
-          <div class="mitem"><div class="mlft"><div class="mnm">Inseam</div><div class="mht">Crotch to ankle</div></div><div class="mrgt"><input type="number" class="minput" id="m-inseam" aria-label="Inseam" value="81" oninput="updM('inseam',this.value)"><div class="mvu" id="u-inseam">cm</div></div></div>
+          <div class="mitem"><div class="mlft"><div class="mnm">Height</div><div class="mht">Floor to top of head</div></div><div class="mrgt"><input type="number" class="minput" id="m-height" min="120" max="220" step="1" inputmode="numeric" aria-describedby="merr-height" aria-label="Height" value="178" oninput="updM('height',this.value)"><div class="mvu" id="u-height">cm</div></div></div>
+          <p class="minput-err" id="merr-height" role="alert"></p>
+          <div class="mitem"><div class="mlft"><div class="mnm">Chest</div><div class="mht">Fullest part of chest</div></div><div class="mrgt"><input type="number" class="minput" id="m-chest" min="60" max="160" step="1" inputmode="numeric" aria-describedby="merr-chest" aria-label="Chest" value="96" oninput="updM('chest',this.value)"><div class="mvu" id="u-chest">cm</div></div></div>
+          <p class="minput-err" id="merr-chest" role="alert"></p>
+          <div class="mitem"><div class="mlft"><div class="mnm">Waist</div><div class="mht">Natural waistline</div></div><div class="mrgt"><input type="number" class="minput" id="m-waist" min="50" max="160" step="1" inputmode="numeric" aria-describedby="merr-waist" aria-label="Waist" value="82" oninput="updM('waist',this.value)"><div class="mvu" id="u-waist">cm</div></div></div>
+          <p class="minput-err" id="merr-waist" role="alert"></p>
+          <div class="mitem"><div class="mlft"><div class="mnm">Hips</div><div class="mht">Widest part of hips</div></div><div class="mrgt"><input type="number" class="minput" id="m-hips" min="60" max="170" step="1" inputmode="numeric" aria-describedby="merr-hips" aria-label="Hips" value="100" oninput="updM('hips',this.value)"><div class="mvu" id="u-hips">cm</div></div></div>
+          <p class="minput-err" id="merr-hips" role="alert"></p>
+          <div class="mitem"><div class="mlft"><div class="mnm">Inseam</div><div class="mht">Crotch to ankle</div></div><div class="mrgt"><input type="number" class="minput" id="m-inseam" min="50" max="110" step="1" inputmode="numeric" aria-describedby="merr-inseam" aria-label="Inseam" value="81" oninput="updM('inseam',this.value)"><div class="mvu" id="u-inseam">cm</div></div></div>
+          <p class="minput-err" id="merr-inseam" role="alert"></p>
         </div>
         <div class="snv">
           <button class="sbk2" onclick="goStep(1)">← Back</button>
@@ -825,6 +834,8 @@ input,textarea,select{font-size:16px !important}
           <!-- Shown only for dims products; the fit panel's own "Estimated"
                label already covers the legacy case — never both. -->
           <div class="measured-note" id="measured-note" style="display:none">Fit scores use this garment’s measured dimensions.</div>
+          <p class="measure-gate" id="measure-gate">Enter your measurements to see how this fits.</p>
+          <div id="fit-output">
           <div class="rsi"><div class="rsit"><span class="rsin">Chest</span><span class="rsq" id="rq-chest"></span><span class="rsip" id="rp-chest">—</span></div><div class="rsb"><div class="rsbf" id="rb-chest"></div></div></div>
           <div class="rsi"><div class="rsit"><span class="rsin">Waist</span><span class="rsq" id="rq-waist"></span><span class="rsip" id="rp-waist">—</span></div><div class="rsb"><div class="rsbf" id="rb-waist"></div></div></div>
           <div class="rsi"><div class="rsit"><span class="rsin">Hips</span><span class="rsq" id="rq-hips"></span><span class="rsip" id="rp-hips">—</span></div><div class="rsb"><div class="rsbf" id="rb-hips"></div></div></div>
@@ -837,6 +848,7 @@ input,textarea,select{font-size:16px !important}
             <div><div class="rovl">OVERALL FIT</div><div class="rovs" id="rov-sub">Based on your measurements</div></div>
             <div class="rovn" id="rov-score">—</div>
           </div>
+          </div><!-- end fit-output -->
           <div class="rverd" id="rverd" style="display:none"><div class="rvico" id="rvico">✓</div><div class="rvt" id="rv-t"></div><div class="rvb" id="rv-b"></div></div>
           <!-- Fit across sizes (Sprint 66) — real fit scores only -->
           <div class="fas-wrap" id="fas-wrap" style="display:none">
@@ -1097,10 +1109,79 @@ let curProd = 0;
 let curUnit = 'cm';
 const MCM = {height:178, chest:96, waist:82, hips:100, inseam:81};
 
+// ── Sprint 98: measurement validation at the point of entry ──
+// Per-field sane ranges in cm. Deliberately generous — they exclude typos
+// and empty fields, not people. The engine itself answers confidently on
+// absurd input (all-40s on zeros, spurious 97s on missing values — see
+// fit-engine.test.mjs section 11), so the UI is responsible for never
+// letting such input reach it.
+var MRANGE = {
+  height: [120, 220], chest: [60, 160], waist: [50, 160],
+  hips:   [60, 170],  inseam:[50, 110]
+};
+var MLABEL = { height: 'Height', chest: 'Chest', waist: 'Waist', hips: 'Hips', inseam: 'Inseam' };
+var _mInvalid = {}; // key -> true while that field holds a rejected value
+
+function measureRangeLabel(key) {
+  var r = MRANGE[key];
+  return curUnit === 'in'
+    ? Math.round(r[0] / 2.54) + ' and ' + Math.round(r[1] / 2.54) + ' in'
+    : r[0] + ' and ' + r[1] + ' cm';
+}
+
+function markMeasureField(key, valid) {
+  _mInvalid[key] = !valid;
+  var input = document.getElementById('m-' + key);
+  var err = document.getElementById('merr-' + key);
+  if (input) input.classList.toggle('minput-bad', !valid);
+  if (err) {
+    err.textContent = valid ? '' : MLABEL[key] + ' should be between ' + measureRangeLabel(key);
+    err.style.display = valid ? 'none' : 'block';
+  }
+}
+
+function isMeasureValid() {
+  for (var k in _mInvalid) { if (_mInvalid[k]) return false; }
+  return true;
+}
+
+// Suppress every fit surface while any measurement is invalid — the calm
+// line replaces the numbers instead of the engine inventing them.
+function measureGate(on) {
+  var out = document.getElementById('fit-output');
+  var gate = document.getElementById('measure-gate');
+  if (out) out.style.display = on ? 'none' : '';
+  if (gate) gate.style.display = on ? 'block' : 'none';
+  if (on) {
+    var ids = ['rverd', 'fas-wrap', 'hem-note'];
+    for (var i = 0; i < ids.length; i++) {
+      var el = document.getElementById(ids[i]);
+      if (el) el.style.display = 'none';
+    }
+    var mn = document.getElementById('measured-note');
+    if (mn) mn.style.display = 'none';
+  } else {
+    var p = PRODS[curProd];
+    var mn2 = document.getElementById('measured-note');
+    if (mn2) mn2.style.display = (p && p.dims) ? 'block' : 'none';
+  }
+}
+
 function updM(key, val) {
-  const raw = parseFloat(val) || 0;
-  // Store in cm internally
-  MCM[key] = curUnit === 'in' ? Math.round(raw * 2.54) : Math.round(raw);
+  const raw = parseFloat(val);
+  const cm = curUnit === 'in' ? Math.round(raw * 2.54) : Math.round(raw);
+  const range = MRANGE[key];
+  let ok = Number.isFinite(cm) && cm >= range[0] && cm <= range[1];
+  if (ok) {
+    // Store in cm internally
+    MCM[key] = cm;
+  }
+  // Invalid input NEVER reaches MCM — the previous good value stands.
+  markMeasureField(key, ok);
+  // Live result on screen? Recompute so the gate applies (or clears) at once.
+  var rs = document.getElementById('result-state');
+  if (rs && rs.style.display === 'block' && PRODS[curProd] && PRODS[curProd].dims) calcFit();
+  return ok;
 }
 
 function setUnit(u) {
@@ -1116,6 +1197,12 @@ function setUnit(u) {
     if (el) {
       el.value = u === 'in' ? Math.round(MCM[k] / 2.54 * 10) / 10 : MCM[k];
       el.step = u === 'in' ? '0.1' : '1';
+      // Sprint 98: min/max follow the unit; the refill above comes from MCM,
+      // which only ever holds accepted values, so the field is valid again
+      // in the new unit by construction — clear any stale flag.
+      el.min = u === 'in' ? Math.round(MRANGE[k][0] / 2.54) : MRANGE[k][0];
+      el.max = u === 'in' ? Math.round(MRANGE[k][1] / 2.54) : MRANGE[k][1];
+      markMeasureField(k, true);
     }
     if (uEl) uEl.textContent = u;
   });
@@ -1685,6 +1772,10 @@ function calcFit() {
 }
 
 function calcFitReal(p) {
+  // Sprint 98: never hand the engine invalid measurements — suppress the
+  // answer instead of inventing one.
+  if (!isMeasureValid()) { measureGate(true); return; }
+  measureGate(false);
   var size = selectedSize();
   var r = computeFit(p, MCM, size);
   // Recommendations never leave the brand's stocked range (Sprint 84);
@@ -1748,6 +1839,9 @@ function calcFitReal(p) {
 }
 
 function calcFitLegacy() {
+  // Sprint 98: the legacy path reads MCM too — same gate, same helper.
+  if (!isMeasureValid()) { measureGate(true); return; }
+  measureGate(false);
   document.getElementById('rov-sub').textContent = 'Estimated — this brand hasn’t submitted measured dimensions yet';
   const sc = PRODS[curProd].scores;
   // Standard measurements this garment is designed around (size S/M baseline)
@@ -2481,7 +2575,13 @@ function dismissMsaved() {
 }
 
 var _msUpdM = updM;
-updM = function(key, val) { _msUpdM(key, val); saveMeasurements(); };
+updM = function(key, val) {
+  var ok = _msUpdM(key, val);
+  // Sprint 98: a rejected value must never be persisted — MCM still holds
+  // the last good value, so only save when this entry was accepted.
+  if (ok) saveMeasurements();
+  return ok;
+};
 var _msSetUnit = setUnit;
 setUnit = function(u) { _msSetUnit(u); saveMeasurements(); };
 
@@ -2677,6 +2777,7 @@ function dominantConsequence(det) {
 }
 
 function renderFitExtras(p) {
+  if (!isMeasureValid()) { clearFitExtras(); return; } // Sprint 98
   var det = fitDetails(p, MCM, selectedSize());
   ['chest', 'waist', 'hips'].forEach(function(k) {
     var el = document.getElementById('rq-' + k);
@@ -2738,6 +2839,7 @@ function clearFitExtras() {
 function renderFitAcross(p) {
   var wrap = document.getElementById('fas-wrap');
   if (!wrap) return;
+  if (!isMeasureValid()) { wrap.style.display = 'none'; return; } // Sprint 98
   if (!p || !p.dims) { wrap.style.display = 'none'; return; }
   // Stocked-sizes products (Sprint 84) show ONLY stocked sizes — the same
   // rule as the SELECT SIZE row; Sprint 74's per-size consequences follow

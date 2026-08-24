@@ -266,6 +266,37 @@ const only = recommendSize(SHORTS, LARGE, ['XS']);
 eq(only.size, 'XS', 'single-size pool returns that size');
 eq(only.overall, computeFit(SHORTS, LARGE, 'XS').overall, 'single-size pool reports its true score');
 
+// ── 11. Engine behaviour on zero / missing / negative measurements ──
+// (Sprint 98) These document KNOWN ENGINE PROPERTIES, not desired UX: the
+// engine answers confidently on absurd input, so brand-demo's UI is
+// responsible for gating (MRANGE + isMeasureValid) and must never let such
+// input reach it. If any of these assertions ever changes, the UI gate's
+// assumptions need re-checking.
+const ZEROS = { height: 0, chest: 0, waist: 0, hips: 0, inseam: 0 };
+const NEGATIVE = { height: -178, chest: -96, waist: -82, hips: -100, inseam: -81 };
+// (a) All-zero measurements: every scored dim clamps to the 40 floor and the
+// engine still "recommends" a size at 40 — confident nonsense.
+const zeroFit = computeFit(TEE, ZEROS, 'M');
+eq(zeroFit.overall, 40, 'zeros: overall clamps to the 40 floor');
+assert(Object.values(zeroFit.scores).every((v) => v === 40), 'zeros: every scored dim is exactly 40');
+eq(recommendSize(TEE, ZEROS).size, 'M', 'zeros: recommendSize still answers (sample size wins the all-40 tie)');
+eq(recommendSize(TEE, ZEROS).overall, 40, 'zeros: recommendation overall is the 40 floor');
+// (b) Negative measurements behave like zeros — same clamp, same answer.
+eq(computeFit(TEE, NEGATIVE, 'M').overall, 40, 'negatives: overall clamps to 40');
+eq(recommendSize(TEE, NEGATIVE).size, 'M', 'negatives: recommendSize still answers');
+// (c) MISSING measurements are the worst case: undefined body values make
+// circumference ease NaN, whose band comparisons are all false — so chest
+// and waist score a spurious 97 ("in band"), length goes NaN, overall goes
+// NaN, and recommendSize THROWS (every candidate's overall is NaN, the
+// near-tie filter keeps nothing, cand[0] is undefined).
+const emptyFit = computeFit(TEE, {}, 'M');
+eq(emptyFit.scores.chest, 97, 'missing: chest scores a spurious 97');
+eq(emptyFit.scores.waist, 97, 'missing: waist scores a spurious 97');
+assert(Number.isNaN(emptyFit.overall), 'missing: overall is NaN');
+let emptyThrew = false;
+try { recommendSize(TEE, {}); } catch (e) { emptyThrew = true; }
+assert(emptyThrew, 'missing: recommendSize throws on an empty measurements object');
+
 // ── Summary — ALWAYS the last statements in this file ──
 const total = passed + failures.length;
 if (failures.length > 0) {
