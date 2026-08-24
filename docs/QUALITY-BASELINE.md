@@ -19,6 +19,24 @@ that changes page structure and update this file (rule recorded in CLAUDE.md).
   `EPERM … lighthouse.<n>` temp-dir cleanup error AFTER the report is
   written. Ignore the exit code; check the JSON exists.
 
+## Baseline — 2026-08-22 (live site, post-Sprint-94 deploy; two runs on the changed pages)
+
+| Page | Perf (runs) | A11y | Best practices | SEO | Weight |
+|---|---|---|---|---|---|
+| index.html | 75 / 90 | 100 | 100 | 100 | **307 KiB** (was 393) |
+| brand-demo.html | **81 / 77** (was 70) | 96 | 100 | 100 | 354 KiB |
+| founding-brands.html | 98 | 100 | 100 | 100 | 132 KiB |
+
+Sprint 94 (preconnects everywhere; audited font-weight pruning on the
+two measured pages; brand-demo's #bhdr space reserve + brands.json
+preload + image-host preconnects) measured out as: brand-demo perf
+70 → 77/81 with CLS 0.2235 → 0/0.181 (the reserve caps the big shift;
+a residual font-swap shift appears in some runs) and LCP 4.6s → 3.9/4.1s;
+index page weight −86 KiB from dropped font files with the perf score
+inside its usual wobble band (75/90 spans the prior 84/88). Accessibility
+unchanged everywhere. Nothing reverted: both pages' changes are backed
+by a measured improvement (score or bytes).
+
 ## Baseline — 2026-08-21 (live site, post-Sprint-93/93.1 deploy)
 
 | Page | Perf | A11y | Best practices | SEO | Weight |
