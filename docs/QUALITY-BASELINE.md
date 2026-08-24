@@ -122,6 +122,13 @@ finding:
    in Sprint 89 — the worker source confirms it is manual by design;
    RUNBOOK FOUND #2.)
 
+7. **(Sprint 96 dress rehearsal)** how-to-measure's #garments section
+   makes no per-style time claim, while for-brands and the outreach
+   templates say "a few minutes per style". No contradiction — the guide's
+   five flat measurements are consistent with minutes — but the guide
+   never *reinforces* the claim. Consider one honest line ("a tape
+   measure and a few minutes per style") in the guide; copy call.
+
 ## Performance notes (recorded, not in scope to fix)
 
 - index (72) and brand-demo (73) are held down mostly by render-blocking

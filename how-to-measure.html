@@ -30,8 +30,12 @@ main{display:block}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-weight:300;line-height:1.7}
 @media(prefers-color-scheme:dark){html,body{background:var(--page)!important;color:var(--ink)!important}}
-html{scroll-behavior:smooth}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* :focus-within scoping (Sprint 96): plain `html{scroll-behavior:smooth}`
+   can suppress the on-load jump for fragment deep links (/how-to-measure#garments
+   from the outreach one-pager landed at the page top) — smooth applies only
+   once something inside the page has focus, i.e. for in-page navigation. */
+html:focus-within{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html:focus-within{scroll-behavior:auto}}
 
 nav{border-bottom:1px solid var(--line);padding:0 48px;position:sticky;top:0;background:var(--page);z-index:50}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}

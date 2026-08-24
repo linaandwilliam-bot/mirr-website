@@ -32,7 +32,10 @@ main{display:block}
 #main:focus{outline:none}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-html{scroll-behavior:smooth;color-scheme:light only}
+html{color-scheme:light only}
+/* :focus-within scoping (Sprint 96): see how-to-measure.html — keeps in-page
+   anchor clicks smooth while letting load-time fragment links jump instantly. */
+html:focus-within{scroll-behavior:smooth}
 body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-weight:300;overflow-x:hidden;line-height:1.55}
 @media(prefers-color-scheme:dark){html{background:var(--page) !important;color:var(--ink) !important}body{background:var(--page) !important;color:var(--ink) !important}}
 
@@ -635,7 +638,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
    scroll-reveals render immediately, and the hero-demo's simulated loading
    still reads through its step list and bar without spin or fade. */
 @media (prefers-reduced-motion: reduce){
-  html{scroll-behavior:auto}
+  html:focus-within{scroll-behavior:auto}
   .mirror-dot,.live-dot,.hero-demo-live-dot,.marquee-inner,
   .hd-state,.hd-spinner,.hd-proc-step.active .hd-proc-dot{animation:none}
   .rv,.rvl{opacity:1;transform:none;transition:none}
