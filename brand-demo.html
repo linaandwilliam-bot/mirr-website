@@ -61,7 +61,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 .btop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .blogo{width:46px;height:46px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none}
 .blogo-t{font-family:var(--font-mono);font-size:15px;font-weight:500;color:var(--white)}
-.bname{font-family:var(--font-serif);font-size:19px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.bname{font-family:var(--font-serif);font-size:19px;font-weight:500;color:var(--ink);margin:0 0 2px}
 .bloc{font-size:10px;color:var(--ink4);letter-spacing:.07em}
 .bdemo-badge{display:inline-block;font-size:9px;letter-spacing:.1em;color:var(--rose-dark);background:rgba(212,168,152,.12);border:.5px solid rgba(212,168,152,.35);border-radius:3px;padding:2px 7px;margin-left:8px;vertical-align:1px}
 .bverified{display:inline-block;font-size:9px;letter-spacing:.1em;color:var(--sky-text);background:var(--sky-bg);border:.5px solid var(--sky-brd);border-radius:3px;padding:2px 7px;margin-left:8px;vertical-align:1px}
@@ -393,7 +393,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 .store-fallback{display:none;max-width:460px;margin:72px auto;padding:44px 28px;text-align:center;background:var(--white);border:1px solid var(--line);border-radius:10px}
 .store-fallback.show{display:block}
 .sf-icon{font-size:26px;opacity:.4;margin-bottom:14px}
-.sf-title{font-family:var(--font-serif);font-size:22px;font-weight:500;color:var(--ink);margin-bottom:10px}
+.sf-title{font-family:var(--font-serif);font-size:22px;font-weight:500;color:var(--ink);margin:18px 0 10px}
 .sf-body{font-size:13px;color:var(--ink3);line-height:1.8;margin-bottom:22px}
 .sf-link{display:inline-block;background:var(--sky);color:var(--white);text-decoration:none;padding:12px 24px;border-radius:4px;font-size:12px;letter-spacing:.08em;font-weight:500;transition:opacity .2s}
 .sf-link:hover{opacity:.88}
@@ -631,7 +631,9 @@ input,textarea,select{font-size:16px !important}
 <!-- STOREFRONT DATA FAILURE FALLBACK — shown when brands.json can't load or parse -->
 <div class="store-fallback" id="store-fallback">
   <div class="sf-icon">✦</div>
-  <h2 class="sf-title">This store isn't available right now.</h2>
+  <!-- Sprint 99: h1 so the data-failure state still has exactly one visible
+       heading-1 (the storefront h1 renders only when brands.json loads). -->
+  <h1 class="sf-title">This store isn't available right now.</h1>
   <p class="sf-body">Something went wrong loading this storefront — try again shortly.</p>
   <a href="/brands" class="sf-link">BROWSE ALL BRANDS →</a>
 </div>
@@ -998,12 +1000,14 @@ function renderBrandHeader(brand) {
     '<div class="btop">' +
       '<div class="blogo"><div class="blogo-t">' + esc(brand.initials) + '</div></div>' +
       '<div>' +
-        '<div class="bname">' + esc(brand.name) +
+        // Sprint 99: the brand name is the page's h1 — same .bname styling,
+        // real heading for search and the screen-reader outline.
+        '<h1 class="bname">' + esc(brand.name) +
           (brand.verified ? ' <span class="bverified">✓ VERIFIED BRAND</span>' : '') +
           // Badge only for example: true brands (Sprint 83 rehearsal finding —
           // this was unconditional, so every real brand would have launched
           // labelled EXAMPLE STORE).
-          (brand.example ? ' <span class="bdemo-badge">EXAMPLE STORE</span>' : '') + '</div>' +
+          (brand.example ? ' <span class="bdemo-badge">EXAMPLE STORE</span>' : '') + '</h1>' +
         '<div class="bloc">' + esc(brand.location) + '</div>' +
       '</div>' +
     '</div>' +

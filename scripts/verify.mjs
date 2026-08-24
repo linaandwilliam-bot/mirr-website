@@ -112,6 +112,27 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
   }
 }
 
+// ── Sprint 99: every page carries its heading-1 ──
+// Zero <h1> costs the strongest on-page SEO signal and the top of the
+// screen-reader outline (index and brand-demo shipped without one for 98
+// sprints). Exactly one per page in source — two-state pages are allowed
+// two, one per mutually-exclusive state, only one ever visible:
+// submit-products (gate/form) and dashboard (content/unknown-brand).
+// brand-demo's second h1 is emitted at runtime for the storefront while its
+// source h1 covers the data-failure state.
+{
+  const H1_TWO_ALLOWED = new Set(['submit-products.html', 'dashboard.html']);
+  for (const f of htmlFiles) {
+    // Markup only — script blocks are stripped so a JS-templated heading
+    // (brand-demo's runtime storefront h1) doesn't double-count.
+    const markup = read(f).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+    const n = (markup.match(/<h1[\s>]/g) || []).length;
+    if (n === 0) fail(`${f}: no <h1> in source — every page needs its heading-1`);
+    else if (n > 1 && !H1_TWO_ALLOWED.has(f)) fail(`${f}: ${n} <h1> elements in source (expected exactly 1)`);
+    else if (n > 2) fail(`${f}: ${n} <h1> elements in source (even the two-state exception allows only 2)`);
+  }
+}
+
 // ── Sprint 90: internal tools stay unlinked and unindexed ──
 // The DO NOT LINK set, made enforceable (Sprint 86's orphan check treated
 // these as deliberate orphans; this is the durable list it consults).

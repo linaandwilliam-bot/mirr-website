@@ -174,7 +174,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   </div>
 
   <div class="state-note" id="unknown-note">
-    We could not find a brand with that link.
+    <!-- Sprint 99: h1 so this state keeps exactly one visible heading-1
+         (the dashboard's main h1 lives in the hidden content panel). -->
+    <h1 style="font:inherit;margin:0;display:inline">We could not find a brand with that link.</h1>
     <div class="brand-links" id="known-brands"></div>
   </div>
   <div class="state-note" id="fail-note">Something went wrong loading your brand data — try again shortly, or <a href="/contact" style="color:var(--sky-text)">contact us</a>.</div>
