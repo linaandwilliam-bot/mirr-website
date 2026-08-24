@@ -19,6 +19,20 @@ that changes page structure and update this file (rule recorded in CLAUDE.md).
   `EPERM … lighthouse.<n>` temp-dir cleanup error AFTER the report is
   written. Ignore the exit code; check the JSON exists.
 
+## Baseline — 2026-08-21 (live site, post-Sprint-93/93.1 deploy)
+
+| Page | Perf | A11y | Best practices | SEO | Weight |
+|---|---|---|---|---|---|
+| index.html | 88 | 100 | 100 | 100 | 393 KiB |
+| brand-demo.html | 70 | 96 | 100 | 100 | 353 KiB |
+| founding-brands.html | 98 | 100 | 100 | 100 | 132 KiB |
+
+Sprints 93/93.1 (mobile 16px input floor, 11px text floor, 44px hit
+areas at all widths) left accessibility exactly where Sprint 81 put it —
+100/96/100, with brand-demo's 96 still capped only by its two recorded
+pre-existing findings below. Perf differences vs 2026-08-19 (84→88,
+74→70) are run-to-run wobble, not measured effects.
+
 ## Baseline — 2026-08-19 (live site, post-Sprint-81 deploy)
 
 | Page | Perf | A11y | Best practices | SEO | Weight |
