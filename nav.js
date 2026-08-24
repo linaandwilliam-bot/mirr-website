@@ -13,10 +13,10 @@
   var LOGO = '<a href="/" class="logo"><span class="logo-word">MIR<span class="logo-flip">R</span></span></a>';
 
   // CTA button styles — injected once into <head> so no duplicate CSS across pages.
-  // Sprint 93: >=44px tap areas for the back link and logo on touch widths —
+  // Sprint 93.1: >=44px hit areas for the back link and logo at ALL widths —
   // padding grows the hit area, the negative margin cancels the layout shift,
   // so desktop and mobile visuals are unchanged.
-  var CTA_CSS = '@media(max-width:768px){.nav-back{padding:14px 10px;margin:-14px -10px}.logo{padding:10px 8px;margin:-10px -8px}}' + '.nav-cta{font-family:var(--font-sans);font-size:12px;letter-spacing:.05em;font-weight:300;color:var(--white);background:var(--sky);text-decoration:none;padding:8px 18px;display:inline-block;transition:background .2s}.nav-cta:hover{background:var(--sky-lt)}';
+  var CTA_CSS = '.nav-back{padding:16px 10px;margin:-16px -10px}.logo{padding:13px 8px;margin:-13px -8px}.nav-cta{min-height:44px;display:inline-flex;align-items:center}' + '.nav-cta{font-family:var(--font-sans);font-size:12px;letter-spacing:.05em;font-weight:300;color:var(--white);background:var(--sky);text-decoration:none;padding:8px 18px;display:inline-block;transition:background .2s}.nav-cta:hover{background:var(--sky-lt)}';
 
   var NAVS = {
 

@@ -31,6 +31,7 @@ There's no shared CSS file; every HTML page duplicates its own `:root` design to
 - Fonts: **Playfair Display** (headings/serif accents, often italic for taglines), **Inter** (body/UI), **DM Mono** (logo wordmark, small mono labels) — loaded from Google Fonts.
 - Accent color: `--sky: #7BAEC8` (hover state `--sky-lt: #A8C5D8`).
 - When changing design tokens or typography, check whether the change needs to be replicated across multiple pages' inline `<style>` blocks, since there's no single source of truth.
+- **Hit areas (Sprint 93.1):** standalone interactive controls (links on their own line, buttons, pills, icon buttons, summaries) have a **≥44px hit area at all viewport widths**; inline links inside running prose are exempt (WCAG's inline-text exception). Grow hit areas with padding — plus a cancelling negative margin where the layout must not shift (see nav.js). Each page's rules live in its `Sprint 93/93.1` style block; mobile-only floors also apply at ≤768px: form fields ≥16px font (stops iOS focus-zoom), visible text ≥11px.
 
 ### founding-count.json drives the founding-brands spot tracker
 `founding-brands.html` fetches `/founding-count.json` (`{ filled, total }`) at runtime with `cache: 'no-store'` and renders slot progress, a progress bar, and copy ("N founding spots left at the 8% rate...") from it. Falls back to a safe default (0 filled) if the fetch fails. To update the live counter, edit `founding-count.json`; no code change is needed.

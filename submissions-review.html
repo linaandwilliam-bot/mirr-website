@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/tokens.css">
 <style>
 /* Skip link (Sprint 81) — hidden off-screen until keyboard focus lands on it */
-.skip-link{position:absolute;left:-9999px;top:0;z-index:2000;background:var(--sky-text);color:var(--white);padding:10px 18px;font-size:12px;letter-spacing:.06em;font-weight:500;text-decoration:none;border-radius:0 0 6px 0}
+.skip-link{position:absolute;left:-9999px;top:0;z-index:2000;background:var(--sky-text);color:var(--white);padding:16px 18px;font-size:12px;letter-spacing:.06em;font-weight:500;text-decoration:none;border-radius:0 0 6px 0}
 .skip-link:focus{left:0}
 main{display:block}
 #main:focus{outline:none}
@@ -79,7 +79,7 @@ nav{border-bottom:1px solid var(--line);padding:0 48px;background:var(--page)}
 /* Keyboard focus — visible outline for tab navigation (a11y) */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 
-/* == Sprint 93: mobile floors (inputs >=16px, text >=11px, tap targets) == */
+/* == Sprint 93/93.1: mobile floors (inputs >=16px, text >=11px) + 44px hit areas at ALL widths == */
 @media(max-width:768px){
 .eyebrow{font-size:11px !important}
 }

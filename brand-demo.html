@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="/tokens.css">
 <style>
 /* Skip link (Sprint 81) — hidden off-screen until keyboard focus lands on it */
-.skip-link{position:absolute;left:-9999px;top:0;z-index:2000;background:var(--sky-text);color:var(--white);padding:10px 18px;font-size:12px;letter-spacing:.06em;font-weight:500;text-decoration:none;border-radius:0 0 6px 0}
+.skip-link{position:absolute;left:-9999px;top:0;z-index:2000;background:var(--sky-text);color:var(--white);padding:16px 18px;font-size:12px;letter-spacing:.06em;font-weight:500;text-decoration:none;border-radius:0 0 6px 0}
 .skip-link:focus{left:0}
 main{display:block}
 #main:focus{outline:none}
@@ -558,12 +558,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .fitroom-save-btn,.fitroom-card-actions button,.fitroom-overlay-view{transition:none}
 }
 
-/* == Sprint 93: mobile floors (inputs >=16px, text >=11px, tap targets) == */
+/* == Sprint 93/93.1: mobile floors (inputs >=16px, text >=11px) + 44px hit areas at ALL widths == */
+/* hit areas — all widths (93.1) */
+.mbar-logo{padding:11px 8px;margin:-11px -8px}.mbar-link{padding:16px 10px;margin:-16px -10px}.mbar-btn{padding:16px 14px;margin:-9px 0}.fpill{padding:15px 16px}
+.wb-x,.rp-x,.fitroom-overlay-x{min-width:44px;min-height:44px}
 @media(max-width:768px){
 input,textarea,select{font-size:16px !important}
 [style*="font-size:8px"],[style*="font-size:9px"],[style*="font-size:10px"]{font-size:11px !important}
 .mbar-btn,.bverified,.bdemo-badge,.bloc,.bsl,.bstats-note,.btag,.pbadge,.mcchip,.pcat,.measured-badge,.pview,.pprice-old,.powered{font-size:11px !important}
-.mbar-logo{padding:10px 8px;margin:-10px -8px}.mbar-link{padding:14px 10px;margin:-14px -10px}.mbar-btn{padding:10px 14px;margin:-3px 0}.fpill{padding:9px 14px}
 }
 </style>
 </head>
