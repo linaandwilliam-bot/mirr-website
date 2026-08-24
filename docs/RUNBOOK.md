@@ -289,14 +289,25 @@ missing the required per-product description.
 
 Still open:
 
-2. ~~The go-live confirmation email trigger is unverifiable.~~ **ANSWERED
-   2026-08-20 (Sprint 89), by the worker source now in
-   workers/mirr-catalog-worker/:** the catalog worker sends no email of
-   any kind and has no mechanism that detects a status flip — its own
-   header says statuses are moved by hand. The go-live email is a purely
-   manual step, permanently: first-brand checklist step 13 ("send it
-   yourself") is the real and only mechanism, and the site copy's "our
-   team will let you know" wording matches that truth.
+2. ~~The go-live confirmation email trigger is unverifiable.~~
+   **RESOLVED-AS-NO (Sprint 95, verified line-by-line in
+   workers/mirr-catalog-worker/worker.js):** the worker sends no email
+   on any trigger, and nothing watches for a status flip.
+   - Its only entry point is `fetch()` (the `export default` at line
+     55 has no `scheduled` handler — no cron), and that handler serves
+     exactly one route, `POST /submit` (line 64); everything else 404s.
+   - The only outbound requests in the file are the GitHub contents-API
+     GET (line 112) and PUT (line 152) inside the submit path — there
+     is no mail-service call anywhere.
+   - The header comment (lines 4–8) states it outright: "There is no
+     automated email or dashboard yet — William/Lina move a submission
+     through those states by hand-editing submissions.json."
+   Consequences, unchanged and now permanent-until-a-worker-decision:
+   the go-live email is manual (first-brand checklist step 13), and
+   submit-products keeps Sprint 71's honest "our team will let you
+   know" copy — the stronger promise stays retired because no verified
+   mechanism backs it. Building one is a worker change and a separate
+   decision.
 5. ~~Stocked sizes are collected, then dropped.~~ **FIXED in Sprint 84:**
    promote-submission now carries `sizes_in_stock` into brands.json as a
    `sizes` array (XS–XL only; larger sizes are dropped with a review note),
@@ -305,19 +316,26 @@ Still open:
    recommendation names the best AVAILABLE size with its consequence, and
    says so plainly when no stocked size fits closely. Products without a
    `sizes` array (the example store) behave exactly as before.
-6. **IMGBB uploads are unmanaged.** (Sprint 83 rehearsal; PARTIALLY FIXED
-   in Sprint 85.) Successful submissions now record a deletion link per
-   photo — `front_delete_url` / `back_delete_url` on each product in
-   submissions.json; opening the link in a browser deletes that image, and
-   nothing deletes automatically (deliberate — deletion tooling is a later
-   decision). Still open: a FAILED attempt's uploads lose their links when
-   the brand leaves the page (retry re-uploads), so those orphans still
-   need the IMGBB account dashboard. Whether the catalog worker passes the
-   new fields through into submissions.json is passthrough-by-observation
-   (the S83 submission mirrored the payload exactly) — confirm on the next
-   real submission. The 2026-08-19 rehearsal's four fixture images (all
-   watermarked "REHEARSAL FIXTURE — NOT A REAL PRODUCT") predate the fix —
-   delete them from the dashboard when convenient.
+6. **IMGBB uploads — loop closed as far as the client can close it**
+   (Sprint 83 → 85 → 95). Deletion links per photo (`front_delete_url` /
+   `back_delete_url`) are recorded by submit-products since Sprint 85 and
+   **verified persisted** in Sprint 95 by reading
+   workers/mirr-catalog-worker/worker.js: the products array is stored
+   exactly as received — `products` enters the request body untouched at
+   line 77, is placed on the new entry at line 106, pushed at line 139,
+   and serialised whole at line 141. No field filtering anywhere, so
+   every extra product field survives into submissions.json.
+   `/submissions-review` now surfaces each recorded link next to its
+   photo ("delete front/back on IMGBB ↗", scheme-guarded to
+   https://ibb.co/ since payloads are client-controlled) — read-only,
+   opening it deletes that one image; nothing is automated.
+   Still manual, by design: images stranded by a FAILED submission
+   attempt lose their links when the page closes (a retry re-uploads),
+   and anything without a recorded link is removable only from the IMGBB
+   account dashboard (imgbb.com → the account the inline API key belongs
+   to). That includes the 2026-08-19 rehearsal's four fixture images
+   (all watermarked "REHEARSAL FIXTURE — NOT A REAL PRODUCT") — still
+   sitting there, delete when convenient.
 7. **promote-submission's dry-run "diff" prints the entire brands.json
    twice** (before and after) instead of just the touched brand — with the
    example brand's inline base64 SVGs that's hundreds of unreadable lines.

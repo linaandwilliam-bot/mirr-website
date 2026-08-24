@@ -142,9 +142,19 @@ function productHTML(p) {
     .join('');
   var photos = '';
   if (p.front_photo || p.back_photo) {
+    // Per-photo IMGBB deletion links (Sprint 95): recorded by the client since
+    // Sprint 85 and persisted verbatim by the catalog worker (worker.js pushes
+    // the products array as received). Read-only links for the reviewer —
+    // opening one deletes that image on IMGBB; nothing here is automated.
+    // Scheme-guarded: submission payloads are client-controlled, so only real
+    // ibb.co delete URLs ever become hrefs.
+    var delLink = function (url, label) {
+      if (typeof url !== 'string' || url.indexOf('https://ibb.co/') !== 0) return '';
+      return '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="display:inline-block;font-size:10px;letter-spacing:.06em;color:var(--rose-text);text-decoration:none;border-bottom:1px solid rgba(212,168,152,.4);margin-top:4px;padding:8px 2px">delete ' + label + ' on IMGBB ↗</a>';
+    };
     photos = '<div class="prod-photos">' +
-      (p.front_photo ? '<div class="prod-photo"><img loading="lazy" src="' + esc(p.front_photo) + '" alt="Front photo — ' + esc(p.name) + '"><span>FRONT</span></div>' : '') +
-      (p.back_photo ? '<div class="prod-photo"><img loading="lazy" src="' + esc(p.back_photo) + '" alt="Back photo — ' + esc(p.name) + '"><span>BACK</span></div>' : '') +
+      (p.front_photo ? '<div class="prod-photo"><img loading="lazy" src="' + esc(p.front_photo) + '" alt="Front photo — ' + esc(p.name) + '"><span>FRONT</span>' + delLink(p.front_delete_url, 'front') + '</div>' : '') +
+      (p.back_photo ? '<div class="prod-photo"><img loading="lazy" src="' + esc(p.back_photo) + '" alt="Back photo — ' + esc(p.name) + '"><span>BACK</span>' + delLink(p.back_delete_url, 'back') + '</div>' : '') +
       '</div>';
   }
   return '<details class="prod"><summary><span class="prod-name">' + esc(p.name || 'Unnamed product') + '</span><span class="prod-price">' + esc(p.price ? '$' + p.price : '') + '</span></summary>' +
