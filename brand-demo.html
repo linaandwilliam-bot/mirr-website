@@ -20,7 +20,12 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Apex Active — on Mirr">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preconnect" href="https://i.ibb.co">
+<link rel="preload" href="/brands.json" as="fetch" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Inter:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tokens.css">
 <style>
 /* Skip link (Sprint 81) — hidden off-screen until keyboard focus lands on it */
@@ -48,6 +53,11 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-w
 
 /* ── BRAND HEADER ── */
 .bhdr{background:var(--white);border-bottom:1px solid var(--line);padding:18px 20px 0;width:100%}
+/* Sprint 94: reserve space for the JS-rendered brand header on mobile — it was
+   the whole of the measured CLS (0.22): the filter bar and grid jumped down when
+   brands.json arrived. 280px is a floor every real brand header exceeds; the
+   desktop grid (>=900px) sizes the header as a sidebar and needs no reserve. */
+@media(max-width:899px){.bhdr{min-height:280px}}
 .btop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .blogo{width:46px;height:46px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none}
 .blogo-t{font-family:var(--font-mono);font-size:15px;font-weight:500;color:var(--white)}
