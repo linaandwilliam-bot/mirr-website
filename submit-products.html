@@ -255,12 +255,12 @@ input,textarea,select{font-size:16px !important}
         <div class="field-group" style="margin-bottom:0">
           <label for="brand-name">Brand name <span class="req">*</span></label>
           <input type="text" id="brand-name" autocomplete="organization" placeholder="e.g. Apex Active" required>
-          <div class="field-err" id="err-brand-name">Required</div>
+          <div class="field-err" id="err-brand-name" role="alert">Required</div>
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="brand-email">Your email <span class="req">*</span></label>
           <input type="email" id="brand-email" autocomplete="email" placeholder="you@yourbrand.com" required pattern="[^\s@]+@[^\s@]+\.[^\s@]+" readonly style="background:var(--paper);cursor:not-allowed">
-          <div class="field-err" id="err-brand-email">Enter a valid email</div>
+          <div class="field-err" id="err-brand-email" role="alert">Enter a valid email</div>
         </div>
       </div>
     </div>
@@ -411,7 +411,7 @@ function addProduct() {
           <label for="pname-${idx}">Product name <span class="req">*</span></label>
           <input type="text" id="pname-${idx}" autocomplete="off" placeholder="e.g. Forest Compression Tee" required
             oninput="document.getElementById('pname-display-${idx}').textContent=this.value||'Untitled product'">
-          <div class="field-err" id="err-pname-${idx}">Required</div>
+          <div class="field-err" id="err-pname-${idx}" role="alert">Required</div>
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="pcat-${idx}">Category <span class="req">*</span></label>
@@ -427,7 +427,7 @@ function addProduct() {
             <option value="Formalwear">Formalwear</option>
             <option value="Other">Other</option>
           </select>
-          <div class="field-err" id="err-pcat-${idx}">Required</div>
+          <div class="field-err" id="err-pcat-${idx}" role="alert">Required</div>
         </div>
       </div>
 
@@ -435,7 +435,7 @@ function addProduct() {
         <div class="field-group" style="margin-bottom:0">
           <label for="pprice-${idx}">Price (AUD) <span class="req">*</span></label>
           <input type="number" id="pprice-${idx}" autocomplete="off" placeholder="0.00" min="0" step="0.01" required>
-          <div class="field-err" id="err-pprice-${idx}">Enter a valid price (0 or more)</div>
+          <div class="field-err" id="err-pprice-${idx}" role="alert">Enter a valid price (0 or more)</div>
         </div>
         <div class="field-group" style="margin-bottom:0">
           <label for="psku-${idx}">SKU / Product code</label>
@@ -482,7 +482,7 @@ function addProduct() {
           </div>
         </div>
       </div>
-      <p class="field-err" id="err-photo-${idx}" style="margin:-8px 0 18px"></p>
+      <p class="field-err" id="err-photo-${idx}" role="alert" style="margin:-8px 0 18px"></p>
       <p class="photo-warn" id="warn-photo-${idx}" role="status" aria-live="polite"></p>
 
       <div class="divider"></div>
@@ -508,7 +508,7 @@ function addProduct() {
         </div>
       </div>
       <p class="sizes-note" style="margin-bottom:18px">Inseam only required for bottoms. Leave blank if not applicable. <a href="/how-to-measure#garments" target="_blank" rel="noopener" style="color:var(--sky-text);text-decoration:none;border-bottom:1px solid rgba(123,174,200,.3)">How to measure your garment →</a></p>
-      <p class="field-err" id="dim-note-${idx}" style="margin-top:-12px;margin-bottom:18px">Please enter at least one dimension — fit scores can't be calculated for customers without it.</p>
+      <p class="field-err" id="dim-note-${idx}" role="alert" style="margin-top:-12px;margin-bottom:18px">Please enter at least one dimension — fit scores can't be calculated for customers without it.</p>
 
       <div class="divider"></div>
       <div class="section-label">AVAILABLE SIZES</div>
@@ -523,7 +523,7 @@ function addProduct() {
       <div class="field-group" style="margin-bottom:0">
         <label for="pdesc-${idx}">Product description <span class="req">*</span></label>
         <textarea id="pdesc-${idx}" autocomplete="off" placeholder="Brief description for customers — fabric, fit, key features..." rows="3" required></textarea>
-        <div class="field-err" id="err-pdesc-${idx}">Required</div>
+        <div class="field-err" id="err-pdesc-${idx}" role="alert">Required</div>
       </div>
 
     </div>
@@ -738,7 +738,13 @@ function setErr(id, show) {
   const el = document.getElementById('err-' + id);
   if (el) el.style.display = show ? 'block' : 'none';
   const field = document.getElementById(id);
-  if (field) field.classList.toggle('err', show);
+  if (field) {
+    field.classList.toggle('err', show);
+    // Sprint 100: same treatment the gate already has — announced errors
+    // and programmatic invalid state; visible text unchanged.
+    field.setAttribute('aria-invalid', show ? 'true' : 'false');
+    if (!field.getAttribute('aria-describedby')) field.setAttribute('aria-describedby', 'err-' + id);
+  }
 }
 
 function validate() {

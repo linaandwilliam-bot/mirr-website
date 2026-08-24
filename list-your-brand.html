@@ -227,19 +227,19 @@ input,textarea,select{font-size:16px !important}
         <div class="field-group">
           <label for="brand-name">Brand name <span class="req">*</span></label>
           <input type="text" id="brand-name" name="brand_name" autocomplete="organization" placeholder="e.g. Runaway The Label">
-          <div class="field-error" id="err-brand-name">Please enter your brand name</div>
+          <div class="field-error" id="err-brand-name" role="alert">Please enter your brand name</div>
         </div>
 
         <div class="field-row">
           <div class="field-group" style="margin-bottom:0">
             <label for="contact-name">Your name <span class="req">*</span></label>
             <input type="text" id="contact-name" name="contact_name" autocomplete="name" placeholder="First and last name">
-            <div class="field-error" id="err-contact-name">Please enter your name</div>
+            <div class="field-error" id="err-contact-name" role="alert">Please enter your name</div>
           </div>
           <div class="field-group" style="margin-bottom:0">
             <label for="contact-email">Email address <span class="req">*</span></label>
             <input type="email" id="contact-email" name="contact_email" autocomplete="email" placeholder="you@yourbrand.com">
-            <div class="field-error" id="err-contact-email">Please enter a valid email</div>
+            <div class="field-error" id="err-contact-email" role="alert">Please enter a valid email</div>
           </div>
         </div>
 
@@ -276,7 +276,7 @@ input,textarea,select{font-size:16px !important}
             <div class="pill-wrap"><input type="checkbox" id="cat-basics" name="categories" value="Basics"><label for="cat-basics">Basics</label></div>
             <div class="pill-wrap"><input type="checkbox" id="cat-other" name="categories" value="Other"><label for="cat-other">Other</label></div>
           </div>
-          <div class="field-error" id="err-categories">Please select at least one category</div>
+          <div class="field-error" id="err-categories" role="alert">Please select at least one category</div>
         </div>
 
         <div class="field-row">
@@ -289,7 +289,7 @@ input,textarea,select{font-size:16px !important}
               <option value="21-50">21 — 50 products</option>
               <option value="50+">50+ products</option>
             </select>
-            <div class="field-error" id="err-product-count">Please select a range</div>
+            <div class="field-error" id="err-product-count" role="alert">Please select a range</div>
           </div>
           <div class="field-group" style="margin-bottom:0">
             <label for="monthly-sales">Monthly sales volume</label>
@@ -440,7 +440,13 @@ function selectPremium(val) {
 function setErr(fieldId, errId, hasErr) {
   var f = document.getElementById(fieldId);
   var e = document.getElementById(errId);
-  if (f) f.classList.toggle('error', hasErr);
+  if (f) {
+    f.classList.toggle('error', hasErr);
+    // Sprint 100: state for assistive tech — the visible error text is
+    // unchanged; this makes it announced and programmatically tied.
+    f.setAttribute('aria-invalid', hasErr ? 'true' : 'false');
+    if (!f.getAttribute('aria-describedby')) f.setAttribute('aria-describedby', errId);
+  }
   if (e) e.style.display = hasErr ? 'block' : 'none';
 }
 
@@ -470,7 +476,13 @@ function validate() {
 
   if (!ok) {
     var first = document.querySelector('.error');
-    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (first) {
+      // Sprint 100: move real focus (a screen-reader user heard nothing
+      // before), then keep the existing smooth scroll owning the motion.
+      var focusTarget = first.matches('input,select,textarea') ? first : first.querySelector('input,select,textarea');
+      if (focusTarget) focusTarget.focus({ preventScroll: true });
+      first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   }
   return ok;
 }

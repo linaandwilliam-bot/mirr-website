@@ -35,3 +35,13 @@
   --font-sans:  'Inter', sans-serif;
   --font-mono:  'DM Mono', monospace;
 }
+
+/* Reduced motion (Sprint 100) — one global neutraliser, since every page
+   loads this file (verify.mjs enforces the link). Animations stop and
+   transitions become imperceptible; pages keep their own reduce blocks only
+   for VISIBILITY restores (index's reveal-on-scroll elements must stay
+   opacity:1). Nothing is hidden by this rule — it is comfort, not access. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
+  html{scroll-behavior:auto !important}
+}
