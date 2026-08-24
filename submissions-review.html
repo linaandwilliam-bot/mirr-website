@@ -153,8 +153,8 @@ function productHTML(p) {
       return '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="display:inline-block;font-size:10px;letter-spacing:.06em;color:var(--rose-text);text-decoration:none;border-bottom:1px solid rgba(212,168,152,.4);margin-top:4px;padding:8px 2px">delete ' + label + ' on IMGBB ↗</a>';
     };
     photos = '<div class="prod-photos">' +
-      (p.front_photo ? '<div class="prod-photo"><img loading="lazy" src="' + esc(p.front_photo) + '" alt="Front photo — ' + esc(p.name) + '"><span>FRONT</span>' + delLink(p.front_delete_url, 'front') + '</div>' : '') +
-      (p.back_photo ? '<div class="prod-photo"><img loading="lazy" src="' + esc(p.back_photo) + '" alt="Back photo — ' + esc(p.name) + '"><span>BACK</span>' + delLink(p.back_delete_url, 'back') + '</div>' : '') +
+      (p.front_photo ? '<div class="prod-photo"><img loading="lazy" width="110" height="138" src="' + esc(p.front_photo) + '" alt="Front photo — ' + esc(p.name) + '"><span>FRONT</span>' + delLink(p.front_delete_url, 'front') + '</div>' : '') +
+      (p.back_photo ? '<div class="prod-photo"><img loading="lazy" width="110" height="138" src="' + esc(p.back_photo) + '" alt="Back photo — ' + esc(p.name) + '"><span>BACK</span>' + delLink(p.back_delete_url, 'back') + '</div>' : '') +
       '</div>';
   }
   return '<details class="prod"><summary><span class="prod-name">' + esc(p.name || 'Unnamed product') + '</span><span class="prod-price">' + esc(p.price ? '$' + p.price : '') + '</span></summary>' +
