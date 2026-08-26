@@ -139,7 +139,9 @@ const TITLE_BRAND_EXEMPT = new Set(['new-brand.html', 'submissions-review.html']
 // Each must carry the internal banner + noindex, appear in no page's or
 // nav.js's hrefs, and never enter sitemap.xml.
 {
-  const INTERNAL_TOOLS = ['new-brand', 'submissions-review', 'metrics'];
+  // retailer-demo (Sprint 101) is the embed prototype's fake-store page —
+  // internal by the same rule, reached only by typing the URL.
+  const INTERNAL_TOOLS = ['new-brand', 'submissions-review', 'metrics', 'retailer-demo'];
   const nav = read('nav.js');
   const sitemap = existsSync(join(root, 'sitemap.xml')) ? read('sitemap.xml') : '';
   for (const slug of INTERNAL_TOOLS) {

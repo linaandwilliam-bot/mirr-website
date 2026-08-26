@@ -584,6 +584,18 @@ input,textarea,select{font-size:16px !important}
 [style*="font-size:8px"],[style*="font-size:9px"],[style*="font-size:10px"]{font-size:11px !important}
 .mbar-btn,.bverified,.bdemo-badge,.bloc,.bsl,.bstats-note,.btag,.pbadge,.mcchip,.pcat,.measured-badge,.pview,.pprice-old,.powered,.mexs{font-size:11px !important}
 }
+
+/* == Sprint 101: embed mode (?embed=1) — this page rendered inside a
+   retailer's overlay iframe via /mirr-embed.js. PROTOTYPE surface. Every
+   rule is scoped under body.embed-mode so the normal page is untouched. == */
+.embed-powered{display:none}
+body.embed-mode .mbar{display:none}
+body.embed-mode .dpage-nav{top:0}
+body.embed-mode .dbk{display:none}
+body.embed-mode .sf-link{display:none}
+body.embed-mode .wb-manage{display:none}
+body.embed-mode .embed-powered{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;margin:-10px 0 -10px -10px;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--ink3);text-decoration:none}
+body.embed-mode .embed-powered:hover{color:var(--sky-text)}
 </style>
 </head>
 <body>
@@ -643,6 +655,9 @@ input,textarea,select{font-size:16px !important}
 
   <div class="dpage-nav">
     <button class="dbk" onclick="hideDetail()">Back</button>
+    <!-- Sprint 101: shown only in embed mode (CSS-gated), where the Back
+         button is hidden — the retailer's overlay owns closing instead. -->
+    <a class="embed-powered" href="https://www.trymirr.com" target="_blank" rel="noopener">POWERED BY MIRR ↗</a>
     <div class="dpage-brand" id="dpage-brand">APEX ACTIVE on MIRR</div>
   </div>
 
@@ -1096,6 +1111,8 @@ async function initBrand() {
   var resolvedSlug = data[slug] ? slug : 'apex-active';
   var canonical = document.querySelector('link[rel="canonical"]');
   if (canonical) canonical.setAttribute('href', 'https://www.trymirr.com/brand-demo?brand=' + encodeURIComponent(resolvedSlug));
+  // Sprint 101: embed mode opens straight at the named product's detail view.
+  if (EMBED) embedOpenProduct(params);
   } catch (err) {
     // brands.json failed to load, parse, or contained no usable entry.
     // One clear failure state — initBrand runs once, nothing retries or
@@ -1104,6 +1121,70 @@ async function initBrand() {
     document.getElementById('page-list').style.display = 'none';
     document.getElementById('page-detail').style.display = 'none';
     document.getElementById('store-fallback').classList.add('show');
+  }
+}
+
+// ── Sprint 101: embed mode (?embed=1) — PROTOTYPE ──
+// The page rendered inside a retailer's overlay iframe via /mirr-embed.js.
+// Everything here is additive and inert without the parameter: no ?embed=1,
+// no behaviour change anywhere on this page.
+var EMBED = false;
+try { EMBED = new URLSearchParams(window.location.search).get('embed') === '1'; } catch (e) {}
+if (EMBED) {
+  document.body.classList.add('embed-mode');
+  // An embed render is an iframe fragment, never a canonical page — keep it
+  // out of indexes even when a crawler executes JS.
+  var _emMeta = document.createElement('meta');
+  _emMeta.name = 'robots'; _emMeta.content = 'noindex, nofollow';
+  document.head.appendChild(_emMeta);
+  // The list page's "Powered by Mirr" line must not navigate the iframe away
+  // from the storefront — retarget it at trymirr.com in a new tab.
+  var _emPow = document.querySelector('.powered a');
+  if (_emPow) { _emPow.href = 'https://www.trymirr.com'; _emPow.target = '_blank'; _emPow.rel = 'noopener'; }
+  // Escape pressed while focus is inside this iframe never reaches the
+  // retailer page's own listener — hand it to the embed script, which owns
+  // the overlay and does the closing.
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      // TODO(Sprint 101): targetOrigin is '*' because real retailer origins
+      // don't exist yet. Open question: how does a retailer register the
+      // origins their embed runs on? Restrict this when that answer exists.
+      try { window.parent.postMessage({ type: 'mirr-embed:close' }, '*'); } catch (err) {}
+    }
+  });
+}
+
+// Sprint 101: deep-link the embed straight to its product. Product ids are
+// name-slugs ("Forest Compression Tee" → "forest-compression-tee").
+// TODO(Sprint 101): there is no stable product-id registry — a real retailer
+// integration needs an agreed identifier (SKU? a Mirr-assigned id?). Open
+// question, deliberately left unanswered in Phase 1.
+function embedSlug(name) {
+  return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+function embedOpenProduct(params) {
+  var want = embedSlug(params.get('product') || '');
+  var idx = -1;
+  if (want) {
+    for (var i = 0; i < PRODS.length; i++) {
+      if (embedSlug(PRODS[i].name) === want) { idx = i; break; }
+    }
+  }
+  // Unknown or missing product: stay on the storefront list — never guess
+  // which garment the retailer meant.
+  if (idx === -1) return;
+  showDetail(idx);
+  // data-mirr-size preselects a size when it matches a rendered, in-stock
+  // size button; anything else leaves the default selection alone.
+  var size = (params.get('size') || '').trim().toUpperCase();
+  if (size) {
+    var btns = document.querySelectorAll('#sgrid .sbtn');
+    for (var b = 0; b < btns.length; b++) {
+      if (btns[b].textContent.trim().toUpperCase() === size && !btns[b].classList.contains('sold')) {
+        selSz(btns[b]);
+        break;
+      }
+    }
   }
 }
 
