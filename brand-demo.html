@@ -1125,6 +1125,11 @@ var MRANGE = {
 };
 var MLABEL = { height: 'Height', chest: 'Chest', waist: 'Waist', hips: 'Hips', inseam: 'Inseam' };
 var _mInvalid = {}; // key -> true while that field holds a rejected value
+// Sprint 98.1: render generation token. The score bars animate via queued
+// setTimeouts; a callback from a superseded render (a newer render started,
+// or the measurement gate opened) must never repaint stale numbers. Each
+// render captures ++_fitGen and every deferred write checks it first.
+var _fitGen = 0;
 
 function measureRangeLabel(key) {
   var r = MRANGE[key];
@@ -1152,6 +1157,10 @@ function isMeasureValid() {
 // Suppress every fit surface while any measurement is invalid — the calm
 // line replaces the numbers instead of the engine inventing them.
 function measureGate(on) {
+  // Sprint 98.1: opening the gate invalidates every queued render callback —
+  // without this, score-bar setTimeouts from the last valid render fire up
+  // to ~2s later and repaint stale percentages on top of the gate.
+  if (on) _fitGen++;
   var out = document.getElementById('fit-output');
   var gate = document.getElementById('measure-gate');
   if (out) out.style.display = on ? 'none' : '';
@@ -1780,6 +1789,7 @@ function calcFitReal(p) {
   // answer instead of inventing one.
   if (!isMeasureValid()) { measureGate(true); return; }
   measureGate(false);
+  var gen = ++_fitGen; // Sprint 98.1: this render's generation
   var size = selectedSize();
   var r = computeFit(p, MCM, size);
   // Recommendations never leave the brand's stocked range (Sprint 84);
@@ -1792,6 +1802,7 @@ function calcFitReal(p) {
     var v = r.scores[d];
     if (v != null) {
       setTimeout(function() {
+        if (gen !== _fitGen) return; // a newer render superseded this one
         pe.textContent = v + '%';
         be.style.width = v + '%';
         be.classList.toggle('g', v >= 90);
@@ -1804,6 +1815,7 @@ function calcFitReal(p) {
   document.getElementById('rov-sub').textContent =
     'Measured against this garment in size ' + size;
   setTimeout(function() {
+    if (gen !== _fitGen) return; // a newer render superseded this one
     document.getElementById('rov-score').textContent = r.overall + '%';
     document.getElementById('rverd').style.display = 'block';
     var t = document.getElementById('rv-t'), b = document.getElementById('rv-b');
@@ -1846,6 +1858,7 @@ function calcFitLegacy() {
   // Sprint 98: the legacy path reads MCM too — same gate, same helper.
   if (!isMeasureValid()) { measureGate(true); return; }
   measureGate(false);
+  var gen = ++_fitGen; // Sprint 98.1: this render's generation
   document.getElementById('rov-sub').textContent = 'Estimated — this brand hasn’t submitted measured dimensions yet';
   const sc = PRODS[curProd].scores;
   // Standard measurements this garment is designed around (size S/M baseline)
@@ -1862,6 +1875,7 @@ function calcFitLegacy() {
       const adj = Math.max(60, Math.min(99, sc[d] - penalty));
       tot += adj; cnt++;
       setTimeout(function() {
+        if (gen !== _fitGen) return; // a newer render superseded this one
         pe.textContent = adj + '%';
         be.style.width = adj + '%';
         be.classList.toggle('g', adj >= 90);
@@ -1873,6 +1887,7 @@ function calcFitLegacy() {
   });
   const avg = cnt > 0 ? Math.round(tot / cnt) : 0;
   setTimeout(() => {
+    if (gen !== _fitGen) return; // a newer render superseded this one
     document.getElementById('rov-score').textContent = avg + '%';
     document.getElementById('rverd').style.display = 'block';
     if (avg >= 90) {
