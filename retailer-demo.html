@@ -61,8 +61,12 @@ The garment and try-on below are real — they come from Mirr's demo storefront.
   <div class="crumbs">Home / Activewear / Tops</div>
 
   <div class="product">
-    <img class="pimg" src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80&fit=crop"
-         alt="Forest Compression Tee" width="600" height="800">
+    <!-- Sprint 101.1: the photo is set at runtime from brands.json — the same
+         source the demo storefront renders — so the banner's "the garment is
+         real and comes from Mirr's demo storefront" is literally true and the
+         two can never drift apart. width/height match the file's intrinsic
+         600×600 so the box is reserved before the image arrives (no CLS). -->
+    <img class="pimg" id="p-img" alt="Forest Compression Tee" width="600" height="600">
     <div>
       <h1>Forest Compression Tee</h1>
       <div class="sku">SKU: EO-ACT-0417 · Apex Active</div>
@@ -104,6 +108,23 @@ The garment and try-on below are real — they come from Mirr's demo storefront.
   document.getElementById('cart-btn').addEventListener('click', function () {
     document.getElementById('cart-note').classList.add('show');
   });
+
+  // Sprint 101.1: load the product photo from brands.json — the same source
+  // brand-demo's storefront renders. The product/brand keys come from this
+  // page's own data-mirr-* marks (the same contract the embed reads), so
+  // there is no second hardcoded copy of the image path anywhere.
+  var mark = document.querySelector('[data-mirr-product]');
+  var img = document.getElementById('p-img');
+  if (!mark || !img) return;
+  var slug = function (s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); };
+  fetch('/brands.json').then(function (r) { return r.json(); }).then(function (data) {
+    var brand = data[mark.getAttribute('data-mirr-brand')] || {};
+    var want = slug(mark.getAttribute('data-mirr-product') || '');
+    var p = (brand.products || []).filter(function (x) { return slug(x.name) === want; })[0];
+    if (!p) return;
+    img.onerror = function () { this.onerror = null; if (p.fallback_svg) this.src = p.fallback_svg; };
+    img.src = p.image;
+  }).catch(function () { /* photo box stays empty — the page still works */ });
 }());
 </script>
 
