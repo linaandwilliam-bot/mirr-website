@@ -37,7 +37,9 @@ function cors(origin) {
   return {
     'Access-Control-Allow-Origin': o,
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    // X-Admin-Key must be listed: without it the browser preflight for /stats
+    // is rejected, even from the production origin (same as brand-setup-worker).
+    'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key',
     'Access-Control-Max-Age': '86400',
     'Vary': 'Origin',
   };
