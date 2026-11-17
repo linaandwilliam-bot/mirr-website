@@ -155,6 +155,47 @@ finding:
    never *reinforces* the claim. Consider one honest line ("a tape
    measure and a few minutes per style") in the guide; copy call.
 
+8. ~~Unsupported returns-reduction claim.~~ **RESOLVED in Sprint 102
+   (2026-11-17).** index's "What about returns?" FAQ asserted "The goal
+   of Mirr is to significantly reduce returns — customers who try on
+   before buying are far more confident." There is no field evidence for
+   that, for any virtual try-on product: a systematic review of 69 VTO
+   studies (https://www.mdpi.com/2076-3417/14/24/11839) found no field
+   research measuring actual return rates — the literature measures
+   purchase *intention* — and notes retailers are themselves sceptical
+   that VTO significantly reduces returns. The common "up to 40%" figures
+   come from VTO vendors. The position changed from asserting a result to
+   committing to measure one. Changes:
+   - index.html FAQ, visible `.faq-a` AND FAQPage JSON-LD (kept
+     byte-identical): that sentence is now "Mirr is built to reduce
+     wrong-size returns, and we report each brand's try-on and fit data
+     so you can see whether it does. We don't quote an industry
+     percentage: the published research on virtual try-on measures
+     shopper intent, not actual return rates." The refund and
+     commission-reversal sentences are unchanged.
+   - for-brands.html THE PROBLEM: "reduce return rates" → "reduce
+     wrong-size returns" (the "not eliminate them" clause kept), plus one
+     new paragraph declining to put a percentage on it and committing to
+     report the brand's own try-on and fit data. It names the industry
+     "fewer returns" promise only in order to reject it.
+   - list-your-brand.html: meta description and og:description (kept
+     identical) "fewer returns" → "fit scored against your real
+     measurements"; benefit bullet "Fewer returns — customers know it
+     fits before ordering" → "Fit checked against your real measurements
+     — not a generic size chart".
+   - The one-page pitch PDF had already been rewritten the same way.
+
+   **Deliberately left alone:** about.html "brands deserve fewer returns"
+   and the value titled "Fewer returns is good for everyone" — statements
+   of intent on a page about motivation, not claims of proven effect; and
+   about.html's NRF 2025 20–40% return-rate statistic — sourced, cited,
+   and describes the *problem*, not Mirr's effect on it.
+
+   **Do not reinstate the old claim** — or any percentage or "significantly
+   reduces returns" wording — without field evidence of actual return
+   rates (ideally Mirr's own per-brand data). The ambition is unchanged;
+   the claim waits for the numbers.
+
 ## Performance notes (recorded, not in scope to fix)
 
 - index (72) and brand-demo (73) are held down mostly by render-blocking
